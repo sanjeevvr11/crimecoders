@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Trace360 evidence report: {{ a.account_id }}</title>
+<style>
+  @page { size: A4; margin: 18mm 15mm; @bottom-right { content: "Page " counter(page) " of " counter(pages); font-size: 8pt; color: #666; } }
+  body { font-family: "Helvetica Neue", Arial, sans-serif; font-size: 9.5pt; color: #1a1a1a; }
+  h1 { font-size: 17pt; margin: 0 0 2mm; }
+  h2 { font-size: 11.5pt; border-bottom: 1px solid #ccc; padding-bottom: 1mm; margin-top: 7mm; }
+  .muted { color: #666; }
+  .score { font-size: 26pt; font-weight: bold; }
+  .tier-HIGH { color: #b42318; } .tier-MEDIUM { color: #b54708; } .tier-LOW { color: #027a48; }
+  table { width: 100%; border-collapse: collapse; margin-top: 2mm; }
+  th, td { text-align: left; padding: 1.2mm 1.5mm; border-bottom: 1px solid #eee; vertical-align: top; }
+  th { background: #f4f4f5; font-weight: 600; }
+  td.num, th.num { text-align: right; }
+  .banner { background: #fff4e5; border: 1px solid #f5c48a; padding: 2mm 3mm; font-size: 8.5pt; margin-top: 4mm; }
+</style>
+</head>
+<body>
+  <h1>Trace360 evidence report</h1>
+  <div class="muted">Account {{ a.account_id }} · generated {{ generated_at }} · Phase 1 (rules + network, no ML)</div>
+
+  <table style="margin-top:5mm">
+    <tr><td style="width:35%">
+      <div class="muted">Risk score</div>
+      <div class="score tier-{{ score.tier }}">{{ "%.1f"|format(score.risk_score) }}</div>
+      <div class="tier-{{ score.tier }}"><b>{{ score.tier }}</b> · rank {{ score.rank }} of {{ n_accounts }}</div>
+    </td><td>
+      <table>
+        <tr><th>Holder</th><td>{{ a.holder_name or "—" }}</td></tr>
+        <tr><th>Account number</th><td>{{ a.account_number or "anonymised per row" }}</td></tr>
+        <tr><th>Source</th><td>{{ a.source_file }} / {{ a.source_sheet }} ({{ a.layout }})</td></tr>
+        <tr><th>Transactions</th><td>{{ "{:,}".format(a.n_rows) }} · timestamps {{ "reliable" if a.time_reliable else "not reliable (dates shuffled)" }}</td></tr>
+        <tr><th>Ring</th><td>{{ score.ring_id or "none" }}</td></tr>
+      </table>
+    </td></tr>
+  </table>
+
+  <h2>Why this account was flagged</h2>
+  <table>
+    <tr><th>#</th><th>Reason</th><th>Source</th><th class="num">Points</th></tr>
+    {% for r in reasons %}
+    <tr><td>{{ loop.index }}</td><td>{{ r.text }}</td><td>{{ r.source }}</td><td class="num">{{ "%.1f"|format(r.contribution) }}</td></tr>
+    {% else %}
+    <tr><td colspan="4" class="muted">No indicator crossed the reporting threshold.</td></tr>
+    {% endfor %}
+  </table>
+
+  <h2>Score breakdown</h2>
+  <table>
+    <tr><th>Component</th><th class="num">Score (0–1)</th><th class="num">Weight</th></tr>
+    <tr><td>Rule indicators</td><td class="num">{{ "%.3f"|format(score.indicator_score) }}</td><td class="num">{{ weights.indicator }}</td></tr>
+    <tr><td>Network</td><td class="num">{{ "%.3f"|format(score.network_score) }}</td><td class="num">{{ weights.network }}</td></tr>
+    <tr><td>Anomaly (Phase 2)</td><td class="num">{{ "%.3f"|format(score.anomaly_score) }}</td><td class="num">{{ weights.anomaly }}</td></tr>
+  </table>
+
+  <h2>Indicators</h2>
+  <table>
+    <tr><th>Indicator</th><th class="num">Value</th><th class="num">Sub-score</th><th class="num">Weight</th></tr>
+    {% for i in indicators %}
+    <tr><td>{{ i.indicator }}</td><td class="num">{{ "%.3f"|format(i.value) }}</td><td class="num">{{ "%.2f"|format(i.subscore) }}</td><td class="num">{{ i.weight }}</td></tr>
+    {% endfor %}
+  </table>
+
+  <h2>Network position</h2>
+  <table>
+    <tr><th>Shared counterparties</th><td>{{ net.shared_counterparties }}</td><th>Direct links to subjects</th><td>{{ net.direct_subject_links }}</td></tr>
+    <tr><th>PageRank</th><td>{{ "%.5f"|format(net.pagerank) }}</td><th>Betweenness</th><td>{{ "%.4f"|format(net.betweenness) }}</td></tr>
+  </table>
+
+  <h2>Largest counterparties</h2>
+  <table>
+    <tr><th>Counterparty (masked)</th><th>Direction</th><th class="num">Txns</th><th class="num">Amount (₹)</th></tr>
+    {% for c in counterparties %}
+    <tr><td>{{ c.label }}</td><td>{{ c.direction }}</td><td class="num">{{ c.count }}</td><td class="num">{{ "{:,.2f}".format(c.amount) }}</td></tr>
+    {% else %}
+    <tr><td colspan="4" class="muted">Narrations for this statement are opaque tokens; no counterparties recoverable.</td></tr>
+    {% endfor %}
+  </table>
+
+  <h2>Linked complaints (synthetic)</h2>
+  <table>
+    <tr><th>Complaint</th><th>Reported ID (masked)</th><th class="num">Amount (₹)</th><th class="num">Confidence</th></tr>
+    {% for m in complaints %}
+    <tr><td>{{ m.complaint_id }}</td><td>{{ m.reported }}</td><td class="num">{{ "{:,.2f}".format(m.amount) }}</td><td class="num">{{ "%.2f"|format(m.confidence) }}</td></tr>
+    {% else %}
+    <tr><td colspan="4" class="muted">No complaint matched this account.</td></tr>
+    {% endfor %}
+  </table>
+
+  <div class="banner">Lead for investigation only, not a finding of wrongdoing. Names and identifiers are masked to the last 4 characters.
+  Complaints shown are SYNTHETIC test records generated for demonstration. Balances in the source data are randomised and were not used.</div>
+</body>
+</html>
