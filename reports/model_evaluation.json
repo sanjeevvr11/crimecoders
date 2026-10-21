@@ -1,0 +1,791 @@
+{
+  "note": "No fraud labels exist. Injection metrics measure detection of synthetic mule patterns inserted into real weeks; they are not real-world accuracy.",
+  "contamination": 0.05,
+  "injection": {
+    "roc_auc": {
+      "mean": 0.784,
+      "std": 0.034
+    },
+    "pr_auc": {
+      "mean": 0.253,
+      "std": 0.038
+    },
+    "precision_at_k": {
+      "mean": 0.285,
+      "std": 0.11
+    },
+    "recall_at_threshold": {
+      "mean": 0.277,
+      "std": 0.11
+    },
+    "precision_at_threshold": {
+      "mean": 0.27,
+      "std": 0.094
+    },
+    "false_positive_rate": {
+      "mean": 0.081,
+      "std": 0.012
+    },
+    "recall_by_pattern": {
+      "rapid_pass_through": {
+        "mean": 0.114,
+        "std": 0.14
+      },
+      "fan_in_burst": {
+        "mean": 0.057,
+        "std": 0.07
+      },
+      "night_burst": {
+        "mean": 0.467,
+        "std": 0.194
+      },
+      "round_layering": {
+        "mean": 0.533,
+        "std": 0.221
+      }
+    },
+    "runs": [
+      {
+        "seed": 0,
+        "n_train": 549,
+        "n_test_clean": 236,
+        "n_injected": 26,
+        "roc_auc": 0.7917209908735332,
+        "pr_auc": 0.2647636405913075,
+        "precision_at_k": 0.19230769230769232,
+        "recall_at_threshold": 0.19230769230769232,
+        "precision_at_threshold": 0.21739130434782608,
+        "false_positive_rate": 0.07627118644067797,
+        "recall_by_pattern": {
+          "rapid_pass_through": 0.0,
+          "fan_in_burst": 0.0,
+          "night_burst": 0.3333333333333333,
+          "round_layering": 0.5
+        }
+      },
+      {
+        "seed": 1,
+        "n_train": 549,
+        "n_test_clean": 236,
+        "n_injected": 26,
+        "roc_auc": 0.795632333767927,
+        "pr_auc": 0.26662455234242805,
+        "precision_at_k": 0.38461538461538464,
+        "recall_at_threshold": 0.34615384615384615,
+        "precision_at_threshold": 0.36,
+        "false_positive_rate": 0.06779661016949153,
+        "recall_by_pattern": {
+          "rapid_pass_through": 0.2857142857142857,
+          "fan_in_burst": 0.0,
+          "night_burst": 0.5,
+          "round_layering": 0.6666666666666666
+        }
+      },
+      {
+        "seed": 2,
+        "n_train": 549,
+        "n_test_clean": 236,
+        "n_injected": 26,
+        "roc_auc": 0.8129074315514994,
+        "pr_auc": 0.27625976254715734,
+        "precision_at_k": 0.34615384615384615,
+        "recall_at_threshold": 0.3076923076923077,
+        "precision_at_threshold": 0.32,
+        "false_positive_rate": 0.07203389830508475,
+        "recall_by_pattern": {
+          "rapid_pass_through": 0.0,
+          "fan_in_burst": 0.14285714285714285,
+          "night_burst": 0.6666666666666666,
+          "round_layering": 0.5
+        }
+      },
+      {
+        "seed": 3,
+        "n_train": 549,
+        "n_test_clean": 236,
+        "n_injected": 26,
+        "roc_auc": 0.8010104302477183,
+        "pr_auc": 0.2794489484233872,
+        "precision_at_k": 0.38461538461538464,
+        "recall_at_threshold": 0.4230769230769231,
+        "precision_at_threshold": 0.34375,
+        "false_positive_rate": 0.08898305084745763,
+        "recall_by_pattern": {
+          "rapid_pass_through": 0.2857142857142857,
+          "fan_in_burst": 0.0,
+          "night_burst": 0.6666666666666666,
+          "round_layering": 0.8333333333333334
+        }
+      },
+      {
+        "seed": 4,
+        "n_train": 549,
+        "n_test_clean": 236,
+        "n_injected": 26,
+        "roc_auc": 0.7174054758800522,
+        "pr_auc": 0.1784945145713886,
+        "precision_at_k": 0.11538461538461539,
+        "recall_at_threshold": 0.11538461538461539,
+        "precision_at_threshold": 0.1111111111111111,
+        "false_positive_rate": 0.1016949152542373,
+        "recall_by_pattern": {
+          "rapid_pass_through": 0.0,
+          "fan_in_burst": 0.14285714285714285,
+          "night_burst": 0.16666666666666666,
+          "round_layering": 0.16666666666666666
+        }
+      }
+    ]
+  },
+  "contamination_sweep": {
+    "0.05": {
+      "recall_at_threshold": {
+        "mean": 0.277,
+        "std": 0.11
+      },
+      "precision_at_threshold": {
+        "mean": 0.27,
+        "std": 0.094
+      },
+      "false_positive_rate": {
+        "mean": 0.081,
+        "std": 0.012
+      }
+    },
+    "0.1": {
+      "recall_at_threshold": {
+        "mean": 0.469,
+        "std": 0.062
+      },
+      "precision_at_threshold": {
+        "mean": 0.285,
+        "std": 0.041
+      },
+      "false_positive_rate": {
+        "mean": 0.131,
+        "std": 0.017
+      }
+    }
+  },
+  "stability": {
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "flagged_jaccard_across_seeds": {
+      "mean": 0.853,
+      "std": 0.042
+    },
+    "account_rank_spearman_across_seeds": {
+      "mean": 0.985,
+      "std": 0.006
+    },
+    "time_split": {
+      "cutoff_week": "2021-07-10",
+      "train_windows": 549,
+      "scored_windows": 236,
+      "window_score_spearman_vs_full_model": 0.162,
+      "flagged_jaccard_vs_full_model": 0.054,
+      "flagged_share_early_model": 0.394
+    },
+    "per_account_time_split": {
+      "train_windows": 542,
+      "scored_windows": 243,
+      "window_score_spearman_vs_full_model": 0.859,
+      "flagged_jaccard_vs_full_model": 0.195,
+      "flagged_share_early_model": 0.169
+    }
+  },
+  "agreement_with_rules": {
+    "accounts": 19,
+    "spearman": 0.229,
+    "p_value": 0.346
+  },
+  "clustering": {
+    "active_weeks": 464,
+    "sparse_weeks": 321,
+    "chosen": {
+      "selection": "leaf",
+      "clusters": 6,
+      "noise_share": 0.444,
+      "silhouette_non_noise": 0.366,
+      "dbcv": 0.191
+    },
+    "alternative_eom": {
+      "selection": "eom",
+      "clusters": 2,
+      "noise_share": 0.004,
+      "silhouette_non_noise": 0.717,
+      "dbcv": 0.363
+    },
+    "profiles": [
+      {
+        "cluster": 0,
+        "size": 25,
+        "cr_count_share": 1.0,
+        "pass_through": 0.0,
+        "fast_outflow_share": 0.0,
+        "median_dwell_hours": 46.361,
+        "n_txns": 63.0,
+        "night_share": 0.016,
+        "round_amount_share": 0.722,
+        "max_txns_per_hour": 4.0,
+        "n_accounts": 7,
+        "role": "collector"
+      },
+      {
+        "cluster": 1,
+        "size": 15,
+        "cr_count_share": 0.841,
+        "pass_through": 0.972,
+        "fast_outflow_share": 0.579,
+        "median_dwell_hours": 1.447,
+        "n_txns": 1326.0,
+        "night_share": 0.01,
+        "round_amount_share": 0.85,
+        "max_txns_per_hour": 79.0,
+        "n_accounts": 2,
+        "role": "layering"
+      },
+      {
+        "cluster": 2,
+        "size": 33,
+        "cr_count_share": 0.116,
+        "pass_through": 1.0,
+        "fast_outflow_share": 0.799,
+        "median_dwell_hours": 0.483,
+        "n_txns": 122.0,
+        "night_share": 0.01,
+        "round_amount_share": 0.687,
+        "max_txns_per_hour": 13.0,
+        "n_accounts": 1,
+        "role": "layering"
+      },
+      {
+        "cluster": 3,
+        "size": 34,
+        "cr_count_share": 0.935,
+        "pass_through": 1.188,
+        "fast_outflow_share": 0.028,
+        "median_dwell_hours": 27.244,
+        "n_txns": 33.0,
+        "night_share": 0.0,
+        "round_amount_share": 0.825,
+        "max_txns_per_hour": 3.0,
+        "n_accounts": 1,
+        "role": "collector"
+      },
+      {
+        "cluster": 4,
+        "size": 78,
+        "cr_count_share": 0.184,
+        "pass_through": 0.958,
+        "fast_outflow_share": 0.494,
+        "median_dwell_hours": 1.811,
+        "n_txns": 67.5,
+        "night_share": 0.0,
+        "round_amount_share": 0.0,
+        "max_txns_per_hour": 13.5,
+        "n_accounts": 8,
+        "role": "layering"
+      },
+      {
+        "cluster": 5,
+        "size": 73,
+        "cr_count_share": 0.894,
+        "pass_through": 0.978,
+        "fast_outflow_share": 0.419,
+        "median_dwell_hours": 3.08,
+        "n_txns": 1938.0,
+        "night_share": 0.006,
+        "round_amount_share": 0.0,
+        "max_txns_per_hour": 106.0,
+        "n_accounts": 8,
+        "role": "layering"
+      }
+    ],
+    "account_roles": [
+      {
+        "account_id": "SOA1",
+        "role": "unclassified",
+        "role_source": "account clusters",
+        "role_share": NaN,
+        "account_cluster": -1
+      },
+      {
+        "account_id": "SOA11",
+        "role": "unclassified",
+        "role_source": "window clusters",
+        "role_share": 0.125,
+        "account_cluster": -1
+      },
+      {
+        "account_id": "SOA12",
+        "role": "layering",
+        "role_source": "window clusters",
+        "role_share": 0.4444444444444444,
+        "account_cluster": -1
+      },
+      {
+        "account_id": "SOA14",
+        "role": "unclassified",
+        "role_source": "window clusters",
+        "role_share": 0.0,
+        "account_cluster": 0
+      },
+      {
+        "account_id": "SOA15",
+        "role": "unclassified",
+        "role_source": "window clusters",
+        "role_share": 0.05555555555555555,
+        "account_cluster": 0
+      },
+      {
+        "account_id": "SOA16",
+        "role": "unclassified",
+        "role_source": "window clusters",
+        "role_share": 0.0625,
+        "account_cluster": 0
+      },
+      {
+        "account_id": "SOA17",
+        "role": "unclassified",
+        "role_source": "window clusters",
+        "role_share": 0.1,
+        "account_cluster": 1
+      },
+      {
+        "account_id": "SOA18",
+        "role": "layering",
+        "role_source": "window clusters",
+        "role_share": 0.5,
+        "account_cluster": 1
+      },
+      {
+        "account_id": "SOA19",
+        "role": "layering",
+        "role_source": "window clusters",
+        "role_share": 0.27586206896551724,
+        "account_cluster": 1
+      },
+      {
+        "account_id": "SOA2",
+        "role": "unclassified",
+        "role_source": "account clusters",
+        "role_share": NaN,
+        "account_cluster": -1
+      },
+      {
+        "account_id": "SOA20",
+        "role": "unclassified",
+        "role_source": "window clusters",
+        "role_share": 0.0,
+        "account_cluster": -1
+      },
+      {
+        "account_id": "SOA22",
+        "role": "unclassified",
+        "role_source": "window clusters",
+        "role_share": 0.20689655172413793,
+        "account_cluster": -1
+      },
+      {
+        "account_id": "SOA23",
+        "role": "unclassified",
+        "role_source": "window clusters",
+        "role_share": 0.0,
+        "account_cluster": 0
+      },
+      {
+        "account_id": "SOA24",
+        "role": "layering",
+        "role_source": "window clusters",
+        "role_share": 0.46153846153846156,
+        "account_cluster": -1
+      },
+      {
+        "account_id": "SOA25",
+        "role": "unclassified",
+        "role_source": "window clusters",
+        "role_share": 0.08333333333333333,
+        "account_cluster": 0
+      },
+      {
+        "account_id": "SOA26",
+        "role": "layering",
+        "role_source": "window clusters",
+        "role_share": 0.4175824175824176,
+        "account_cluster": -1
+      },
+      {
+        "account_id": "SOA28",
+        "role": "unclassified",
+        "role_source": "window clusters",
+        "role_share": 0.04,
+        "account_cluster": 0
+      },
+      {
+        "account_id": "SOA3",
+        "role": "collector",
+        "role_source": "account clusters",
+        "role_share": NaN,
+        "account_cluster": 1
+      },
+      {
+        "account_id": "SOA4",
+        "role": "collector",
+        "role_source": "account clusters",
+        "role_share": NaN,
+        "account_cluster": 1
+      },
+      {
+        "account_id": "SOA48",
+        "role": "layering",
+        "role_source": "window clusters",
+        "role_share": 0.35233160621761656,
+        "account_cluster": 1
+      },
+      {
+        "account_id": "SOA5",
+        "role": "unclassified",
+        "role_source": "account clusters",
+        "role_share": NaN,
+        "account_cluster": -1
+      },
+      {
+        "account_id": "SOA6",
+        "role": "unclassified",
+        "role_source": "account clusters",
+        "role_share": NaN,
+        "account_cluster": 1
+      },
+      {
+        "account_id": "SOA7",
+        "role": "layering",
+        "role_source": "window clusters",
+        "role_share": 0.3284671532846715,
+        "account_cluster": -1
+      },
+      {
+        "account_id": "SOA8",
+        "role": "collector",
+        "role_source": "window clusters",
+        "role_share": 0.6024096385542169,
+        "account_cluster": -1
+      },
+      {
+        "account_id": "SOA9",
+        "role": "unclassified",
+        "role_source": "window clusters",
+        "role_share": 0.0,
+        "account_cluster": -1
+      }
+    ]
+  },
+  "top10": [
+    {
+      "rank": 1,
+      "account_id": "SOA7",
+      "phase1_score": 78.0,
+      "phase2_score": 82.1,
+      "anomaly_uplift": 4.1,
+      "flagged_weeks": 4,
+      "role": "layering",
+      "ring_id": "R1",
+      "top_reasons": [
+        "Shares 992 counterparties with other investigated accounts",
+        "Median time from credit to next debit is 1.2 hours",
+        "61% of inflow left within 2 hours"
+      ]
+    },
+    {
+      "rank": 2,
+      "account_id": "SOA8",
+      "phase1_score": 66.7,
+      "phase2_score": 76.5,
+      "anomaly_uplift": 9.9,
+      "flagged_weeks": 13,
+      "role": "collector",
+      "ring_id": "R3",
+      "top_reasons": [
+        "Shares 241 counterparties with other investigated accounts",
+        "Week of 2020-07-27 is in the top 1% most unusual weeks (13 flagged week(s)): 2,867 round-amount transactions, unusual for this account; 85 transactions in one hour, unusual for this account; 1,736 quick credit\u2192debit pass-throughs, unusual for this account",
+        "Median time from credit to next debit is 10.4 hours"
+      ]
+    },
+    {
+      "rank": 3,
+      "account_id": "SOA4",
+      "phase1_score": 75.2,
+      "phase2_score": 75.2,
+      "anomaly_uplift": 0.0,
+      "flagged_weeks": null,
+      "role": "collector",
+      "ring_id": "R2",
+      "top_reasons": [
+        "Received money from 2867 distinct counterparties",
+        "Typical debit (\u20b9180,431) is 76.4x the typical credit (\u20b92,363)",
+        "Shares 772 counterparties with other investigated accounts"
+      ]
+    },
+    {
+      "rank": 4,
+      "account_id": "SOA9",
+      "phase1_score": 70.7,
+      "phase2_score": 70.7,
+      "anomaly_uplift": 0.0,
+      "flagged_weeks": 0,
+      "role": "unclassified",
+      "ring_id": "R3",
+      "top_reasons": [
+        "Shares 190 counterparties with other investigated accounts",
+        "Median time from credit to next debit is 4.4 hours",
+        "Typical debit (\u20b9713,100) is 614.7x the typical credit (\u20b91,160)"
+      ]
+    },
+    {
+      "rank": 5,
+      "account_id": "SOA2",
+      "phase1_score": 69.9,
+      "phase2_score": 69.9,
+      "anomaly_uplift": 0.0,
+      "flagged_weeks": null,
+      "role": "unclassified",
+      "ring_id": null,
+      "top_reasons": [
+        "Received money from 2510 distinct counterparties",
+        "Typical debit (\u20b9110,544) is 44.4x the typical credit (\u20b92,490)",
+        "Shares 505 counterparties with other investigated accounts"
+      ]
+    },
+    {
+      "rank": 6,
+      "account_id": "SOA6",
+      "phase1_score": 66.5,
+      "phase2_score": 66.5,
+      "anomaly_uplift": 0.0,
+      "flagged_weeks": null,
+      "role": "unclassified",
+      "ring_id": "R1",
+      "top_reasons": [
+        "Received money from 1588 distinct counterparties",
+        "Sent money to 3226 distinct counterparties",
+        "Shares 995 counterparties with other investigated accounts"
+      ]
+    },
+    {
+      "rank": 7,
+      "account_id": "SOA5",
+      "phase1_score": 64.4,
+      "phase2_score": 64.4,
+      "anomaly_uplift": 0.0,
+      "flagged_weeks": null,
+      "role": "unclassified",
+      "ring_id": "R2",
+      "top_reasons": [
+        "Received money from 792 distinct counterparties",
+        "Typical debit (\u20b9230,441) is 98.4x the typical credit (\u20b92,342)",
+        "Shares 556 counterparties with other investigated accounts"
+      ]
+    },
+    {
+      "rank": 8,
+      "account_id": "SOA18",
+      "phase1_score": 44.5,
+      "phase2_score": 58.5,
+      "anomaly_uplift": 14.0,
+      "flagged_weeks": 5,
+      "role": "layering",
+      "ring_id": null,
+      "top_reasons": [
+        "Week of 2020-07-20 is in the top 1% most unusual weeks (5 flagged week(s)): 4 transactions, far above this account's usual week; 50% of the week's transactions between 00:00 and 05:00; 100% of the week's inflow left within 2 hours",
+        "Median time from credit to next debit is 14.7 hours",
+        "53% of inflow left within 2 hours"
+      ]
+    },
+    {
+      "rank": 9,
+      "account_id": "SOA19",
+      "phase1_score": 46.6,
+      "phase2_score": 57.6,
+      "anomaly_uplift": 11.0,
+      "flagged_weeks": 2,
+      "role": "layering",
+      "ring_id": null,
+      "top_reasons": [
+        "77% of inflow left within 2 hours",
+        "Week of 2020-05-18 is in the top 2% most unusual weeks (2 flagged week(s)): 12 night-time transactions, unusual for this account; 287 small credits (\u2264 \u20b95,000), unusual for this account; 52 transactions in one hour, unusual for this account",
+        "Median time from credit to next debit is 6.8 hours"
+      ]
+    },
+    {
+      "rank": 10,
+      "account_id": "SOA12",
+      "phase1_score": 53.5,
+      "phase2_score": 54.9,
+      "anomaly_uplift": 1.4,
+      "flagged_weeks": 0,
+      "role": "layering",
+      "ring_id": null,
+      "top_reasons": [
+        "91% of inflow left within 2 hours",
+        "Median time from credit to next debit is 0.5 hours",
+        "Typical debit (\u20b9326,912) is 346.0x the typical credit (\u20b9945)"
+      ]
+    }
+  ],
+  "model_card": {
+    "generated_at": "2026-10-21T10:02:59",
+    "phase": 2,
+    "labels_available": false,
+    "versions": {
+      "python": "3.11.9",
+      "scikit-learn": "1.9.1",
+      "shap": "0.51.0",
+      "numpy": "2.4.6",
+      "pandas": "3.0.6"
+    },
+    "training_data": {
+      "windows": 785,
+      "accounts": 19,
+      "weeks_from": "2018-08-27",
+      "weeks_to": "2025-07-28"
+    },
+    "models": {
+      "isolation_forest": {
+        "use": "flag unusual account-weeks",
+        "features": [
+          "dev_log_n_txns",
+          "dev_log_max_txns_per_hour",
+          "dev_log_n_fast_credits",
+          "dev_log_n_night",
+          "dev_log_n_round",
+          "dev_log_cr_amount",
+          "dev_log_n_small_cr",
+          "fast_outflow_share",
+          "night_share",
+          "round_amount_share",
+          "small_credit_share",
+          "log_median_dwell_hours"
+        ],
+        "scaler": "RobustScaler",
+        "n_estimators": 300,
+        "contamination": 0.05,
+        "random_state": 42,
+        "threshold_raw": 0.5350589209194454,
+        "flagged_windows": 40,
+        "account_score": "mean of top-3 window percentile scores"
+      },
+      "shap_tree_explainer": {
+        "use": "top reasons per flagged week",
+        "top_features": 3
+      },
+      "hdbscan_window_roles": {
+        "use": "behaviour roles per week",
+        "selection": "leaf",
+        "min_cluster_size": 15,
+        "min_samples": 5,
+        "min_week_txns": 10,
+        "clusters": [
+          {
+            "cluster": 0,
+            "size": 25,
+            "cr_count_share": 1.0,
+            "pass_through": 0.0,
+            "fast_outflow_share": 0.0,
+            "median_dwell_hours": 46.36083333333333,
+            "n_txns": 63.0,
+            "night_share": 0.015873015873015872,
+            "round_amount_share": 0.7222222222222222,
+            "max_txns_per_hour": 4.0,
+            "n_accounts": 7,
+            "role": "collector"
+          },
+          {
+            "cluster": 1,
+            "size": 15,
+            "cr_count_share": 0.8410872974385781,
+            "pass_through": 0.9715282623470293,
+            "fast_outflow_share": 0.5789778232317795,
+            "median_dwell_hours": 1.4469444444444444,
+            "n_txns": 1326.0,
+            "night_share": 0.010071942446043165,
+            "round_amount_share": 0.8496568933250156,
+            "max_txns_per_hour": 79.0,
+            "n_accounts": 2,
+            "role": "layering"
+          },
+          {
+            "cluster": 2,
+            "size": 33,
+            "cr_count_share": 0.11607142857142858,
+            "pass_through": 1.0,
+            "fast_outflow_share": 0.7992788963700954,
+            "median_dwell_hours": 0.48277777777777775,
+            "n_txns": 122.0,
+            "night_share": 0.00974025974025974,
+            "round_amount_share": 0.6865671641791045,
+            "max_txns_per_hour": 13.0,
+            "n_accounts": 1,
+            "role": "layering"
+          },
+          {
+            "cluster": 3,
+            "size": 34,
+            "cr_count_share": 0.935133239831697,
+            "pass_through": 1.1879014798638026,
+            "fast_outflow_share": 0.027515767355606693,
+            "median_dwell_hours": 27.243680555555557,
+            "n_txns": 33.0,
+            "night_share": 0.0,
+            "round_amount_share": 0.8251247384516337,
+            "max_txns_per_hour": 3.0,
+            "n_accounts": 1,
+            "role": "collector"
+          },
+          {
+            "cluster": 4,
+            "size": 78,
+            "cr_count_share": 0.18442932728647016,
+            "pass_through": 0.9575014058428443,
+            "fast_outflow_share": 0.4941131965385906,
+            "median_dwell_hours": 1.81125,
+            "n_txns": 67.5,
+            "night_share": 0.0,
+            "round_amount_share": 0.0,
+            "max_txns_per_hour": 13.5,
+            "n_accounts": 8,
+            "role": "layering"
+          },
+          {
+            "cluster": 5,
+            "size": 73,
+            "cr_count_share": 0.8935466078323221,
+            "pass_through": 0.9780348192630514,
+            "fast_outflow_share": 0.419455374801285,
+            "median_dwell_hours": 3.0795833333333333,
+            "n_txns": 1938.0,
+            "night_share": 0.005879882402351953,
+            "round_amount_share": 0.0,
+            "max_txns_per_hour": 106.0,
+            "n_accounts": 8,
+            "role": "layering"
+          }
+        ]
+      },
+      "hdbscan_account_roles": {
+        "use": "roles for accounts without reliable timestamps",
+        "selection": "eom",
+        "min_cluster_size": 3,
+        "n_clusters": 2
+      }
+    },
+    "score_weights": {
+      "indicator": 0.65,
+      "network": 0.35
+    }
+  }
+}
