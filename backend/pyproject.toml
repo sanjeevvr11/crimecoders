@@ -1,7 +1,7 @@
 [project]
 name = "trace360"
-version = "0.1.0"
-description = "Trace360: mule account detection from bank statements (Phase 1: rules + graph)"
+version = "0.2.0"
+description = "Trace360: mule account detection from bank statements (rules, graph, unsupervised models)"
 requires-python = ">=3.11"
 dependencies = [
     "pandas>=2.2",
@@ -19,6 +19,10 @@ dependencies = [
     "jinja2>=3.1",
     "weasyprint>=61",
     "reportlab>=4.0",
+    "scikit-learn>=1.4",
+    "shap>=0.45",
+    "joblib>=1.3",
+    "hdbscan>=0.8.33",
 ]
 
 [project.optional-dependencies]
@@ -33,6 +37,7 @@ include = ["app*"]
 
 [tool.setuptools.package-data]
 "app.reports" = ["templates/*.html"]
+"app.models" = ["artifacts/*.joblib", "artifacts/*.json"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
