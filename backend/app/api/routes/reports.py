@@ -7,7 +7,8 @@ from app.reports.evidence_report import render_account_pdf
 router = APIRouter(prefix="/api/reports", tags=["reports"])
 
 
-@router.get("/account/{account_id}.pdf")
+@router.get("/account/{account_id}.pdf", response_class=Response,
+            responses={200: {"content": {"application/pdf": {}}, "description": "evidence report PDF"}})
 def account_report(account_id: str) -> Response:
     s = get_store()
     s.require_account(account_id)

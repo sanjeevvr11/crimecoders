@@ -2,13 +2,14 @@ from fastapi import APIRouter, HTTPException
 
 from app.api.deps import get_store, records
 from app.masking import mask, node_label, node_ref
+from app.schemas.api import ComplaintListItem, ComplaintMatches
 
 router = APIRouter(prefix="/api/complaints", tags=["complaints"])
 
 PUBLIC_COLUMNS = ["complaint_id", "date", "victim", "reported_upi_or_account", "reported_type", "amount", "channel", "synthetic"]
 
 
-@router.get("")
+@router.get("", response_model=list[ComplaintListItem])
 def list_complaints() -> list[dict]:
     s = get_store()
     c = s.table("complaints")[PUBLIC_COLUMNS].copy()
@@ -21,7 +22,7 @@ def list_complaints() -> list[dict]:
     return records(c)
 
 
-@router.get("/{complaint_id}/matches")
+@router.get("/{complaint_id}/matches", response_model=ComplaintMatches)
 def complaint_matches(complaint_id: str) -> dict:
     s = get_store()
     c = s.table("complaints")

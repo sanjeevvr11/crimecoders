@@ -1,0 +1,2538 @@
+{
+  "components": {
+    "schemas": {
+      "AccountDetail": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "account_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Account Number"
+          },
+          "anomaly_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Anomaly Score"
+          },
+          "complaint_matches": {
+            "title": "Complaint Matches",
+            "type": "integer"
+          },
+          "features": {
+            "additionalProperties": true,
+            "title": "Features",
+            "type": "object"
+          },
+          "flagged_weeks": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Flagged Weeks"
+          },
+          "holder_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Holder Name"
+          },
+          "indicators": {
+            "items": {
+              "$ref": "#/components/schemas/Indicator"
+            },
+            "title": "Indicators",
+            "type": "array"
+          },
+          "layout": {
+            "title": "Layout",
+            "type": "string"
+          },
+          "n_rows": {
+            "title": "N Rows",
+            "type": "integer"
+          },
+          "network": {
+            "additionalProperties": true,
+            "title": "Network",
+            "type": "object"
+          },
+          "reasons": {
+            "items": {
+              "$ref": "#/components/schemas/Reason"
+            },
+            "title": "Reasons",
+            "type": "array"
+          },
+          "role": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role"
+          },
+          "role_source": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role Source"
+          },
+          "score": {
+            "$ref": "#/components/schemas/AccountScore"
+          },
+          "shap_reasons": {
+            "description": "flagged weeks, most unusual first",
+            "items": {
+              "$ref": "#/components/schemas/FlaggedWeek"
+            },
+            "title": "Shap Reasons",
+            "type": "array"
+          },
+          "source_file": {
+            "title": "Source File",
+            "type": "string"
+          },
+          "source_sheet": {
+            "title": "Source Sheet",
+            "type": "string"
+          },
+          "time_reliable": {
+            "title": "Time Reliable",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "account_id",
+          "source_file",
+          "source_sheet",
+          "layout",
+          "time_reliable",
+          "n_rows",
+          "score",
+          "reasons",
+          "indicators",
+          "features",
+          "network",
+          "complaint_matches",
+          "shap_reasons"
+        ],
+        "title": "AccountDetail",
+        "type": "object"
+      },
+      "AccountListItem": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "account_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "masked; null when anonymised per row",
+            "title": "Account Number"
+          },
+          "holder_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "masked",
+            "title": "Holder Name"
+          },
+          "layout": {
+            "title": "Layout",
+            "type": "string"
+          },
+          "n_rows": {
+            "title": "N Rows",
+            "type": "integer"
+          },
+          "rank": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rank"
+          },
+          "ring_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ring Id"
+          },
+          "risk_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Risk Score"
+          },
+          "role": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role"
+          },
+          "source_file": {
+            "title": "Source File",
+            "type": "string"
+          },
+          "source_sheet": {
+            "title": "Source Sheet",
+            "type": "string"
+          },
+          "tier": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tier"
+          },
+          "time_reliable": {
+            "title": "Time Reliable",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "account_id",
+          "source_file",
+          "source_sheet",
+          "layout",
+          "time_reliable",
+          "n_rows"
+        ],
+        "title": "AccountListItem",
+        "type": "object"
+      },
+      "AccountScore": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "anomaly_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Anomaly Score"
+          },
+          "anomaly_uplift": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Anomaly Uplift"
+          },
+          "base_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Base Score"
+          },
+          "indicator_score": {
+            "title": "Indicator Score",
+            "type": "number"
+          },
+          "network_score": {
+            "title": "Network Score",
+            "type": "number"
+          },
+          "rank": {
+            "title": "Rank",
+            "type": "integer"
+          },
+          "ring_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ring Id"
+          },
+          "risk_score": {
+            "title": "Risk Score",
+            "type": "number"
+          },
+          "risk_score_phase1": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Risk Score Phase1"
+          },
+          "score_parts": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score Parts"
+          },
+          "tier": {
+            "title": "Tier",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "risk_score",
+          "indicator_score",
+          "network_score",
+          "tier",
+          "rank"
+        ],
+        "title": "AccountScore",
+        "type": "object"
+      },
+      "Alert": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "alert_id": {
+            "title": "Alert Id",
+            "type": "string"
+          },
+          "anomaly_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "0-1; null when the account has no reliable timestamps",
+            "title": "Anomaly Score"
+          },
+          "anomaly_uplift": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Anomaly Uplift"
+          },
+          "flagged_weeks": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Flagged Weeks"
+          },
+          "indicator_score": {
+            "title": "Indicator Score",
+            "type": "number"
+          },
+          "is_alert": {
+            "title": "Is Alert",
+            "type": "boolean"
+          },
+          "layout": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Layout"
+          },
+          "n_rows": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "N Rows"
+          },
+          "network_score": {
+            "title": "Network Score",
+            "type": "number"
+          },
+          "rank": {
+            "title": "Rank",
+            "type": "integer"
+          },
+          "ring_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ring Id"
+          },
+          "risk_score": {
+            "description": "0-100, Phase 2 (rules + network + anomaly uplift)",
+            "title": "Risk Score",
+            "type": "number"
+          },
+          "risk_score_phase1": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "rules + network only, for comparison",
+            "title": "Risk Score Phase1"
+          },
+          "role": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role"
+          },
+          "tier": {
+            "description": "HIGH | MEDIUM | LOW",
+            "title": "Tier",
+            "type": "string"
+          },
+          "time_reliable": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time Reliable"
+          },
+          "top_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Top Reason"
+          }
+        },
+        "required": [
+          "rank",
+          "account_id",
+          "risk_score",
+          "tier",
+          "indicator_score",
+          "network_score",
+          "is_alert",
+          "alert_id"
+        ],
+        "title": "Alert",
+        "type": "object"
+      },
+      "Complaint": {
+        "properties": {
+          "amount": {
+            "title": "Amount",
+            "type": "number"
+          },
+          "channel": {
+            "title": "Channel",
+            "type": "string"
+          },
+          "complaint_id": {
+            "title": "Complaint Id",
+            "type": "string"
+          },
+          "date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date"
+          },
+          "reported_type": {
+            "title": "Reported Type",
+            "type": "string"
+          },
+          "reported_upi_or_account": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "masked",
+            "title": "Reported Upi Or Account"
+          },
+          "synthetic": {
+            "title": "Synthetic",
+            "type": "boolean"
+          },
+          "victim": {
+            "title": "Victim",
+            "type": "string"
+          }
+        },
+        "required": [
+          "complaint_id",
+          "victim",
+          "reported_type",
+          "amount",
+          "channel",
+          "synthetic"
+        ],
+        "title": "Complaint",
+        "type": "object"
+      },
+      "ComplaintListItem": {
+        "properties": {
+          "amount": {
+            "title": "Amount",
+            "type": "number"
+          },
+          "best_account_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Best Account Id"
+          },
+          "best_confidence": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Best Confidence"
+          },
+          "channel": {
+            "title": "Channel",
+            "type": "string"
+          },
+          "complaint_id": {
+            "title": "Complaint Id",
+            "type": "string"
+          },
+          "date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date"
+          },
+          "n_matches": {
+            "title": "N Matches",
+            "type": "integer"
+          },
+          "reported_type": {
+            "title": "Reported Type",
+            "type": "string"
+          },
+          "reported_upi_or_account": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "masked",
+            "title": "Reported Upi Or Account"
+          },
+          "synthetic": {
+            "title": "Synthetic",
+            "type": "boolean"
+          },
+          "victim": {
+            "title": "Victim",
+            "type": "string"
+          }
+        },
+        "required": [
+          "complaint_id",
+          "victim",
+          "reported_type",
+          "amount",
+          "channel",
+          "synthetic",
+          "n_matches"
+        ],
+        "title": "ComplaintListItem",
+        "type": "object"
+      },
+      "ComplaintMatch": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "amount_match": {
+            "title": "Amount Match",
+            "type": "boolean"
+          },
+          "complaint_id": {
+            "title": "Complaint Id",
+            "type": "string"
+          },
+          "confidence": {
+            "title": "Confidence",
+            "type": "number"
+          },
+          "counterparty": {
+            "$ref": "#/components/schemas/CounterpartyRef"
+          },
+          "id_score": {
+            "title": "Id Score",
+            "type": "number"
+          },
+          "ring_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ring Id"
+          },
+          "time_match": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time Match"
+          },
+          "txn_uid": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Txn Uid"
+          }
+        },
+        "required": [
+          "complaint_id",
+          "id_score",
+          "account_id",
+          "amount_match",
+          "confidence",
+          "counterparty"
+        ],
+        "title": "ComplaintMatch",
+        "type": "object"
+      },
+      "ComplaintMatches": {
+        "properties": {
+          "complaint": {
+            "$ref": "#/components/schemas/Complaint"
+          },
+          "matches": {
+            "items": {
+              "$ref": "#/components/schemas/ComplaintMatch"
+            },
+            "title": "Matches",
+            "type": "array"
+          }
+        },
+        "required": [
+          "complaint",
+          "matches"
+        ],
+        "title": "ComplaintMatches",
+        "type": "object"
+      },
+      "CounterpartyRef": {
+        "properties": {
+          "label": {
+            "description": "masked display label",
+            "title": "Label",
+            "type": "string"
+          },
+          "ref": {
+            "description": "stable id: an account id (SOA7) or a hashed counterparty id (CP-xxxxxxxxxx)",
+            "title": "Ref",
+            "type": "string"
+          }
+        },
+        "required": [
+          "ref",
+          "label"
+        ],
+        "title": "CounterpartyRef",
+        "type": "object"
+      },
+      "CyEdge": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CyEdgeData"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "title": "CyEdge",
+        "type": "object"
+      },
+      "CyEdgeData": {
+        "properties": {
+          "amount": {
+            "title": "Amount",
+            "type": "number"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "target": {
+            "title": "Target",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "source",
+          "target",
+          "amount"
+        ],
+        "title": "CyEdgeData",
+        "type": "object"
+      },
+      "CyElements": {
+        "properties": {
+          "edges": {
+            "items": {
+              "$ref": "#/components/schemas/CyEdge"
+            },
+            "title": "Edges",
+            "type": "array"
+          },
+          "nodes": {
+            "items": {
+              "$ref": "#/components/schemas/CyNode"
+            },
+            "title": "Nodes",
+            "type": "array"
+          }
+        },
+        "required": [
+          "nodes",
+          "edges"
+        ],
+        "title": "CyElements",
+        "type": "object"
+      },
+      "CyNode": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CyNodeData"
+          }
+        },
+        "required": [
+          "data"
+        ],
+        "title": "CyNode",
+        "type": "object"
+      },
+      "CyNodeData": {
+        "properties": {
+          "degree": {
+            "title": "Degree",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "is_subject": {
+            "title": "Is Subject",
+            "type": "boolean"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "is_subject",
+          "degree"
+        ],
+        "title": "CyNodeData",
+        "type": "object"
+      },
+      "DailyFlow": {
+        "properties": {
+          "cr_amount": {
+            "title": "Cr Amount",
+            "type": "number"
+          },
+          "date": {
+            "title": "Date",
+            "type": "string"
+          },
+          "dr_amount": {
+            "title": "Dr Amount",
+            "type": "number"
+          },
+          "n_txns": {
+            "title": "N Txns",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "date",
+          "cr_amount",
+          "dr_amount",
+          "n_txns"
+        ],
+        "title": "DailyFlow",
+        "type": "object"
+      },
+      "FlaggedWeek": {
+        "properties": {
+          "anomaly_score": {
+            "title": "Anomaly Score",
+            "type": "number"
+          },
+          "percentile": {
+            "description": "share of training weeks that are less unusual",
+            "title": "Percentile",
+            "type": "number"
+          },
+          "reasons": {
+            "items": {
+              "$ref": "#/components/schemas/ShapReason"
+            },
+            "title": "Reasons",
+            "type": "array"
+          },
+          "role": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role"
+          },
+          "week_start": {
+            "title": "Week Start",
+            "type": "string"
+          }
+        },
+        "required": [
+          "week_start",
+          "anomaly_score",
+          "percentile",
+          "reasons"
+        ],
+        "title": "FlaggedWeek",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "Health": {
+        "properties": {
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "Health",
+        "type": "object"
+      },
+      "Indicator": {
+        "properties": {
+          "indicator": {
+            "title": "Indicator",
+            "type": "string"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "subscore": {
+            "title": "Subscore",
+            "type": "number"
+          },
+          "value": {
+            "title": "Value",
+            "type": "number"
+          },
+          "weight": {
+            "title": "Weight",
+            "type": "number"
+          }
+        },
+        "required": [
+          "indicator",
+          "value",
+          "subscore",
+          "weight"
+        ],
+        "title": "Indicator",
+        "type": "object"
+      },
+      "Lead": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "anomaly_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "0-1; null when the account has no reliable timestamps",
+            "title": "Anomaly Score"
+          },
+          "anomaly_uplift": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Anomaly Uplift"
+          },
+          "flagged_weeks": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Flagged Weeks"
+          },
+          "indicator_score": {
+            "title": "Indicator Score",
+            "type": "number"
+          },
+          "is_alert": {
+            "title": "Is Alert",
+            "type": "boolean"
+          },
+          "layout": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Layout"
+          },
+          "n_rows": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "N Rows"
+          },
+          "network_score": {
+            "title": "Network Score",
+            "type": "number"
+          },
+          "rank": {
+            "title": "Rank",
+            "type": "integer"
+          },
+          "ring_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ring Id"
+          },
+          "risk_score": {
+            "description": "0-100, Phase 2 (rules + network + anomaly uplift)",
+            "title": "Risk Score",
+            "type": "number"
+          },
+          "risk_score_phase1": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "rules + network only, for comparison",
+            "title": "Risk Score Phase1"
+          },
+          "role": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role"
+          },
+          "tier": {
+            "description": "HIGH | MEDIUM | LOW",
+            "title": "Tier",
+            "type": "string"
+          },
+          "time_reliable": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time Reliable"
+          },
+          "top_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Top Reason"
+          }
+        },
+        "required": [
+          "rank",
+          "account_id",
+          "risk_score",
+          "tier",
+          "indicator_score",
+          "network_score",
+          "is_alert"
+        ],
+        "title": "Lead",
+        "type": "object"
+      },
+      "ModelSummary": {
+        "properties": {
+          "account_roles": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Account Roles",
+            "type": "array"
+          },
+          "evaluation": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "synthetic-injection metrics, NOT real-world accuracy",
+            "title": "Evaluation"
+          },
+          "model_card": {
+            "additionalProperties": true,
+            "title": "Model Card",
+            "type": "object"
+          },
+          "role_profiles": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Role Profiles",
+            "type": "array"
+          }
+        },
+        "required": [
+          "model_card",
+          "role_profiles",
+          "account_roles"
+        ],
+        "title": "ModelSummary",
+        "type": "object"
+      },
+      "PipelineRunResult": {
+        "properties": {
+          "stats": {
+            "$ref": "#/components/schemas/Stats"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "stats"
+        ],
+        "title": "PipelineRunResult",
+        "type": "object"
+      },
+      "Reason": {
+        "properties": {
+          "contribution": {
+            "description": "points this reason adds to the 0-100 risk score",
+            "title": "Contribution",
+            "type": "number"
+          },
+          "source": {
+            "description": "indicator | network | anomaly | role",
+            "title": "Source",
+            "type": "string"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source",
+          "text",
+          "contribution"
+        ],
+        "title": "Reason",
+        "type": "object"
+      },
+      "Ring": {
+        "properties": {
+          "n_edges": {
+            "title": "N Edges",
+            "type": "integer"
+          },
+          "n_nodes": {
+            "title": "N Nodes",
+            "type": "integer"
+          },
+          "n_shared_counterparties": {
+            "title": "N Shared Counterparties",
+            "type": "integer"
+          },
+          "n_subjects": {
+            "title": "N Subjects",
+            "type": "integer"
+          },
+          "ring_id": {
+            "title": "Ring Id",
+            "type": "string"
+          },
+          "subject_accounts": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Subject Accounts",
+            "type": "array"
+          },
+          "total_amount": {
+            "title": "Total Amount",
+            "type": "number"
+          }
+        },
+        "required": [
+          "ring_id",
+          "subject_accounts",
+          "n_subjects",
+          "n_shared_counterparties",
+          "n_nodes",
+          "n_edges",
+          "total_amount"
+        ],
+        "title": "Ring",
+        "type": "object"
+      },
+      "RingDetail": {
+        "properties": {
+          "elements": {
+            "$ref": "#/components/schemas/CyElements"
+          },
+          "ring": {
+            "$ref": "#/components/schemas/Ring"
+          }
+        },
+        "required": [
+          "ring",
+          "elements"
+        ],
+        "title": "RingDetail",
+        "type": "object"
+      },
+      "ShapReason": {
+        "properties": {
+          "contribution": {
+            "title": "Contribution",
+            "type": "number"
+          },
+          "feature": {
+            "title": "Feature",
+            "type": "string"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "feature",
+          "contribution",
+          "text"
+        ],
+        "title": "ShapReason",
+        "type": "object"
+      },
+      "Stats": {
+        "properties": {
+          "alert_threshold": {
+            "title": "Alert Threshold",
+            "type": "number"
+          },
+          "channel_mix": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Channel Mix",
+            "type": "object"
+          },
+          "complaints": {
+            "additionalProperties": true,
+            "title": "Complaints",
+            "type": "object"
+          },
+          "generated_at": {
+            "title": "Generated At",
+            "type": "string"
+          },
+          "models": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Models"
+          },
+          "n_accounts": {
+            "title": "N Accounts",
+            "type": "integer"
+          },
+          "n_alerts": {
+            "title": "N Alerts",
+            "type": "integer"
+          },
+          "n_counterparties": {
+            "title": "N Counterparties",
+            "type": "integer"
+          },
+          "n_edges": {
+            "title": "N Edges",
+            "type": "integer"
+          },
+          "n_rings": {
+            "title": "N Rings",
+            "type": "integer"
+          },
+          "n_shared_counterparties": {
+            "title": "N Shared Counterparties",
+            "type": "integer"
+          },
+          "n_transactions": {
+            "title": "N Transactions",
+            "type": "integer"
+          },
+          "narrations_with_text": {
+            "title": "Narrations With Text",
+            "type": "integer"
+          },
+          "pct_narrations_parsed": {
+            "title": "Pct Narrations Parsed",
+            "type": "number"
+          },
+          "pct_text_narrations_parsed": {
+            "title": "Pct Text Narrations Parsed",
+            "type": "number"
+          },
+          "pct_with_counterparty": {
+            "title": "Pct With Counterparty",
+            "type": "number"
+          },
+          "rows_per_layout": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Rows Per Layout",
+            "type": "object"
+          },
+          "time_reliable_rows": {
+            "title": "Time Reliable Rows",
+            "type": "integer"
+          },
+          "timings_s": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Timings S",
+            "type": "object"
+          }
+        },
+        "required": [
+          "generated_at",
+          "n_transactions",
+          "n_accounts",
+          "rows_per_layout",
+          "time_reliable_rows",
+          "narrations_with_text",
+          "pct_narrations_parsed",
+          "pct_text_narrations_parsed",
+          "pct_with_counterparty",
+          "channel_mix",
+          "n_counterparties",
+          "n_shared_counterparties",
+          "n_edges",
+          "n_rings",
+          "n_alerts",
+          "alert_threshold",
+          "complaints",
+          "timings_s"
+        ],
+        "title": "Stats",
+        "type": "object"
+      },
+      "Timeline": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "daily": {
+            "items": {
+              "$ref": "#/components/schemas/DailyFlow"
+            },
+            "title": "Daily",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          },
+          "time_reliable": {
+            "title": "Time Reliable",
+            "type": "boolean"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          },
+          "transactions": {
+            "items": {
+              "$ref": "#/components/schemas/TimelineTxn"
+            },
+            "title": "Transactions",
+            "type": "array"
+          },
+          "weeks": {
+            "description": "weekly anomaly scores (time-reliable accounts)",
+            "items": {
+              "$ref": "#/components/schemas/WeekScore"
+            },
+            "title": "Weeks",
+            "type": "array"
+          }
+        },
+        "required": [
+          "account_id",
+          "total",
+          "offset",
+          "limit",
+          "time_reliable",
+          "transactions",
+          "daily"
+        ],
+        "title": "Timeline",
+        "type": "object"
+      },
+      "TimelineTxn": {
+        "properties": {
+          "amount": {
+            "title": "Amount",
+            "type": "number"
+          },
+          "channel": {
+            "title": "Channel",
+            "type": "string"
+          },
+          "counterparty": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CounterpartyRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "counterparty_type": {
+            "title": "Counterparty Type",
+            "type": "string"
+          },
+          "direction": {
+            "description": "CR | DR",
+            "title": "Direction",
+            "type": "string"
+          },
+          "narration": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "masked",
+            "title": "Narration"
+          },
+          "raw_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Raw Date"
+          },
+          "txn_ts": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Txn Ts"
+          },
+          "txn_uid": {
+            "title": "Txn Uid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "txn_uid",
+          "direction",
+          "amount",
+          "channel",
+          "counterparty_type"
+        ],
+        "title": "TimelineTxn",
+        "type": "object"
+      },
+      "Trail": {
+        "properties": {
+          "direction": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Direction"
+          },
+          "hops": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hops"
+          },
+          "paths": {
+            "items": {
+              "$ref": "#/components/schemas/TrailPath"
+            },
+            "title": "Paths",
+            "type": "array"
+          },
+          "start": {
+            "title": "Start",
+            "type": "string"
+          }
+        },
+        "required": [
+          "start",
+          "paths"
+        ],
+        "title": "Trail",
+        "type": "object"
+      },
+      "TrailEdge": {
+        "properties": {
+          "amount": {
+            "title": "Amount",
+            "type": "number"
+          },
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "first_ts": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "First Ts"
+          },
+          "last_ts": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Ts"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "target": {
+            "title": "Target",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source",
+          "target",
+          "amount",
+          "count"
+        ],
+        "title": "TrailEdge",
+        "type": "object"
+      },
+      "TrailNode": {
+        "properties": {
+          "is_subject": {
+            "title": "Is Subject",
+            "type": "boolean"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "ref": {
+            "title": "Ref",
+            "type": "string"
+          }
+        },
+        "required": [
+          "ref",
+          "label",
+          "is_subject"
+        ],
+        "title": "TrailNode",
+        "type": "object"
+      },
+      "TrailPath": {
+        "properties": {
+          "direction": {
+            "title": "Direction",
+            "type": "string"
+          },
+          "edges": {
+            "items": {
+              "$ref": "#/components/schemas/TrailEdge"
+            },
+            "title": "Edges",
+            "type": "array"
+          },
+          "hops": {
+            "title": "Hops",
+            "type": "integer"
+          },
+          "nodes": {
+            "items": {
+              "$ref": "#/components/schemas/TrailNode"
+            },
+            "title": "Nodes",
+            "type": "array"
+          },
+          "total_amount": {
+            "title": "Total Amount",
+            "type": "number"
+          }
+        },
+        "required": [
+          "direction",
+          "hops",
+          "total_amount",
+          "nodes",
+          "edges"
+        ],
+        "title": "TrailPath",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      },
+      "WeekScore": {
+        "properties": {
+          "anomaly_score": {
+            "title": "Anomaly Score",
+            "type": "number"
+          },
+          "is_flagged": {
+            "title": "Is Flagged",
+            "type": "boolean"
+          },
+          "role": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role"
+          },
+          "week_start": {
+            "title": "Week Start",
+            "type": "string"
+          }
+        },
+        "required": [
+          "week_start",
+          "anomaly_score",
+          "is_flagged"
+        ],
+        "title": "WeekScore",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "description": "Mule account detection: rules, money-flow graph and unsupervised models",
+    "title": "Trace360",
+    "version": "0.3.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/accounts": {
+      "get": {
+        "operationId": "list_accounts_api_accounts_get",
+        "parameters": [
+          {
+            "description": "HIGH, MEDIUM or LOW",
+            "in": "query",
+            "name": "tier",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "HIGH, MEDIUM or LOW",
+              "title": "Tier"
+            }
+          },
+          {
+            "description": "collector, distributor, layering, normal-looking, unclassified",
+            "in": "query",
+            "name": "role",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "collector, distributor, layering, normal-looking, unclassified",
+              "title": "Role"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ring_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Ring Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "time_reliable",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Time Reliable"
+            }
+          },
+          {
+            "description": "substring of the account id, e.g. SOA1",
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "substring of the account id, e.g. SOA1",
+              "title": "Q"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AccountListItem"
+                  },
+                  "title": "Response List Accounts Api Accounts Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Accounts",
+        "tags": [
+          "accounts"
+        ]
+      }
+    },
+    "/api/accounts/{account_id}": {
+      "get": {
+        "operationId": "account_detail_api_accounts__account_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "account_id",
+            "required": true,
+            "schema": {
+              "title": "Account Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Account Detail",
+        "tags": [
+          "accounts"
+        ]
+      }
+    },
+    "/api/accounts/{account_id}/timeline": {
+      "get": {
+        "operationId": "account_timeline_api_accounts__account_id__timeline_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "account_id",
+            "required": true,
+            "schema": {
+              "title": "Account Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 200,
+              "maximum": 2000,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "direction",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "CR",
+                    "DR"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Direction"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Timeline"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Account Timeline",
+        "tags": [
+          "accounts"
+        ]
+      }
+    },
+    "/api/accounts/{account_id}/trail": {
+      "get": {
+        "description": "Money trail from an account (or a counterparty ref such as CP-1a2b3c4d5e).",
+        "operationId": "account_trail_api_accounts__account_id__trail_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "account_id",
+            "required": true,
+            "schema": {
+              "title": "Account Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "hops",
+            "required": false,
+            "schema": {
+              "default": 2,
+              "maximum": 4,
+              "minimum": 1,
+              "title": "Hops",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "direction",
+            "required": false,
+            "schema": {
+              "default": "forward",
+              "enum": [
+                "forward",
+                "backward",
+                "both"
+              ],
+              "title": "Direction",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "max_paths",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Max Paths",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Trail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Account Trail",
+        "tags": [
+          "accounts"
+        ]
+      }
+    },
+    "/api/alerts": {
+      "get": {
+        "operationId": "list_alerts_api_alerts_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Alert"
+                  },
+                  "title": "Response List Alerts Api Alerts Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Alerts",
+        "tags": [
+          "alerts"
+        ]
+      }
+    },
+    "/api/complaints": {
+      "get": {
+        "operationId": "list_complaints_api_complaints_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ComplaintListItem"
+                  },
+                  "title": "Response List Complaints Api Complaints Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Complaints",
+        "tags": [
+          "complaints"
+        ]
+      }
+    },
+    "/api/complaints/{complaint_id}/matches": {
+      "get": {
+        "operationId": "complaint_matches_api_complaints__complaint_id__matches_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "complaint_id",
+            "required": true,
+            "schema": {
+              "title": "Complaint Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComplaintMatches"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Complaint Matches",
+        "tags": [
+          "complaints"
+        ]
+      }
+    },
+    "/api/graph/rings": {
+      "get": {
+        "operationId": "list_rings_api_graph_rings_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Ring"
+                  },
+                  "title": "Response List Rings Api Graph Rings Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Rings",
+        "tags": [
+          "graph"
+        ]
+      }
+    },
+    "/api/graph/rings/{ring_id}": {
+      "get": {
+        "operationId": "ring_detail_api_graph_rings__ring_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ring_id",
+            "required": true,
+            "schema": {
+              "title": "Ring Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RingDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Ring Detail",
+        "tags": [
+          "graph"
+        ]
+      }
+    },
+    "/api/health": {
+      "get": {
+        "operationId": "health_api_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Health"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Health"
+      }
+    },
+    "/api/leads": {
+      "get": {
+        "operationId": "list_leads_api_leads_get",
+        "parameters": [
+          {
+            "description": "HIGH, MEDIUM or LOW",
+            "in": "query",
+            "name": "tier",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "HIGH, MEDIUM or LOW",
+              "title": "Tier"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 1000,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Lead"
+                  },
+                  "title": "Response List Leads Api Leads Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Leads",
+        "tags": [
+          "alerts"
+        ]
+      }
+    },
+    "/api/models/summary": {
+      "get": {
+        "description": "Model card, latest evaluation (synthetic-injection metrics, not real-world\naccuracy) and current role clusters.",
+        "operationId": "models_summary_api_models_summary_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelSummary"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Models Summary",
+        "tags": [
+          "models"
+        ]
+      }
+    },
+    "/api/pipeline/run": {
+      "post": {
+        "description": "Re-run ingestion, features, graph, complaints and scoring (about a minute on the full data).",
+        "operationId": "run_pipeline_api_pipeline_run_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PipelineRunResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Run Pipeline",
+        "tags": [
+          "pipeline"
+        ]
+      }
+    },
+    "/api/reports/account/{account_id}.pdf": {
+      "get": {
+        "operationId": "account_report_api_reports_account__account_id__pdf_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "account_id",
+            "required": true,
+            "schema": {
+              "title": "Account Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/pdf": {}
+            },
+            "description": "evidence report PDF"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Account Report",
+        "tags": [
+          "reports"
+        ]
+      }
+    },
+    "/api/stats": {
+      "get": {
+        "operationId": "stats_api_stats_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Stats"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Stats",
+        "tags": [
+          "pipeline"
+        ]
+      }
+    }
+  }
+}

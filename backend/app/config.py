@@ -123,4 +123,5 @@ ALERT_THRESHOLD = 50.0
 TIERS = ((70.0, "HIGH"), (50.0, "MEDIUM"), (0.0, "LOW"))
 TOP_REASONS = 5
 
-CORS_ORIGINS = ["http://localhost:5173", "http://127.0.0.1:5173"]
+# Vite dev server (5173) and `vite preview` (4173)
+CORS_ORIGINS = ["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:4173", "http://127.0.0.1:4173"]

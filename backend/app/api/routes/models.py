@@ -4,11 +4,12 @@ from fastapi import APIRouter, HTTPException
 
 from app import config
 from app.api.deps import get_store, records
+from app.schemas.api import ModelSummary
 
 router = APIRouter(prefix="/api/models", tags=["models"])
 
 
-@router.get("/summary")
+@router.get("/summary", response_model=ModelSummary)
 def models_summary() -> dict:
     """Model card, latest evaluation (synthetic-injection metrics, not real-world
     accuracy) and current role clusters."""

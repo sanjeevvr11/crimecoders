@@ -8,6 +8,7 @@ from app.api.deps import get_store, records
 from app.graph.money_trail import money_trail
 from app.masking import mask, mask_text, node_label, node_ref
 from app.models.summary import account_ml_summary
+from app.schemas.api import AccountDetail, AccountListItem, Timeline, Trail
 from app.scoring.reasons import top_reasons
 
 router = APIRouter(prefix="/api/accounts", tags=["accounts"])
@@ -20,16 +21,34 @@ def _cp(key: object, subjects: set[str]) -> dict | None:
     return {"ref": node_ref(key, is_subj), "label": node_label(key, is_subj)}
 
 
-@router.get("")
-def list_accounts() -> list[dict]:
+@router.get("", response_model=list[AccountListItem])
+def list_accounts(
+    tier: str | None = Query(None, description="HIGH, MEDIUM or LOW"),
+    role: str | None = Query(None, description="collector, distributor, layering, normal-looking, unclassified"),
+    ring_id: str | None = None,
+    time_reliable: bool | None = None,
+    q: str | None = Query(None, description="substring of the account id, e.g. SOA1"),
+) -> list[dict]:
     s = get_store()
-    acc = s.table("accounts").merge(s.table("scores")[["account_id", "risk_score", "tier", "rank"]], on="account_id", how="left")
+    acc = s.table("accounts").merge(s.table("scores")[["account_id", "risk_score", "tier", "rank", "ring_id"]], on="account_id", how="left")
+    roles = s.optional_table("account_roles")
+    acc["role"] = acc["account_id"].map(roles.set_index("account_id")["role"]) if roles is not None else None
     acc["holder_name"] = acc["holder_name"].map(mask)
     acc["account_number"] = acc["account_number"].map(mask)
+    if tier:
+        acc = acc.loc[acc["tier"] == tier.upper()]
+    if role:
+        acc = acc.loc[acc["role"] == role]
+    if ring_id:
+        acc = acc.loc[acc["ring_id"] == ring_id]
+    if time_reliable is not None:
+        acc = acc.loc[acc["time_reliable"] == time_reliable]
+    if q:
+        acc = acc.loc[acc["account_id"].str.contains(q, case=False, regex=False)]
     return records(acc.sort_values("rank"))
 
 
-@router.get("/{account_id}")
+@router.get("/{account_id}", response_model=AccountDetail)
 def account_detail(account_id: str) -> dict:
     s = get_store()
     s.require_account(account_id)
@@ -59,7 +78,7 @@ def account_detail(account_id: str) -> dict:
     }
 
 
-@router.get("/{account_id}/timeline")
+@router.get("/{account_id}/timeline", response_model=Timeline)
 def account_timeline(
     account_id: str,
     limit: int = Query(200, ge=1, le=2000),
@@ -97,11 +116,18 @@ def account_timeline(
                 "cr_amount": float(row.get(("sum", "CR"), 0)), "dr_amount": float(row.get(("sum", "DR"), 0)),
                 "n_txns": int(row.get(("count", "CR"), 0) + row.get(("count", "DR"), 0)),
             })
+    weeks = []
+    ws = s.optional_table("window_scores")
+    if ws is not None and len(ws):
+        for w in ws.loc[ws["account_id"] == account_id].sort_values("week_start").itertuples(index=False):
+            weeks.append({"week_start": pd.Timestamp(w.week_start).date().isoformat(), "anomaly_score": round(float(w.anomaly_score), 3),
+                          "is_flagged": bool(w.is_flagged), "role": getattr(w, "role", None)})
     return {"account_id": account_id, "total": int(len(t)), "offset": offset, "limit": limit,
-            "time_reliable": bool(t["time_reliable"].any()) if len(t) else False, "transactions": rows, "daily": daily}
+            "time_reliable": bool(t["time_reliable"].any()) if len(t) else False, "transactions": rows, "daily": daily,
+            "weeks": weeks}
 
 
-@router.get("/{account_id}/trail")
+@router.get("/{account_id}/trail", response_model=Trail)
 def account_trail(
     account_id: str,
     hops: int = Query(2, ge=1, le=config.TRAIL_MAX_HOPS),

@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException
 from app.api.deps import get_store, records
 from app.graph.communities import ring_cytoscape
 from app.masking import node_label, node_ref
-from app.schemas.api import Ring
+from app.schemas.api import Ring, RingDetail
 
 router = APIRouter(prefix="/api/graph", tags=["graph"])
 
@@ -15,7 +15,7 @@ def list_rings() -> list[dict]:
     return records(rings)
 
 
-@router.get("/rings/{ring_id}")
+@router.get("/rings/{ring_id}", response_model=RingDetail)
 def ring_detail(ring_id: str) -> dict:
     s = get_store()
     rings = s.table("rings")
