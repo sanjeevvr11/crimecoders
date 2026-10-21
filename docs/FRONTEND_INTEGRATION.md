@@ -69,7 +69,7 @@ already running), 422 (bad query parameter) or 503 (pipeline not run yet).
 | `GET /api/alerts` | none | `Alert[]` (leads at or above the alert threshold) | `api.alerts()` |
 | `GET /api/accounts` | `tier`, `role`, `ring_id`, `time_reliable`, `q` | `AccountListItem[]` | `api.accounts(filters)` |
 | `GET /api/accounts/{id}` | none | `AccountDetail` | `api.account(id)` |
-| `GET /api/accounts/{id}/timeline` | `limit` (≤2000), `offset`, `direction` (CR/DR) | `Timeline` | `api.timeline(id, opts)` |
+| `GET /api/accounts/{id}/timeline` | `limit` (≤2000), `offset`, `direction` (CR/DR), `order` (asc/desc: sorts every row by date and time before paging) | `Timeline` | `api.timeline(id, opts)` |
 | `GET /api/accounts/{id}/trail` | `hops` (1-4), `direction` (forward/backward/both), `max_paths` (≤200) | `Trail` | `api.trail(id, opts)` |
 | `GET /api/reports/account/{id}.pdf` | none | PDF file | `api.reportUrl(id)` (use as a link `href`) |
 | `GET /api/graph/rings` | none | `Ring[]` | `api.rings()` |
@@ -93,7 +93,7 @@ ignores stale responses. Import from `src/hooks`.
 | `useAlerts()` | `/api/alerts` | `Alert[]` |
 | `useAccounts(filters)` | `/api/accounts` | `AccountListItem[]` |
 | `useAccount(id)` | `/api/accounts/{id}` | `AccountDetail` |
-| `useTimeline(id, limit, offset, direction?)` | `/api/accounts/{id}/timeline` | `Timeline` |
+| `useTimeline(id, limit, offset, direction?, order?)` | `/api/accounts/{id}/timeline` | `Timeline` |
 | `useTrail(id, hops, direction, maxPaths)` | `/api/accounts/{id}/trail` | `Trail` |
 | `useRings()` / `useRing(ringId)` | `/api/graph/rings[/{id}]` | `Ring[]` / `RingDetail` |
 | `useComplaints()` / `useComplaintMatches(id)` | `/api/complaints[/{id}/matches]` | `ComplaintListItem[]` / `ComplaintMatches` |

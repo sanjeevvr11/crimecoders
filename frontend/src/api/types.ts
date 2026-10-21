@@ -40,6 +40,8 @@ export type PipelineRunResult = S["PipelineRunResult"];
 export type Tier = "HIGH" | "MEDIUM" | "LOW";
 export type Role = "collector" | "distributor" | "layering" | "normal-looking" | "unclassified" | "sparse";
 export type TrailDirection = "forward" | "backward" | "both";
+/** timeline date order: asc = oldest first, desc = newest first */
+export type SortOrder = "asc" | "desc";
 
 export interface AccountFilters {
   tier?: Tier;

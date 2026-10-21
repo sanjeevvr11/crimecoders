@@ -4,6 +4,7 @@ import { api } from "../api";
 import {
   Async, DailyFlowChart, ReasonList, RoleBadge, TierBadge, TrailExplorer, WeeklyAnomalyChart, inr, num, pct, score,
 } from "../components";
+import type { SortOrder } from "../api";
 import { useAccount, useTimeline } from "../hooks";
 
 const PAGE = 50;
@@ -13,7 +14,8 @@ export function Account() {
   const account = useAccount(id);
   const [offset, setOffset] = useState(0);
   const [direction, setDirection] = useState<"" | "CR" | "DR">("");
-  const timeline = useTimeline(id, PAGE, offset, direction || undefined);
+  const [order, setOrder] = useState<SortOrder>("asc");
+  const timeline = useTimeline(id, PAGE, offset, direction || undefined, order);
 
   return (
     <div>
@@ -98,10 +100,14 @@ export function Account() {
               <label>Direction <select value={direction} onChange={(e) => { setDirection(e.target.value as "" | "CR" | "DR"); setOffset(0); }}>
                 <option value="">all</option><option value="CR">credits</option><option value="DR">debits</option>
               </select></label>
+              <label>Date <select value={order} onChange={(e) => { setOrder(e.target.value as SortOrder); setOffset(0); }}>
+                <option value="asc">oldest first</option><option value="desc">newest first</option>
+              </select></label>
               <span>{num(offset + 1)}–{num(Math.min(offset + PAGE, t.total))} of {num(t.total)}</span>
               <button disabled={offset === 0} onClick={() => setOffset(Math.max(0, offset - PAGE))}>Previous</button>
               <button disabled={offset + PAGE >= t.total} onClick={() => setOffset(offset + PAGE)}>Next</button>
             </div>
+            {!t.time_reliable && <p className="muted small">Sorted by the raw dates, which are shuffled in this statement, so this is not the real order of events.</p>}
             <table>
               <thead><tr><th>Time</th><th>Dir</th><th className="num">Amount</th><th>Channel</th><th>Counterparty</th><th>Narration (masked)</th></tr></thead>
               <tbody>

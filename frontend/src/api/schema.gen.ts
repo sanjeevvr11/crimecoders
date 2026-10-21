@@ -987,6 +987,8 @@ export interface operations {
                 limit?: number;
                 offset?: number;
                 direction?: ("CR" | "DR") | null;
+                /** @description by date and time across all rows: asc = oldest first, desc = newest first */
+                order?: "asc" | "desc";
             };
             header?: never;
             path: {

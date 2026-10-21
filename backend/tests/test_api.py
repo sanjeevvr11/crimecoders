@@ -68,6 +68,10 @@ def test_timeline(client):
     t = client.get("/api/accounts/SOA7/timeline?limit=3").json()
     assert t["total"] == 7 and len(t["transactions"]) == 3 and t["time_reliable"]
     assert t["daily"] and t["transactions"][0]["txn_ts"].startswith("2020-12-17")
+    newest = client.get("/api/accounts/SOA7/timeline?order=desc").json()["transactions"]
+    assert [x["txn_ts"] for x in newest] == sorted((x["txn_ts"] for x in newest), reverse=True)
+    raw = client.get("/api/accounts/SOA2/timeline?order=asc").json()["transactions"]  # shuffled dates still sort
+    assert [x["raw_date"][:10] for x in raw] == sorted(x["raw_date"][:10] for x in raw)
     assert all(x["direction"] == "DR" for x in client.get("/api/accounts/SOA2/timeline?direction=DR").json()["transactions"])
     r = client.get("/api/accounts/SOA2/timeline?direction=CR")
     assert "ramesh.kuma" not in r.text and "*******kuma" in r.text  # VPAs masked

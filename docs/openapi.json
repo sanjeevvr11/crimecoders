@@ -2075,6 +2075,22 @@
               ],
               "title": "Direction"
             }
+          },
+          {
+            "description": "by date and time across all rows: asc = oldest first, desc = newest first",
+            "in": "query",
+            "name": "order",
+            "required": false,
+            "schema": {
+              "default": "asc",
+              "description": "by date and time across all rows: asc = oldest first, desc = newest first",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "title": "Order",
+              "type": "string"
+            }
           }
         ],
         "responses": {

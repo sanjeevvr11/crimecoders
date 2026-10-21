@@ -9,7 +9,7 @@
  */
 import type {
   AccountDetail, AccountFilters, AccountListItem, Alert, ComplaintListItem, ComplaintMatches, Lead,
-  ModelSummary, PipelineRunResult, Ring, RingDetail, Stats, Tier, Timeline, Trail, TrailDirection,
+  ModelSummary, PipelineRunResult, Ring, RingDetail, SortOrder, Stats, Tier, Timeline, Trail, TrailDirection,
 } from "./types";
 
 const BASE = (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/$/, "");
@@ -56,7 +56,8 @@ export const api = {
 
   accounts: (filters: AccountFilters = {}) => request<AccountListItem[]>("/api/accounts", { ...filters }),
   account: (id: string) => request<AccountDetail>(`/api/accounts/${encodeURIComponent(id)}`),
-  timeline: (id: string, opts: { limit?: number; offset?: number; direction?: "CR" | "DR" } = {}) =>
+  /** order sorts all rows by date and time before paging: asc = oldest first, desc = newest first */
+  timeline: (id: string, opts: { limit?: number; offset?: number; direction?: "CR" | "DR"; order?: SortOrder } = {}) =>
     request<Timeline>(`/api/accounts/${encodeURIComponent(id)}/timeline`, opts),
   /** id may be an account id (SOA7) or a counterparty ref (CP-xxxxxxxxxx) */
   trail: (id: string, opts: { hops?: number; direction?: TrailDirection; max_paths?: number } = {}) =>
