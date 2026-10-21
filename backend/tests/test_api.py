@@ -56,6 +56,14 @@ def test_account_detail_is_masked(client):
     assert len(client.get("/api/accounts").json()) == 6
 
 
+def test_sheet_names_are_masked(client):
+    # ICORE sheet names embed a 12-digit number (fixture: ICORE_STMT_000000000001)
+    detail = client.get("/api/accounts/SOA7").json()
+    assert detail["source_sheet"] == "ICORE_STMT_********0001"
+    listing = client.get("/api/accounts").text
+    assert "000000000001" not in listing and "000000000002" not in listing
+
+
 def test_timeline(client):
     t = client.get("/api/accounts/SOA7/timeline?limit=3").json()
     assert t["total"] == 7 and len(t["transactions"]) == 3 and t["time_reliable"]

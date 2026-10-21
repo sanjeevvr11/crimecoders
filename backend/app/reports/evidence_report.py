@@ -10,7 +10,7 @@ import pandas as pd
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from app import config
-from app.masking import mask, node_label
+from app.masking import mask, mask_digits, node_label
 from app.models.summary import account_ml_summary
 from app.scoring.reasons import top_reasons
 
@@ -43,7 +43,7 @@ def build_context(store, account_id: str) -> dict:
     return {
         "a": {
             "account_id": account_id, "holder_name": mask(acc["holder_name"]), "account_number": mask(acc["account_number"]),
-            "source_file": acc["source_file"], "source_sheet": acc["source_sheet"], "layout": acc["layout"],
+            "source_file": acc["source_file"], "source_sheet": mask_digits(acc["source_sheet"]), "layout": acc["layout"],
             "n_rows": int(acc["n_rows"]), "time_reliable": bool(acc["time_reliable"]),
         },
         "score": {**score.to_dict(), "ring_id": score["ring_id"] if isinstance(score["ring_id"], str) else None},

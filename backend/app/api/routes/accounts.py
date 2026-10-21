@@ -6,7 +6,7 @@ from fastapi import APIRouter, HTTPException, Query
 from app import config
 from app.api.deps import get_store, records
 from app.graph.money_trail import money_trail
-from app.masking import mask, mask_text, node_label, node_ref
+from app.masking import mask, mask_digits, mask_text, node_label, node_ref
 from app.models.summary import account_ml_summary
 from app.schemas.api import AccountDetail, AccountListItem, Timeline, Trail
 from app.scoring.reasons import top_reasons
@@ -35,6 +35,7 @@ def list_accounts(
     acc["role"] = acc["account_id"].map(roles.set_index("account_id")["role"]) if roles is not None else None
     acc["holder_name"] = acc["holder_name"].map(mask)
     acc["account_number"] = acc["account_number"].map(mask)
+    acc["source_sheet"] = acc["source_sheet"].map(mask_digits)  # ICORE sheet names embed an account number
     if tier:
         acc = acc.loc[acc["tier"] == tier.upper()]
     if role:
@@ -64,7 +65,7 @@ def account_detail(account_id: str) -> dict:
         "holder_name": mask(acc["holder_name"]),
         "account_number": mask(acc["account_number"]),
         "source_file": acc["source_file"],
-        "source_sheet": acc["source_sheet"],
+        "source_sheet": mask_digits(acc["source_sheet"]),
         "layout": acc["layout"],
         "time_reliable": bool(acc["time_reliable"]),
         "n_rows": int(acc["n_rows"]),

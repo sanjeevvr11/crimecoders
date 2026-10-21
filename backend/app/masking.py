@@ -9,6 +9,7 @@ import hashlib
 import re
 
 PAN_RE = re.compile(r"\b[A-Z]{5}\d{4}[A-Z]\b")
+LONG_DIGITS_RE = re.compile(r"\d{6,}")
 WORD_RE = re.compile(r"[A-Za-z0-9@._-]+")
 # banking vocabulary that is safe to show verbatim in narrations
 SAFE_WORDS = {
@@ -53,6 +54,17 @@ def mask_text(text: object) -> str | None:
         return s  # opaque token, nothing personal
     s = PAN_RE.sub(lambda m: mask(m.group(0)), s)
     return WORD_RE.sub(_mask_word, s)
+
+
+def mask_digits(text: object) -> str | None:
+    """Mask only runs of 6+ digits (e.g. the account number inside an ICORE sheet
+    name such as ICORE_STMT_133505500629), leaving the rest readable."""
+    if text is None:
+        return None
+    s = str(text)
+    if s.lower() in ("nan", "<na>"):
+        return None
+    return LONG_DIGITS_RE.sub(lambda m: mask(m.group(0)), s)
 
 
 def node_ref(node_id: str, is_subject: bool) -> str:
