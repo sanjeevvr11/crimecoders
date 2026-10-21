@@ -22,6 +22,9 @@ export const useTimeline = (id: string | undefined, limit = 200, offset = 0, dir
 export const useTrail = (id: string | undefined, hops: number, direction: TrailDirection, maxPaths = 50) =>
   useApi(() => api.trail(id!, { hops, direction, max_paths: maxPaths }), [id, hops, direction, maxPaths], !!id);
 export const useRings = () => useApi(() => api.rings(), []);
+export const useNetworkOverview = () => useApi(() => api.networkOverview(), []);
+export const useNodeTransactions = (ref: string | undefined, account?: string, limit = 50, offset = 0, order: SortOrder = "asc") =>
+  useApi(() => api.nodeTransactions(ref!, { account, limit, offset, order }), [ref, account, limit, offset, order], !!ref);
 export const useRing = (ringId: string | undefined) => useApi(() => api.ring(ringId!), [ringId], !!ringId);
 export const useComplaints = () => useApi(() => api.complaints(), []);
 export const useComplaintMatches = (id: string | undefined) => useApi(() => api.complaintMatches(id!), [id], !!id);

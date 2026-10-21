@@ -126,6 +126,49 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/graph/nodes/{ref}/transactions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Node Transactions
+         * @description Transactions behind a node of the network graph.
+         *
+         *     Counterparty (CP-xxxxxxxxxx): every transaction any investigated account made with it.
+         *     Account (SOA7): its transactions with counterparties it shares with other investigated accounts.
+         */
+        get: operations["node_transactions_api_graph_nodes__ref__transactions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/graph/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Network Overview
+         * @description Every investigated account (in a ring or not) and every counterparty shared by 2+ of them.
+         */
+        get: operations["network_overview_api_graph_overview_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/graph/rings": {
         parameters: {
             query?: never;
@@ -509,6 +552,52 @@ export interface components {
             /** Matches */
             matches: components["schemas"]["ComplaintMatch"][];
         };
+        /** ConnectionAccount */
+        ConnectionAccount: {
+            /** Account Id */
+            account_id: string;
+            /** Cr Amount */
+            cr_amount: number;
+            /** Dr Amount */
+            dr_amount: number;
+            /**
+             * N Shared Counterparties
+             * @description counterparties this account shares with the clicked node (or with the clicked account)
+             */
+            n_shared_counterparties: number;
+            /** N Txns */
+            n_txns: number;
+            /** Ring Id */
+            ring_id?: string | null;
+        };
+        /** ConnectionTxn */
+        ConnectionTxn: {
+            /** Account Id */
+            account_id: string;
+            /** Amount */
+            amount: number;
+            /** Channel */
+            channel: string;
+            counterparty?: components["schemas"]["CounterpartyRef"] | null;
+            /** Counterparty Type */
+            counterparty_type: string;
+            /**
+             * Direction
+             * @description CR | DR
+             */
+            direction: string;
+            /**
+             * Narration
+             * @description masked
+             */
+            narration?: string | null;
+            /** Raw Date */
+            raw_date?: string | null;
+            /** Txn Ts */
+            txn_ts?: string | null;
+            /** Txn Uid */
+            txn_uid: string;
+        };
         /** CounterpartyRef */
         CounterpartyRef: {
             /**
@@ -530,6 +619,11 @@ export interface components {
         CyEdgeData: {
             /** Amount */
             amount: number;
+            /**
+             * Count
+             * @description number of transactions on this link
+             */
+            count?: number | null;
             /** Id */
             id: string;
             /** Source */
@@ -558,6 +652,11 @@ export interface components {
             is_subject: boolean;
             /** Label */
             label: string;
+            /**
+             * Ring Id
+             * @description ring of an investigated account (overview graph)
+             */
+            ring_id?: string | null;
         };
         /** DailyFlow */
         DailyFlow: {
@@ -679,6 +778,49 @@ export interface components {
             role_profiles: {
                 [key: string]: unknown;
             }[];
+        };
+        /** NetworkOverview */
+        NetworkOverview: {
+            /** @description every investigated account plus every counterparty shared by two or more of them */
+            elements: components["schemas"]["CyElements"];
+            /** N Accounts */
+            n_accounts: number;
+            /**
+             * N Unlinked Accounts
+             * @description accounts that share no counterparty with any other account
+             */
+            n_unlinked_accounts: number;
+            /** Rings */
+            rings: components["schemas"]["Ring"][];
+        };
+        /** NodeConnections */
+        NodeConnections: {
+            /**
+             * Account
+             * @description the account filter, when set
+             */
+            account?: string | null;
+            /**
+             * Accounts
+             * @description counterparty: the investigated accounts it deals with. Account: the other accounts it shares counterparties with
+             */
+            accounts: components["schemas"]["ConnectionAccount"][];
+            /** Is Subject */
+            is_subject: boolean;
+            /** Limit */
+            limit: number;
+            node: components["schemas"]["CounterpartyRef"];
+            /** Offset */
+            offset: number;
+            /** Ring Id */
+            ring_id?: string | null;
+            /** Total */
+            total: number;
+            /**
+             * Transactions
+             * @description sorted by date; for an account, only its transactions with shared counterparties
+             */
+            transactions: components["schemas"]["ConnectionTxn"][];
         };
         /** PipelineRunResult */
         PipelineRunResult: {
@@ -1120,6 +1262,63 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    node_transactions_api_graph_nodes__ref__transactions_get: {
+        parameters: {
+            query?: {
+                /** @description only transactions of this investigated account (a clicked link) */
+                account?: string | null;
+                limit?: number;
+                offset?: number;
+                order?: "asc" | "desc";
+            };
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NodeConnections"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    network_overview_api_graph_overview_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NetworkOverview"];
                 };
             };
         };

@@ -3,6 +3,7 @@
  * They only receive data as props (or via hooks/); none of them calls the API directly.
  */
 export * from "./Badges";
+export * from "./ConnectionDetails";
 export * from "./DailyFlowChart";
 export * from "./format";
 export * from "./ReasonList";

@@ -61,13 +61,19 @@ def detect_rings(core: nx.Graph, subjects: set[str]) -> tuple[pd.DataFrame, pd.D
     return members, rings
 
 
-def ring_cytoscape(core: nx.Graph, members: pd.DataFrame, ring_id: str, label_fn=lambda n: n, id_fn=lambda n: n) -> dict:
-    """Cytoscape.js elements for one ring. `label_fn`/`id_fn` let the API mask ids."""
-    nodes_in = set(members.loc[members["ring_id"] == ring_id, "node_id"])
+def ring_cytoscape(core: nx.Graph, members: pd.DataFrame, ring_id: str | None, label_fn=lambda n: n, id_fn=lambda n: n,
+                   nodes_in: set[str] | None = None, graph: nx.DiGraph | None = None) -> dict:
+    """Cytoscape.js elements for one ring, or for `nodes_in` when given. `label_fn`/`id_fn` let the API
+    mask ids. With the directed `graph`, edges also carry their transaction count."""
+    if nodes_in is None:
+        nodes_in = set(members.loc[members["ring_id"] == ring_id, "node_id"])
     sub = core.subgraph(nodes_in)
     elements = {"nodes": [], "edges": []}
     for n, d in sub.nodes(data=True):
         elements["nodes"].append({"data": {"id": id_fn(n), "label": label_fn(n), "is_subject": not n.count(":"), "degree": sub.degree(n)}})
     for u, v, d in sub.edges(data=True):
-        elements["edges"].append({"data": {"id": f"{id_fn(u)}__{id_fn(v)}", "source": id_fn(u), "target": id_fn(v), "amount": round(d["amount"], 2)}})
+        data = {"id": f"{id_fn(u)}__{id_fn(v)}", "source": id_fn(u), "target": id_fn(v), "amount": round(d["amount"], 2)}
+        if graph is not None:
+            data["count"] = sum(graph[a][b]["count"] for a, b in ((u, v), (v, u)) if graph.has_edge(a, b))
+        elements["edges"].append({"data": data})
     return elements

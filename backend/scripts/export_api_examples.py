@@ -53,6 +53,8 @@ def main() -> None:
         ("GET /api/accounts/{id}/trail", f"/api/accounts/{account}/trail?hops=2&max_paths=2"),
         ("GET /api/graph/rings", "/api/graph/rings"),
         ("GET /api/graph/rings/{ring_id}", f"/api/graph/rings/{ring}"),
+        ("GET /api/graph/overview", "/api/graph/overview"),
+        ("GET /api/graph/nodes/{ref}/transactions", f"/api/graph/nodes/{account}/transactions?limit=2"),
         ("GET /api/complaints", "/api/complaints"),
         ("GET /api/complaints/{id}/matches", f"/api/complaints/{complaint}/matches"),
         ("GET /api/models/summary", "/api/models/summary"),

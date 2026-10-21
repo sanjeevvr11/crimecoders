@@ -39,3 +39,6 @@ tr.selected { background: #ebf8ff; } tr.clickable { cursor: pointer; } tr.clicka
 a.button, button { background: var(--accent); color: white; border: 0; padding: 6px 12px; border-radius: 4px; cursor: pointer; text-decoration: none; font-size: 13px; }
 button:disabled { background: #a0aec0; cursor: default; }
 pre { background: white; border: 1px solid var(--line); padding: 8px; overflow: auto; max-height: 400px; font-size: 12px; }
+.panel { background: white; border: 1px solid var(--line); padding: 8px 12px; }
+.swatch { display: inline-block; width: 10px; height: 10px; border-radius: 50%; vertical-align: middle; } .swatch.big { width: 14px; height: 14px; }
+button.link { background: none; color: var(--accent); padding: 0; text-decoration: underline; font-size: 13px; }

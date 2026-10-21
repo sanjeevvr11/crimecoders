@@ -74,6 +74,8 @@ already running), 422 (bad query parameter) or 503 (pipeline not run yet).
 | `GET /api/reports/account/{id}.pdf` | none | PDF file | `api.reportUrl(id)` (use as a link `href`) |
 | `GET /api/graph/rings` | none | `Ring[]` | `api.rings()` |
 | `GET /api/graph/rings/{ring_id}` | none | `RingDetail` (Cytoscape.js `elements`) | `api.ring(ringId)` |
+| `GET /api/graph/overview` | none | `NetworkOverview`: every account (with its `ring_id`) and every counterparty shared by 2+ accounts | `api.networkOverview()` |
+| `GET /api/graph/nodes/{ref}/transactions` | `account` (one link), `limit` (≤2000), `offset`, `order` (asc/desc) | `NodeConnections`: accounts on the other end and the transactions behind a clicked node or link | `api.nodeTransactions(ref, opts)` |
 | `GET /api/complaints` | none | `ComplaintListItem[]` | `api.complaints()` |
 | `GET /api/complaints/{id}/matches` | none | `ComplaintMatches` | `api.complaintMatches(id)` |
 | `GET /api/models/summary` | none | `ModelSummary` | `api.modelSummary()` |
@@ -96,6 +98,8 @@ ignores stale responses. Import from `src/hooks`.
 | `useTimeline(id, limit, offset, direction?, order?)` | `/api/accounts/{id}/timeline` | `Timeline` |
 | `useTrail(id, hops, direction, maxPaths)` | `/api/accounts/{id}/trail` | `Trail` |
 | `useRings()` / `useRing(ringId)` | `/api/graph/rings[/{id}]` | `Ring[]` / `RingDetail` |
+| `useNetworkOverview()` | `/api/graph/overview` | `NetworkOverview` |
+| `useNodeTransactions(ref, account?, limit, offset, order)` | `/api/graph/nodes/{ref}/transactions` | `NodeConnections` |
 | `useComplaints()` / `useComplaintMatches(id)` | `/api/complaints[/{id}/matches]` | `ComplaintListItem[]` / `ComplaintMatches` |
 | `useModelSummary()` | `/api/models/summary` | `ModelSummary` |
 

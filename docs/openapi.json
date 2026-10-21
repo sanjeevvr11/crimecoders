@@ -773,6 +773,134 @@
         "title": "ComplaintMatches",
         "type": "object"
       },
+      "ConnectionAccount": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "cr_amount": {
+            "title": "Cr Amount",
+            "type": "number"
+          },
+          "dr_amount": {
+            "title": "Dr Amount",
+            "type": "number"
+          },
+          "n_shared_counterparties": {
+            "description": "counterparties this account shares with the clicked node (or with the clicked account)",
+            "title": "N Shared Counterparties",
+            "type": "integer"
+          },
+          "n_txns": {
+            "title": "N Txns",
+            "type": "integer"
+          },
+          "ring_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ring Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "n_txns",
+          "cr_amount",
+          "dr_amount",
+          "n_shared_counterparties"
+        ],
+        "title": "ConnectionAccount",
+        "type": "object"
+      },
+      "ConnectionTxn": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "amount": {
+            "title": "Amount",
+            "type": "number"
+          },
+          "channel": {
+            "title": "Channel",
+            "type": "string"
+          },
+          "counterparty": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CounterpartyRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "counterparty_type": {
+            "title": "Counterparty Type",
+            "type": "string"
+          },
+          "direction": {
+            "description": "CR | DR",
+            "title": "Direction",
+            "type": "string"
+          },
+          "narration": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "masked",
+            "title": "Narration"
+          },
+          "raw_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Raw Date"
+          },
+          "txn_ts": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Txn Ts"
+          },
+          "txn_uid": {
+            "title": "Txn Uid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "txn_uid",
+          "direction",
+          "amount",
+          "channel",
+          "counterparty_type",
+          "account_id"
+        ],
+        "title": "ConnectionTxn",
+        "type": "object"
+      },
       "CounterpartyRef": {
         "properties": {
           "label": {
@@ -810,6 +938,18 @@
           "amount": {
             "title": "Amount",
             "type": "number"
+          },
+          "count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "number of transactions on this link",
+            "title": "Count"
           },
           "id": {
             "title": "Id",
@@ -886,6 +1026,18 @@
           "label": {
             "title": "Label",
             "type": "string"
+          },
+          "ring_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "ring of an investigated account (overview graph)",
+            "title": "Ring Id"
           }
         },
         "required": [
@@ -1233,6 +1385,111 @@
           "account_roles"
         ],
         "title": "ModelSummary",
+        "type": "object"
+      },
+      "NetworkOverview": {
+        "properties": {
+          "elements": {
+            "$ref": "#/components/schemas/CyElements",
+            "description": "every investigated account plus every counterparty shared by two or more of them"
+          },
+          "n_accounts": {
+            "title": "N Accounts",
+            "type": "integer"
+          },
+          "n_unlinked_accounts": {
+            "description": "accounts that share no counterparty with any other account",
+            "title": "N Unlinked Accounts",
+            "type": "integer"
+          },
+          "rings": {
+            "items": {
+              "$ref": "#/components/schemas/Ring"
+            },
+            "title": "Rings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "rings",
+          "elements",
+          "n_accounts",
+          "n_unlinked_accounts"
+        ],
+        "title": "NetworkOverview",
+        "type": "object"
+      },
+      "NodeConnections": {
+        "properties": {
+          "account": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "the account filter, when set",
+            "title": "Account"
+          },
+          "accounts": {
+            "description": "counterparty: the investigated accounts it deals with. Account: the other accounts it shares counterparties with",
+            "items": {
+              "$ref": "#/components/schemas/ConnectionAccount"
+            },
+            "title": "Accounts",
+            "type": "array"
+          },
+          "is_subject": {
+            "title": "Is Subject",
+            "type": "boolean"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "node": {
+            "$ref": "#/components/schemas/CounterpartyRef"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          },
+          "ring_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ring Id"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          },
+          "transactions": {
+            "description": "sorted by date; for an account, only its transactions with shared counterparties",
+            "items": {
+              "$ref": "#/components/schemas/ConnectionTxn"
+            },
+            "title": "Transactions",
+            "type": "array"
+          }
+        },
+        "required": [
+          "node",
+          "is_subject",
+          "accounts",
+          "total",
+          "offset",
+          "limit",
+          "transactions"
+        ],
+        "title": "NodeConnections",
         "type": "object"
       },
       "PipelineRunResult": {
@@ -2292,6 +2549,126 @@
         "summary": "Complaint Matches",
         "tags": [
           "complaints"
+        ]
+      }
+    },
+    "/api/graph/nodes/{ref}/transactions": {
+      "get": {
+        "description": "Transactions behind a node of the network graph.\n\nCounterparty (CP-xxxxxxxxxx): every transaction any investigated account made with it.\nAccount (SOA7): its transactions with counterparties it shares with other investigated accounts.",
+        "operationId": "node_transactions_api_graph_nodes__ref__transactions_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          },
+          {
+            "description": "only transactions of this investigated account (a clicked link)",
+            "in": "query",
+            "name": "account",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "only transactions of this investigated account (a clicked link)",
+              "title": "Account"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 200,
+              "maximum": 2000,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "required": false,
+            "schema": {
+              "default": "asc",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "title": "Order",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NodeConnections"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Node Transactions",
+        "tags": [
+          "graph"
+        ]
+      }
+    },
+    "/api/graph/overview": {
+      "get": {
+        "description": "Every investigated account (in a ring or not) and every counterparty shared by 2+ of them.",
+        "operationId": "network_overview_api_graph_overview_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NetworkOverview"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Network Overview",
+        "tags": [
+          "graph"
         ]
       }
     },

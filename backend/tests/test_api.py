@@ -97,6 +97,30 @@ def test_rings(client):
     assert client.get("/api/graph/rings/R9").status_code == 404
 
 
+def test_network_overview(client):
+    o = client.get("/api/graph/overview").json()
+    subjects = [n["data"] for n in o["elements"]["nodes"] if n["data"]["is_subject"]]
+    assert len(subjects) == o["n_accounts"] == 6  # every account, in a ring or not
+    assert o["n_unlinked_accounts"] == 4 and o["rings"][0]["ring_id"] == "R1"
+    assert {d["id"]: d["ring_id"] for d in subjects}["SOA7"] == "R1"
+    assert all(e["data"]["count"] >= 1 for e in o["elements"]["edges"])
+
+
+def test_node_transactions(client):
+    o = client.get("/api/graph/overview").json()
+    cp = next(n["data"] for n in o["elements"]["nodes"] if not n["data"]["is_subject"])
+    r = client.get(f"/api/graph/nodes/{cp['id']}/transactions").json()
+    assert {a["account_id"] for a in r["accounts"]} == {"SOA2", "SOA7"} and r["total"] == len(r["transactions"]) >= 2
+    assert all(x["counterparty"]["ref"] == cp["id"] for x in r["transactions"])
+    assert "ramesh.kumar" not in str(r) and not re.search(r"\d{6,}", r["node"]["label"])
+    only = client.get(f"/api/graph/nodes/{cp['id']}/transactions?account=SOA7").json()
+    assert only["transactions"] and all(x["account_id"] == "SOA7" for x in only["transactions"])
+    acc = client.get("/api/graph/nodes/SOA2/transactions").json()
+    assert acc["is_subject"] and acc["accounts"][0]["account_id"] == "SOA7" and acc["accounts"][0]["n_shared_counterparties"] == 3
+    assert all(x["account_id"] == "SOA2" for x in acc["transactions"])
+    assert client.get("/api/graph/nodes/CP-0000000000/transactions").status_code == 404
+
+
 def test_complaints(client):
     cs = client.get("/api/complaints").json()
     assert len(cs) == 12 and all(c["synthetic"] for c in cs)

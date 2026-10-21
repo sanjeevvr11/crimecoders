@@ -9,7 +9,7 @@
  */
 import type {
   AccountDetail, AccountFilters, AccountListItem, Alert, ComplaintListItem, ComplaintMatches, Lead,
-  ModelSummary, PipelineRunResult, Ring, RingDetail, SortOrder, Stats, Tier, Timeline, Trail, TrailDirection,
+  ModelSummary, NetworkOverview, NodeConnections, PipelineRunResult, Ring, RingDetail, SortOrder, Stats, Tier, Timeline, Trail, TrailDirection,
 } from "./types";
 
 const BASE = (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/$/, "");
@@ -65,6 +65,11 @@ export const api = {
   /** URL for the evidence PDF (use as a link href; it is not JSON) */
   reportUrl: (id: string) => apiUrl(`/api/reports/account/${encodeURIComponent(id)}.pdf`),
 
+  /** every investigated account and every counterparty shared by two or more of them */
+  networkOverview: () => request<NetworkOverview>("/api/graph/overview"),
+  /** transactions behind a graph node (ref = account id or CP-xxxxxxxxxx); account narrows it to one link */
+  nodeTransactions: (ref: string, opts: { account?: string; limit?: number; offset?: number; order?: SortOrder } = {}) =>
+    request<NodeConnections>(`/api/graph/nodes/${encodeURIComponent(ref)}/transactions`, opts),
   rings: () => request<Ring[]>("/api/graph/rings"),
   ring: (ringId: string) => request<RingDetail>(`/api/graph/rings/${encodeURIComponent(ringId)}`),
 

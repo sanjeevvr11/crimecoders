@@ -235,6 +235,7 @@ class CyNodeData(BaseModel):
     label: str
     is_subject: bool
     degree: int
+    ring_id: str | None = Field(None, description="ring of an investigated account (overview graph)")
 
 
 class CyNode(BaseModel):
@@ -246,6 +247,7 @@ class CyEdgeData(BaseModel):
     source: str
     target: str
     amount: float
+    count: int | None = Field(None, description="number of transactions on this link")
 
 
 class CyEdge(BaseModel):
@@ -260,6 +262,38 @@ class CyElements(BaseModel):
 class RingDetail(BaseModel):
     ring: Ring
     elements: CyElements
+
+
+class NetworkOverview(BaseModel):
+    rings: list[Ring]
+    elements: CyElements = Field(description="every investigated account plus every counterparty shared by two or more of them")
+    n_accounts: int
+    n_unlinked_accounts: int = Field(description="accounts that share no counterparty with any other account")
+
+
+class ConnectionAccount(BaseModel):
+    account_id: str
+    ring_id: str | None = None
+    n_txns: int
+    cr_amount: float
+    dr_amount: float
+    n_shared_counterparties: int = Field(description="counterparties this account shares with the clicked node (or with the clicked account)")
+
+
+class ConnectionTxn(TimelineTxn):
+    account_id: str
+
+
+class NodeConnections(BaseModel):
+    node: CounterpartyRef
+    is_subject: bool
+    ring_id: str | None = None
+    account: str | None = Field(None, description="the account filter, when set")
+    accounts: list[ConnectionAccount] = Field(description="counterparty: the investigated accounts it deals with. Account: the other accounts it shares counterparties with")
+    total: int
+    offset: int
+    limit: int
+    transactions: list[ConnectionTxn] = Field(description="sorted by date; for an account, only its transactions with shared counterparties")
 
 
 # ---------------------------------------------------------------- complaints

@@ -5,29 +5,14 @@ from fastapi import APIRouter, HTTPException, Query
 
 from app import config
 from app.api.deps import get_store, records
+from app.api.txns import sort_by_date, txn_rows
 from app.graph.money_trail import money_trail
-from app.masking import mask, mask_digits, mask_text, node_label, node_ref
+from app.masking import mask, mask_digits, node_label, node_ref
 from app.models.summary import account_ml_summary
 from app.schemas.api import AccountDetail, AccountListItem, Timeline, Trail
 from app.scoring.reasons import top_reasons
 
 router = APIRouter(prefix="/api/accounts", tags=["accounts"])
-
-
-def _cp(key: object, subjects: set[str]) -> dict | None:
-    if not isinstance(key, str):
-        return None
-    is_subj = key in subjects
-    return {"ref": node_ref(key, is_subj), "label": node_label(key, is_subj)}
-
-
-def _sort_time(t: pd.DataFrame) -> pd.Series:
-    """txn_ts (ICORE pstd_dt) where reliable, else the raw date. Raw dates are shuffled in SOA1-6,
-    so that order is by date only, not the real order of events."""
-    raw = t["raw_date"].astype("string")
-    parsed = pd.to_datetime(raw, format="%Y-%m-%d %H:%M:%S", errors="coerce")
-    parsed = parsed.fillna(pd.to_datetime(raw, format="%d-%m-%Y", errors="coerce"))
-    return t["txn_ts"].fillna(parsed)
 
 
 @router.get("", response_model=list[AccountListItem])
@@ -102,22 +87,8 @@ def account_timeline(
     t = tx.loc[tx["account_id"] == account_id]
     if direction:
         t = t.loc[t["direction"] == direction]
-    asc = order == "asc"
-    t = t.assign(_sort_ts=_sort_time(t)).sort_values(["_sort_ts", "row_idx"], ascending=asc, na_position="last")
-    page = t.iloc[offset: offset + limit]
-    rows = []
-    for r in page.itertuples(index=False):
-        rows.append({
-            "txn_uid": r.txn_uid,
-            "txn_ts": None if pd.isna(r.txn_ts) else pd.Timestamp(r.txn_ts).isoformat(),
-            "direction": r.direction,
-            "amount": float(r.amount),
-            "channel": r.channel,
-            "counterparty": _cp(r.counterparty_key, s.subject_ids),
-            "counterparty_type": r.counterparty_type,
-            "narration": mask_text(r.raw_narration),
-            "raw_date": None if pd.isna(r.raw_date) else str(r.raw_date),
-        })
+    t = sort_by_date(t, order)
+    rows = txn_rows(t.iloc[offset: offset + limit], s.subject_ids)
     daily = []
     tt = t.dropna(subset=["txn_ts"])
     if len(tt):

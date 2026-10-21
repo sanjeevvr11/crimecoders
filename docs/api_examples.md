@@ -19,7 +19,7 @@ Lists are cut to the first item (`"…"` marks more). Field definitions: `docs/o
 
 ```json
 {
-  "generated_at": "2026-10-21T10:03:01",
+  "generated_at": "2026-10-21T17:18:19",
   "n_transactions": 494275,
   "n_accounts": 25,
   "rows_per_layout": {
@@ -73,13 +73,13 @@ Lists are cut to the first item (`"…"` marks more). Field definitions: `docs/o
     }
   },
   "timings_s": {
-    "ingest": 27.38,
-    "features": 1.25,
-    "graph": 9.07,
-    "models": 0.83,
-    "complaints": 1.73,
-    "scoring": 0.04,
-    "write": 1.24
+    "ingest": 27.2,
+    "features": 1.3,
+    "graph": 8.94,
+    "models": 0.81,
+    "complaints": 1.71,
+    "scoring": 0.03,
+    "write": 1.22
   }
 }
 ```
@@ -371,10 +371,11 @@ Lists are cut to the first item (`"…"` marks more). Field definitions: `docs/o
     "nodes": [
       {
         "data": {
-          "id": "CP-425cc033e7",
-          "label": "upi:**7909",
+          "id": "CP-c16a8995fa",
+          "label": "name:*oblt",
           "is_subject": false,
-          "degree": 2
+          "degree": 1,
+          "ring_id": null
         }
       },
       "…"
@@ -382,15 +383,116 @@ Lists are cut to the first item (`"…"` marks more). Field definitions: `docs/o
     "edges": [
       {
         "data": {
-          "id": "CP-425cc033e7__SOA8",
-          "source": "CP-425cc033e7",
+          "id": "CP-c16a8995fa__SOA8",
+          "source": "CP-c16a8995fa",
           "target": "SOA8",
-          "amount": 1000.0
+          "amount": 133679.44,
+          "count": 41
         }
       },
       "…"
     ]
   }
+}
+```
+
+## `GET /api/graph/overview`
+
+`/api/graph/overview`
+
+```json
+{
+  "rings": [
+    {
+      "ring_id": "R1",
+      "subject_accounts": [
+        "SOA6",
+        "…"
+      ],
+      "n_subjects": 2,
+      "n_shared_counterparties": 944,
+      "n_nodes": 946,
+      "n_edges": 1837,
+      "total_amount": 152078911.66
+    },
+    "…"
+  ],
+  "elements": {
+    "nodes": [
+      {
+        "data": {
+          "id": "SOA1",
+          "label": "SOA1",
+          "is_subject": true,
+          "degree": 0,
+          "ring_id": null
+        }
+      },
+      "…"
+    ],
+    "edges": [
+      {
+        "data": {
+          "id": "SOA2__CP-5f0eb11cad",
+          "source": "SOA2",
+          "target": "CP-5f0eb11cad",
+          "amount": 1974.52,
+          "count": 1
+        }
+      },
+      "…"
+    ]
+  },
+  "n_accounts": 25,
+  "n_unlinked_accounts": 18
+}
+```
+
+## `GET /api/graph/nodes/{ref}/transactions`
+
+`/api/graph/nodes/SOA7/transactions?limit=2`
+
+```json
+{
+  "node": {
+    "ref": "SOA7",
+    "label": "SOA7"
+  },
+  "is_subject": true,
+  "ring_id": "R1",
+  "account": null,
+  "accounts": [
+    {
+      "account_id": "SOA6",
+      "ring_id": "R1",
+      "n_txns": 4334,
+      "cr_amount": 55489751.08,
+      "dr_amount": 20401378.0,
+      "n_shared_counterparties": 926
+    },
+    "…"
+  ],
+  "total": 4515,
+  "offset": 0,
+  "limit": 2,
+  "transactions": [
+    {
+      "txn_uid": "SOA7-000010",
+      "txn_ts": "2018-09-01T13:43:09",
+      "direction": "CR",
+      "amount": 120044.0,
+      "channel": "OTHER",
+      "counterparty": {
+        "ref": "CP-7924929a0d",
+        "label": "name:**ashi"
+      },
+      "counterparty_type": "name",
+      "narration": "BIL/INFT/********2235/******0629/**TESH KUM/*CICI",
+      "raw_date": "03-06-2016",
+      "account_id": "SOA7"
+    },
+    "…"
+  ]
 }
 ```
 
@@ -459,7 +561,7 @@ Lists are cut to the first item (`"…"` marks more). Field definitions: `docs/o
 ```json
 {
   "model_card": {
-    "generated_at": "2026-10-21T10:02:59",
+    "generated_at": "2026-10-21T17:18:17",
     "phase": 2,
     "labels_available": false,
     "training_data": {
