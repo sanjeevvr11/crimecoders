@@ -51,6 +51,7 @@ def main() -> None:
         ("GET /api/accounts/{id}", f"/api/accounts/{account}"),
         ("GET /api/accounts/{id}/timeline", f"/api/accounts/{account}/timeline?limit=2"),
         ("GET /api/accounts/{id}/trail", f"/api/accounts/{account}/trail?hops=2&max_paths=2"),
+        ("GET /api/accounts/{id}/trail/graph", f"/api/accounts/{account}/trail/graph?hops=2"),
         ("GET /api/graph/rings", "/api/graph/rings"),
         ("GET /api/graph/rings/{ring_id}", f"/api/graph/rings/{ring}"),
         ("GET /api/graph/overview", "/api/graph/overview"),

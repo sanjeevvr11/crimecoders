@@ -1,8 +1,8 @@
 import { NavLink, Route, Routes } from "react-router-dom";
-import { Account, Complaints, Leads, Models, Network, NotFound, Overview } from "./pages";
+import { Account, Complaints, Leads, Models, MoneyTrail, Network, NotFound, Overview } from "./pages";
 
 const NAV = [
-  ["/", "Overview"], ["/leads", "Leads"], ["/network", "Network"], ["/complaints", "Complaints"], ["/models", "Models"],
+  ["/", "Overview"], ["/leads", "Leads"], ["/trail", "Money Trail"], ["/network", "Network"], ["/complaints", "Complaints"], ["/models", "Models"],
 ] as const;
 
 export default function App() {
@@ -18,6 +18,8 @@ export default function App() {
           <Route path="/" element={<Overview />} />
           <Route path="/leads" element={<Leads />} />
           <Route path="/accounts/:id" element={<Account />} />
+          <Route path="/trail" element={<MoneyTrail />} />
+          <Route path="/trail/:id" element={<MoneyTrail />} />
           <Route path="/network" element={<Network />} />
           <Route path="/network/:ringId" element={<Network />} />
           <Route path="/complaints" element={<Complaints />} />

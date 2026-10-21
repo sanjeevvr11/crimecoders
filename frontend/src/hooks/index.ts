@@ -21,6 +21,8 @@ export const useTimeline = (id: string | undefined, limit = 200, offset = 0, dir
   useApi(() => api.timeline(id!, { limit, offset, direction, order }), [id, limit, offset, direction, order], !!id);
 export const useTrail = (id: string | undefined, hops: number, direction: TrailDirection, maxPaths = 50) =>
   useApi(() => api.trail(id!, { hops, direction, max_paths: maxPaths }), [id, hops, direction, maxPaths], !!id);
+export const useTrailGraph = (id: string | undefined, hops: number, direction: TrailDirection) =>
+  useApi(() => api.trailGraph(id!, { hops, direction }), [id, hops, direction], !!id);
 export const useRings = () => useApi(() => api.rings(), []);
 export const useNetworkOverview = () => useApi(() => api.networkOverview(), []);
 export const useNodeTransactions = (ref: string | undefined, account?: string, limit = 50, offset = 0, order: SortOrder = "asc") =>

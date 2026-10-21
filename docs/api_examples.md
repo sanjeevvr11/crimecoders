@@ -327,6 +327,75 @@ Lists are cut to the first item (`"…"` marks more). Field definitions: `docs/o
 }
 ```
 
+## `GET /api/accounts/{id}/trail/graph`
+
+`/api/accounts/SOA7/trail/graph?hops=2`
+
+```json
+{
+  "start": "SOA7",
+  "hops": 2,
+  "direction": "both",
+  "summary": {
+    "n_nodes": 28,
+    "n_edges": 52,
+    "n_chains": 32,
+    "n_cross_account_chains": 7,
+    "n_shared_counterparties": 12,
+    "n_intermediaries": 12,
+    "n_circular": 7,
+    "accounts_reached": [
+      "SOA6",
+      "…"
+    ],
+    "…": "5 more keys"
+  },
+  "nodes": [
+    {
+      "ref": "SOA6",
+      "label": "SOA6",
+      "is_subject": true,
+      "is_start": false,
+      "kind": "subject",
+      "level": -2,
+      "amount_in": 27450581.76,
+      "amount_out": 1151150.53,
+      "…": "7 more keys"
+    },
+    "…"
+  ],
+  "edges": [
+    {
+      "source": "CP-7924929a0d",
+      "target": "SOA7",
+      "amount": 7595860.0,
+      "count": 78,
+      "first_ts": "2018-09-01T13:43:09",
+      "last_ts": "2019-05-12T21:33:51",
+      "hop": 1,
+      "direction": "backward",
+      "link": "trail"
+    },
+    "…"
+  ],
+  "chains": [
+    {
+      "direction": "forward",
+      "kind": "cross-account",
+      "hops": 2,
+      "amount": 149944.13,
+      "nodes": [
+        "SOA7",
+        "…"
+      ],
+      "first_ts": "2018-10-18T09:10:31",
+      "last_ts": "2019-05-15T07:55:07"
+    },
+    "…"
+  ]
+}
+```
+
 ## `GET /api/graph/rings`
 
 `/api/graph/rings`

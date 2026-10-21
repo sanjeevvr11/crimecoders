@@ -219,6 +219,72 @@ class Trail(BaseModel):
     paths: list[TrailPath]
 
 
+class TrailGraphNode(BaseModel):
+    ref: str
+    label: str
+    is_subject: bool
+    is_start: bool
+    kind: str = Field(description="subject | upi | account | ifsc | name | other")
+    level: int = Field(description="signed hop distance from the start: <0 money came from here, >0 money went here, 0 = start or a linked account")
+    amount_in: float = Field(description="money into this node along the trail (INR)")
+    amount_out: float = Field(description="money out of this node along the trail (INR)")
+    n_subject_links: int = Field(description="how many investigated accounts this node deals with")
+    circular: bool = Field(description="reached both forward and backward: money flows both from and back to the start through it")
+    bank: str | None = None
+    risk_score: float | None = None
+    tier: str | None = None
+    ring_id: str | None = None
+    role: str | None = None
+
+
+class TrailGraphEdge(BaseModel):
+    source: str
+    target: str
+    amount: float
+    count: int
+    first_ts: str | None = None
+    last_ts: str | None = None
+    hop: int
+    direction: str = Field(description="forward | backward, relative to the start")
+    link: str = Field(description="trail = on a traced path; shared = a start counterparty dealing with another investigated account")
+
+
+class TrailChain(BaseModel):
+    direction: str
+    kind: str = Field(description="cross-account (reaches another investigated account) | shared (common counterparty) | exit (leaves the investigated set)")
+    hops: int
+    amount: float = Field(description="smallest hop on the chain: the most money that can have moved end to end (INR)")
+    nodes: list[str]
+    first_ts: str | None = None
+    last_ts: str | None = None
+
+
+class TrailSummary(BaseModel):
+    n_nodes: int
+    n_edges: int
+    n_chains: int
+    n_cross_account_chains: int
+    n_shared_counterparties: int
+    n_intermediaries: int = Field(description="nodes that both receive and pass on money along the trail")
+    n_circular: int = Field(description="nodes that money flows both to and from (round-tripping)")
+    accounts_reached: list[str]
+    amount_in: float = Field(description="money traced into the start account (INR)")
+    amount_out: float = Field(description="money traced out of the start account (INR)")
+    first_ts: str | None = None
+    last_ts: str | None = None
+    time_reliable: bool
+
+
+class TrailGraph(BaseModel):
+    start: str
+    hops: int
+    direction: str
+    summary: TrailSummary
+    nodes: list[TrailGraphNode]
+    edges: list[TrailGraphEdge]
+    chains: list[TrailChain]
+
+
 # ---------------------------------------------------------------- graph
 class Ring(BaseModel):
     ring_id: str

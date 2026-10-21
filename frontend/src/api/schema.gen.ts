@@ -75,6 +75,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/accounts/{account_id}/trail/graph": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Account Trail Graph
+         * @description The money trail as one graph for the investigation view: nodes by hop distance, transfers, and chains.
+         */
+        get: operations["account_trail_graph_api_accounts__account_id__trail_graph_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/alerts": {
         parameters: {
             query?: never;
@@ -984,6 +1004,29 @@ export interface components {
             /** Start */
             start: string;
         };
+        /** TrailChain */
+        TrailChain: {
+            /**
+             * Amount
+             * @description smallest hop on the chain: the most money that can have moved end to end (INR)
+             */
+            amount: number;
+            /** Direction */
+            direction: string;
+            /** First Ts */
+            first_ts?: string | null;
+            /** Hops */
+            hops: number;
+            /**
+             * Kind
+             * @description cross-account (reaches another investigated account) | shared (common counterparty) | exit (leaves the investigated set)
+             */
+            kind: string;
+            /** Last Ts */
+            last_ts?: string | null;
+            /** Nodes */
+            nodes: string[];
+        };
         /** TrailEdge */
         TrailEdge: {
             /** Amount */
@@ -998,6 +1041,100 @@ export interface components {
             source: string;
             /** Target */
             target: string;
+        };
+        /** TrailGraph */
+        TrailGraph: {
+            /** Chains */
+            chains: components["schemas"]["TrailChain"][];
+            /** Direction */
+            direction: string;
+            /** Edges */
+            edges: components["schemas"]["TrailGraphEdge"][];
+            /** Hops */
+            hops: number;
+            /** Nodes */
+            nodes: components["schemas"]["TrailGraphNode"][];
+            /** Start */
+            start: string;
+            summary: components["schemas"]["TrailSummary"];
+        };
+        /** TrailGraphEdge */
+        TrailGraphEdge: {
+            /** Amount */
+            amount: number;
+            /** Count */
+            count: number;
+            /**
+             * Direction
+             * @description forward | backward, relative to the start
+             */
+            direction: string;
+            /** First Ts */
+            first_ts?: string | null;
+            /** Hop */
+            hop: number;
+            /** Last Ts */
+            last_ts?: string | null;
+            /**
+             * Link
+             * @description trail = on a traced path; shared = a start counterparty dealing with another investigated account
+             */
+            link: string;
+            /** Source */
+            source: string;
+            /** Target */
+            target: string;
+        };
+        /** TrailGraphNode */
+        TrailGraphNode: {
+            /**
+             * Amount In
+             * @description money into this node along the trail (INR)
+             */
+            amount_in: number;
+            /**
+             * Amount Out
+             * @description money out of this node along the trail (INR)
+             */
+            amount_out: number;
+            /** Bank */
+            bank?: string | null;
+            /**
+             * Circular
+             * @description reached both forward and backward: money flows both from and back to the start through it
+             */
+            circular: boolean;
+            /** Is Start */
+            is_start: boolean;
+            /** Is Subject */
+            is_subject: boolean;
+            /**
+             * Kind
+             * @description subject | upi | account | ifsc | name | other
+             */
+            kind: string;
+            /** Label */
+            label: string;
+            /**
+             * Level
+             * @description signed hop distance from the start: <0 money came from here, >0 money went here, 0 = start or a linked account
+             */
+            level: number;
+            /**
+             * N Subject Links
+             * @description how many investigated accounts this node deals with
+             */
+            n_subject_links: number;
+            /** Ref */
+            ref: string;
+            /** Ring Id */
+            ring_id?: string | null;
+            /** Risk Score */
+            risk_score?: number | null;
+            /** Role */
+            role?: string | null;
+            /** Tier */
+            tier?: string | null;
         };
         /** TrailNode */
         TrailNode: {
@@ -1020,6 +1157,47 @@ export interface components {
             nodes: components["schemas"]["TrailNode"][];
             /** Total Amount */
             total_amount: number;
+        };
+        /** TrailSummary */
+        TrailSummary: {
+            /** Accounts Reached */
+            accounts_reached: string[];
+            /**
+             * Amount In
+             * @description money traced into the start account (INR)
+             */
+            amount_in: number;
+            /**
+             * Amount Out
+             * @description money traced out of the start account (INR)
+             */
+            amount_out: number;
+            /** First Ts */
+            first_ts?: string | null;
+            /** Last Ts */
+            last_ts?: string | null;
+            /** N Chains */
+            n_chains: number;
+            /**
+             * N Circular
+             * @description nodes that money flows both to and from (round-tripping)
+             */
+            n_circular: number;
+            /** N Cross Account Chains */
+            n_cross_account_chains: number;
+            /** N Edges */
+            n_edges: number;
+            /**
+             * N Intermediaries
+             * @description nodes that both receive and pass on money along the trail
+             */
+            n_intermediaries: number;
+            /** N Nodes */
+            n_nodes: number;
+            /** N Shared Counterparties */
+            n_shared_counterparties: number;
+            /** Time Reliable */
+            time_reliable: boolean;
         };
         /** ValidationError */
         ValidationError: {
@@ -1182,6 +1360,43 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Trail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    account_trail_graph_api_accounts__account_id__trail_graph_get: {
+        parameters: {
+            query?: {
+                hops?: number;
+                direction?: "forward" | "backward" | "both";
+                max_paths?: number;
+                /** @description max common counterparties linking to other investigated accounts */
+                shared?: number;
+            };
+            header?: never;
+            path: {
+                account_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TrailGraph"];
                 };
             };
             /** @description Validation Error */

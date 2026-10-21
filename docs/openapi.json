@@ -1917,6 +1917,66 @@
         "title": "Trail",
         "type": "object"
       },
+      "TrailChain": {
+        "properties": {
+          "amount": {
+            "description": "smallest hop on the chain: the most money that can have moved end to end (INR)",
+            "title": "Amount",
+            "type": "number"
+          },
+          "direction": {
+            "title": "Direction",
+            "type": "string"
+          },
+          "first_ts": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "First Ts"
+          },
+          "hops": {
+            "title": "Hops",
+            "type": "integer"
+          },
+          "kind": {
+            "description": "cross-account (reaches another investigated account) | shared (common counterparty) | exit (leaves the investigated set)",
+            "title": "Kind",
+            "type": "string"
+          },
+          "last_ts": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Ts"
+          },
+          "nodes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Nodes",
+            "type": "array"
+          }
+        },
+        "required": [
+          "direction",
+          "kind",
+          "hops",
+          "amount",
+          "nodes"
+        ],
+        "title": "TrailChain",
+        "type": "object"
+      },
       "TrailEdge": {
         "properties": {
           "amount": {
@@ -1965,6 +2025,243 @@
           "count"
         ],
         "title": "TrailEdge",
+        "type": "object"
+      },
+      "TrailGraph": {
+        "properties": {
+          "chains": {
+            "items": {
+              "$ref": "#/components/schemas/TrailChain"
+            },
+            "title": "Chains",
+            "type": "array"
+          },
+          "direction": {
+            "title": "Direction",
+            "type": "string"
+          },
+          "edges": {
+            "items": {
+              "$ref": "#/components/schemas/TrailGraphEdge"
+            },
+            "title": "Edges",
+            "type": "array"
+          },
+          "hops": {
+            "title": "Hops",
+            "type": "integer"
+          },
+          "nodes": {
+            "items": {
+              "$ref": "#/components/schemas/TrailGraphNode"
+            },
+            "title": "Nodes",
+            "type": "array"
+          },
+          "start": {
+            "title": "Start",
+            "type": "string"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/TrailSummary"
+          }
+        },
+        "required": [
+          "start",
+          "hops",
+          "direction",
+          "summary",
+          "nodes",
+          "edges",
+          "chains"
+        ],
+        "title": "TrailGraph",
+        "type": "object"
+      },
+      "TrailGraphEdge": {
+        "properties": {
+          "amount": {
+            "title": "Amount",
+            "type": "number"
+          },
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "direction": {
+            "description": "forward | backward, relative to the start",
+            "title": "Direction",
+            "type": "string"
+          },
+          "first_ts": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "First Ts"
+          },
+          "hop": {
+            "title": "Hop",
+            "type": "integer"
+          },
+          "last_ts": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Ts"
+          },
+          "link": {
+            "description": "trail = on a traced path; shared = a start counterparty dealing with another investigated account",
+            "title": "Link",
+            "type": "string"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "target": {
+            "title": "Target",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source",
+          "target",
+          "amount",
+          "count",
+          "hop",
+          "direction",
+          "link"
+        ],
+        "title": "TrailGraphEdge",
+        "type": "object"
+      },
+      "TrailGraphNode": {
+        "properties": {
+          "amount_in": {
+            "description": "money into this node along the trail (INR)",
+            "title": "Amount In",
+            "type": "number"
+          },
+          "amount_out": {
+            "description": "money out of this node along the trail (INR)",
+            "title": "Amount Out",
+            "type": "number"
+          },
+          "bank": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bank"
+          },
+          "circular": {
+            "description": "reached both forward and backward: money flows both from and back to the start through it",
+            "title": "Circular",
+            "type": "boolean"
+          },
+          "is_start": {
+            "title": "Is Start",
+            "type": "boolean"
+          },
+          "is_subject": {
+            "title": "Is Subject",
+            "type": "boolean"
+          },
+          "kind": {
+            "description": "subject | upi | account | ifsc | name | other",
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "level": {
+            "description": "signed hop distance from the start: <0 money came from here, >0 money went here, 0 = start or a linked account",
+            "title": "Level",
+            "type": "integer"
+          },
+          "n_subject_links": {
+            "description": "how many investigated accounts this node deals with",
+            "title": "N Subject Links",
+            "type": "integer"
+          },
+          "ref": {
+            "title": "Ref",
+            "type": "string"
+          },
+          "ring_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ring Id"
+          },
+          "risk_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Risk Score"
+          },
+          "role": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role"
+          },
+          "tier": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tier"
+          }
+        },
+        "required": [
+          "ref",
+          "label",
+          "is_subject",
+          "is_start",
+          "kind",
+          "level",
+          "amount_in",
+          "amount_out",
+          "n_subject_links",
+          "circular"
+        ],
+        "title": "TrailGraphNode",
         "type": "object"
       },
       "TrailNode": {
@@ -2027,6 +2324,98 @@
           "edges"
         ],
         "title": "TrailPath",
+        "type": "object"
+      },
+      "TrailSummary": {
+        "properties": {
+          "accounts_reached": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Accounts Reached",
+            "type": "array"
+          },
+          "amount_in": {
+            "description": "money traced into the start account (INR)",
+            "title": "Amount In",
+            "type": "number"
+          },
+          "amount_out": {
+            "description": "money traced out of the start account (INR)",
+            "title": "Amount Out",
+            "type": "number"
+          },
+          "first_ts": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "First Ts"
+          },
+          "last_ts": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Ts"
+          },
+          "n_chains": {
+            "title": "N Chains",
+            "type": "integer"
+          },
+          "n_circular": {
+            "description": "nodes that money flows both to and from (round-tripping)",
+            "title": "N Circular",
+            "type": "integer"
+          },
+          "n_cross_account_chains": {
+            "title": "N Cross Account Chains",
+            "type": "integer"
+          },
+          "n_edges": {
+            "title": "N Edges",
+            "type": "integer"
+          },
+          "n_intermediaries": {
+            "description": "nodes that both receive and pass on money along the trail",
+            "title": "N Intermediaries",
+            "type": "integer"
+          },
+          "n_nodes": {
+            "title": "N Nodes",
+            "type": "integer"
+          },
+          "n_shared_counterparties": {
+            "title": "N Shared Counterparties",
+            "type": "integer"
+          },
+          "time_reliable": {
+            "title": "Time Reliable",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "n_nodes",
+          "n_edges",
+          "n_chains",
+          "n_cross_account_chains",
+          "n_shared_counterparties",
+          "n_intermediaries",
+          "n_circular",
+          "accounts_reached",
+          "amount_in",
+          "amount_out",
+          "time_reliable"
+        ],
+        "title": "TrailSummary",
         "type": "object"
       },
       "ValidationError": {
@@ -2455,6 +2844,102 @@
           }
         },
         "summary": "Account Trail",
+        "tags": [
+          "accounts"
+        ]
+      }
+    },
+    "/api/accounts/{account_id}/trail/graph": {
+      "get": {
+        "description": "The money trail as one graph for the investigation view: nodes by hop distance, transfers, and chains.",
+        "operationId": "account_trail_graph_api_accounts__account_id__trail_graph_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "account_id",
+            "required": true,
+            "schema": {
+              "title": "Account Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "hops",
+            "required": false,
+            "schema": {
+              "default": 3,
+              "maximum": 4,
+              "minimum": 1,
+              "title": "Hops",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "direction",
+            "required": false,
+            "schema": {
+              "default": "both",
+              "enum": [
+                "forward",
+                "backward",
+                "both"
+              ],
+              "title": "Direction",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "max_paths",
+            "required": false,
+            "schema": {
+              "default": 120,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Max Paths",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "max common counterparties linking to other investigated accounts",
+            "in": "query",
+            "name": "shared",
+            "required": false,
+            "schema": {
+              "default": 12,
+              "description": "max common counterparties linking to other investigated accounts",
+              "maximum": 50,
+              "minimum": 0,
+              "title": "Shared",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrailGraph"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Account Trail Graph",
         "tags": [
           "accounts"
         ]

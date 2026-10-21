@@ -91,3 +91,36 @@ def test_money_trail_prefers_nodes_it_can_continue_through():
     g.add_edge("Y", "C", amount=10.0, count=1)
     paths = money_trail(g, "A", hops=2, branching=1)
     assert [p["nodes"] for p in paths] == [["A", "Y"], ["A", "Y", "C"]]
+
+
+def _flow_graph():
+    import networkx as nx
+    g = nx.DiGraph()
+    for u, v, amt in [("P", "A", 100.0), ("P", "B", 60.0), ("A", "X", 90.0), ("X", "B", 80.0), ("B", "Y", 70.0), ("A", "Z", 20.0)]:
+        g.add_edge(u, v, amount=amt, count=1, first_ts=None, last_ts=None)
+    return g
+
+
+def test_trail_graph_levels_chains_and_shared():
+    from app.graph.trail_view import trail_graph
+    t = trail_graph(_flow_graph(), "A", {"A", "B"}, hops=3, direction="both")
+    lv = {n: d["level"] for n, d in t["nodes"].items()}
+    assert lv["A"] == 0 and lv["P"] == -1 and lv["X"] == 1 and lv["B"] == 2 and lv["Y"] == 3
+    kinds = {c["kind"] for c in t["chains"]}
+    assert {"cross-account", "shared", "exit"} <= kinds
+    cross = next(c for c in t["chains"] if c["kind"] == "cross-account")
+    assert cross["nodes"][:3] == ["A", "X", "B"] and cross["amount"] == 70.0  # bounded by the weakest hop
+    # P paid both A and B: a shared payer, linked with link='shared'
+    assert t["edges"][("P", "B")]["link"] == "shared"
+    assert t["chains"][0]["kind"] == "cross-account"  # cross-account chains are listed first
+    # a chain that is a prefix of a longer one is dropped
+    seqs = [tuple(c["nodes"]) for c in t["chains"]]
+    assert ("A", "X") not in seqs
+
+
+def test_trail_graph_marks_circular_flow():
+    from app.graph.trail_view import trail_graph
+    g = _flow_graph()
+    g.add_edge("X", "A", amount=5.0, count=1, first_ts=None, last_ts=None)  # money comes back from X
+    t = trail_graph(g, "A", {"A", "B"}, hops=2, direction="both")
+    assert t["nodes"]["X"]["circular"] and not t["nodes"]["Z"]["circular"]

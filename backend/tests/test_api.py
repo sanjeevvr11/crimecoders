@@ -88,6 +88,26 @@ def test_trail(client):
     assert client.get("/api/accounts/SOA7/trail?direction=sideways").status_code == 422
 
 
+def test_trail_graph(client):
+    t = client.get("/api/accounts/SOA7/trail/graph").json()
+    assert t["start"] == "SOA7" and t["direction"] == "both"
+    start = [n for n in t["nodes"] if n["is_start"]]
+    assert len(start) == 1 and start[0]["level"] == 0 and start[0]["risk_score"] is not None
+    refs = {n["ref"] for n in t["nodes"]}
+    assert all(e["source"] in refs and e["target"] in refs for e in t["edges"])
+    assert all(set(c["nodes"]) <= refs for c in t["chains"])
+    assert t["summary"]["n_nodes"] == len(t["nodes"]) and t["summary"]["n_edges"] == len(t["edges"])
+    # nothing identifying leaves the API: labels masked, refs hashed, bank only as a 4-letter code
+    assert not any(re.search(r"\d{6,}", n["label"]) for n in t["nodes"])
+    assert all(n["ref"].startswith(("SOA", "CP-")) for n in t["nodes"])
+    assert all(n["bank"] is None or re.fullmatch(r"[A-Z]{4}", n["bank"]) for n in t["nodes"])
+    # an account whose narrations are opaque tokens has no trail, only itself
+    empty = client.get("/api/accounts/SOA14/trail/graph").json()
+    assert empty["edges"] == [] and [n["ref"] for n in empty["nodes"]] == ["SOA14"]
+    assert client.get("/api/accounts/SOA99/trail/graph").status_code == 404
+    assert client.get("/api/accounts/SOA7/trail/graph?direction=sideways").status_code == 422
+
+
 def test_rings(client):
     rings = client.get("/api/graph/rings").json()
     assert rings[0]["subject_accounts"] == ["SOA2", "SOA7"]

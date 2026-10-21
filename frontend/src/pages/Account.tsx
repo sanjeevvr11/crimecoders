@@ -128,6 +128,7 @@ export function Account() {
       </Async>
 
       <h2>Money trail</h2>
+      {id && <p><Link className="button" to={`/trail/${id}`}>Open the Money Trail investigation view →</Link></p>}
       {id && <TrailExplorer accountId={id} />}
     </div>
   );

@@ -90,8 +90,10 @@ Outputs: `data/processed/*.parquet`, `data/processed/stats.json` and `data/trace
 
 ## Frontend
 
-`frontend/` is a plain React + Vite + TypeScript UI with six screens: Overview, Leads, Account,
-Network, Complaints and Models. It is built so the UI can be replaced without touching the backend:
+`frontend/` is a plain React + Vite + TypeScript UI with seven screens: Overview, Leads, Money Trail,
+Account, Network, Complaints and Models. Money Trail (`/trail/:id`) is the investigation view: hop
+columns of where money came from and went, animated transfers, cross-account and shared-counterparty
+chains, and a hop-by-hop breakdown of the chosen chain. It is built so the UI can be replaced without touching the backend:
 `src/api/` (generated types + client) and `src/hooks/` stay, while `src/pages/` and `src/components/`
 can be swapped. See **[docs/FRONTEND_INTEGRATION.md](docs/FRONTEND_INTEGRATION.md)**, plus
 `docs/openapi.json` and `docs/api_examples.md`.
@@ -108,6 +110,7 @@ can be swapped. See **[docs/FRONTEND_INTEGRATION.md](docs/FRONTEND_INTEGRATION.m
 | GET | `/api/accounts/{id}` | score, top-5 reasons, indicators, features, network, anomaly score, flagged weeks, role, SHAP reasons |
 | GET | `/api/accounts/{id}/timeline?limit=&offset=&direction=` | transactions + daily totals |
 | GET | `/api/accounts/{id}/trail?hops=&direction=forward\|backward\|both` | money trail (id may be an account or a `CP-…` counterparty ref) |
+| GET | `/api/accounts/{id}/trail/graph?hops=&direction=&shared=` | money trail merged into one graph: hop levels, chains, circular flows |
 | GET | `/api/graph/rings` | rings |
 | GET | `/api/graph/rings/{ring_id}` | ring as Cytoscape.js elements |
 | GET | `/api/complaints` | synthetic complaints with best match |

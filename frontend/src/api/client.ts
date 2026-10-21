@@ -9,7 +9,7 @@
  */
 import type {
   AccountDetail, AccountFilters, AccountListItem, Alert, ComplaintListItem, ComplaintMatches, Lead,
-  ModelSummary, NetworkOverview, NodeConnections, PipelineRunResult, Ring, RingDetail, SortOrder, Stats, Tier, Timeline, Trail, TrailDirection,
+  ModelSummary, NetworkOverview, NodeConnections, PipelineRunResult, Ring, RingDetail, SortOrder, Stats, Tier, Timeline, Trail, TrailDirection, TrailGraph,
 } from "./types";
 
 const BASE = (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/$/, "");
@@ -62,6 +62,9 @@ export const api = {
   /** id may be an account id (SOA7) or a counterparty ref (CP-xxxxxxxxxx) */
   trail: (id: string, opts: { hops?: number; direction?: TrailDirection; max_paths?: number } = {}) =>
     request<Trail>(`/api/accounts/${encodeURIComponent(id)}/trail`, opts),
+  /** the trail merged into one graph for the Money Trail view: nodes by hop distance, transfers, chains, summary */
+  trailGraph: (id: string, opts: { hops?: number; direction?: TrailDirection; max_paths?: number; shared?: number } = {}) =>
+    request<TrailGraph>(`/api/accounts/${encodeURIComponent(id)}/trail/graph`, opts),
   /** URL for the evidence PDF (use as a link href; it is not JSON) */
   reportUrl: (id: string) => apiUrl(`/api/reports/account/${encodeURIComponent(id)}.pdf`),
 

@@ -11,4 +11,5 @@ export * from "./RingGraph";
 export * from "./StatTile";
 export * from "./Status";
 export * from "./TrailExplorer";
+export * from "./TrailGraphView";
 export * from "./WeeklyAnomalyChart";

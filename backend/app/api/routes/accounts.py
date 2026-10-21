@@ -1,3 +1,4 @@
+import re
 from typing import Literal
 
 import pandas as pd
@@ -7,9 +8,10 @@ from app import config
 from app.api.deps import get_store, records
 from app.api.txns import sort_by_date, txn_rows
 from app.graph.money_trail import money_trail
+from app.graph.trail_view import trail_graph
 from app.masking import mask, mask_digits, node_label, node_ref
 from app.models.summary import account_ml_summary
-from app.schemas.api import AccountDetail, AccountListItem, Timeline, Trail
+from app.schemas.api import AccountDetail, AccountListItem, Timeline, Trail, TrailGraph
 from app.scoring.reasons import top_reasons
 
 router = APIRouter(prefix="/api/accounts", tags=["accounts"])
@@ -146,3 +148,88 @@ def account_trail(
             } for e in p["edges"]],
         })
     return {"start": account_id, "hops": hops, "direction": direction, "paths": out}
+
+
+# counterparty node id prefix -> kind shown in the trail view
+NODE_KINDS = {"upi": "upi", "acct": "account", "ifsc": "ifsc", "name": "name"}
+
+
+# parsed "bank" text is sometimes a payee name, so only 4-letter IFSC bank codes leave the API
+BANK_CODE_RE = re.compile(r"[A-Z]{4}")
+
+
+def _bank_code(bank) -> str | None:
+    return bank if isinstance(bank, str) and BANK_CODE_RE.fullmatch(bank) else None
+
+
+def _iso(ts) -> str | None:
+    return None if ts is None or pd.isna(ts) else pd.Timestamp(ts).isoformat()
+
+
+@router.get("/{account_id}/trail/graph", response_model=TrailGraph)
+def account_trail_graph(
+    account_id: str,
+    hops: int = Query(3, ge=1, le=config.TRAIL_MAX_HOPS),
+    direction: Literal["forward", "backward", "both"] = "both",
+    max_paths: int = Query(120, ge=1, le=config.TRAIL_MAX_PATHS),
+    shared: int = Query(12, ge=0, le=50, description="max common counterparties linking to other investigated accounts"),
+) -> dict:
+    """The money trail as one graph for the investigation view: nodes by hop distance, transfers, and chains."""
+    s = get_store()
+    s.require_account(account_id)
+    subj = s.subject_ids
+    acc = s.table("accounts").set_index("account_id")
+    time_reliable = bool(acc.at[account_id, "time_reliable"])
+    if account_id not in s.graph:
+        tg = {"nodes": {account_id: {"level": 0, "amount_in": 0.0, "amount_out": 0.0}}, "edges": {}, "chains": []}
+    else:
+        tg = trail_graph(s.graph, account_id, subj, hops=hops, direction=direction, max_paths=max_paths, shared=shared)
+    scores = s.table("scores").set_index("account_id")
+    roles = s.optional_table("account_roles")
+    role = roles.set_index("account_id")["role"].to_dict() if roles is not None else {}
+    meta = s.table("nodes").set_index("node_id")
+
+    def r(n: str) -> str:
+        return node_ref(n, n in subj)
+
+    nodes = []
+    for n, d in tg["nodes"].items():
+        is_subj = n in subj
+        m = meta.loc[n] if n in meta.index else None
+        kind = "subject" if is_subj else NODE_KINDS.get(n.partition(":")[0], "other")
+        nodes.append({
+            "ref": r(n), "label": node_label(n, is_subj), "is_subject": is_subj, "is_start": n == account_id,
+            "kind": kind,
+            "level": d["level"], "amount_in": round(d["amount_in"], 2), "amount_out": round(d["amount_out"], 2),
+            "n_subject_links": int(m["n_subject_links"]) if m is not None else 0,
+            "circular": bool(d.get("circular", False)),
+            "bank": _bank_code(m["counterparty_bank"]) if m is not None and not is_subj else None,
+            "risk_score": round(float(scores.at[n, "risk_score"]), 1) if is_subj else None,
+            "tier": str(scores.at[n, "tier"]) if is_subj else None,
+            "ring_id": (None if pd.isna(scores.at[n, "ring_id"]) else str(scores.at[n, "ring_id"])) if is_subj else None,
+            "role": role.get(n) if is_subj else None,
+        })
+    edges = [{
+        "source": r(u), "target": r(v), "amount": round(e["amount"], 2), "count": int(e["count"]),
+        "first_ts": _iso(e["first_ts"]), "last_ts": _iso(e["last_ts"]), "hop": e["hop"], "direction": e["direction"], "link": e["link"],
+    } for (u, v), e in tg["edges"].items()]
+    chains = [{
+        "direction": c["direction"], "kind": c["kind"], "hops": c["hops"], "amount": round(c["amount"], 2),
+        "nodes": [r(n) for n in c["nodes"]], "first_ts": _iso(c["first_ts"]), "last_ts": _iso(c["last_ts"]),
+    } for c in tg["chains"]]
+    tn = tg["nodes"]
+    ts = [t for (u, v), e in tg["edges"].items() for t in (e["first_ts"], e["last_ts"]) if t is not None]
+    summary = {
+        "n_nodes": len(nodes), "n_edges": len(edges), "n_chains": len(chains),
+        "n_cross_account_chains": sum(c["kind"] == "cross-account" for c in chains),
+        "n_shared_counterparties": len({c["nodes"][1] for c in chains if c["kind"] == "shared"}),
+        "n_intermediaries": sum(1 for n, d in tn.items() if n != account_id and d["amount_in"] > 0 and d["amount_out"] > 0),
+        "n_circular": sum(1 for d in tn.values() if d.get("circular")),
+        "accounts_reached": sorted((n for n in tn if n in subj and n != account_id), key=lambda x: int(x[3:]) if x[3:].isdigit() else 0),
+        "amount_in": round(tn[account_id]["amount_in"], 2), "amount_out": round(tn[account_id]["amount_out"], 2),
+        "first_ts": _iso(min(ts)) if ts else None, "last_ts": _iso(max(ts)) if ts else None,
+        "time_reliable": time_reliable,
+    }
+    nodes.sort(key=lambda n: (n["level"], -max(n["amount_in"], n["amount_out"])))
+    return {"start": account_id, "hops": hops, "direction": direction, "summary": summary,
+            "nodes": nodes, "edges": edges, "chains": chains}

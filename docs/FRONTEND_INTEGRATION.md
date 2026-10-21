@@ -71,6 +71,7 @@ already running), 422 (bad query parameter) or 503 (pipeline not run yet).
 | `GET /api/accounts/{id}` | none | `AccountDetail` | `api.account(id)` |
 | `GET /api/accounts/{id}/timeline` | `limit` (≤2000), `offset`, `direction` (CR/DR), `order` (asc/desc: sorts every row by date and time before paging) | `Timeline` | `api.timeline(id, opts)` |
 | `GET /api/accounts/{id}/trail` | `hops` (1-4), `direction` (forward/backward/both), `max_paths` (≤200) | `Trail` | `api.trail(id, opts)` |
+| `GET /api/accounts/{id}/trail/graph` | `hops` (1-4, default 3), `direction` (default both), `max_paths` (≤200), `shared` (0-50) | `TrailGraph` | `api.trailGraph(id, opts)` |
 | `GET /api/reports/account/{id}.pdf` | none | PDF file | `api.reportUrl(id)` (use as a link `href`) |
 | `GET /api/graph/rings` | none | `Ring[]` | `api.rings()` |
 | `GET /api/graph/rings/{ring_id}` | none | `RingDetail` (Cytoscape.js `elements`) | `api.ring(ringId)` |
@@ -82,6 +83,12 @@ already running), 422 (bad query parameter) or 503 (pipeline not run yet).
 
 `{id}` in `/trail` may also be a counterparty ref such as `CP-1a2b3c4d5e` (from `counterparty.ref`
 or a trail node's `ref`), so a UI can follow money from a counterparty.
+
+`/trail/graph` is the same trail merged into one graph for an investigation view: each node once
+with a signed hop `level` (negative = money came from there, positive = money went there, 0 = the
+account or a linked investigated account), each transfer once, `circular` nodes (money goes round
+through them), and `chains` ranked cross-account first, then `shared` (a counterparty that also pays
+or is paid by another investigated account), then `exit`. `{id}` must be an investigated account.
 
 ## 4. Hooks
 
@@ -97,6 +104,7 @@ ignores stale responses. Import from `src/hooks`.
 | `useAccount(id)` | `/api/accounts/{id}` | `AccountDetail` |
 | `useTimeline(id, limit, offset, direction?, order?)` | `/api/accounts/{id}/timeline` | `Timeline` |
 | `useTrail(id, hops, direction, maxPaths)` | `/api/accounts/{id}/trail` | `Trail` |
+| `useTrailGraph(id, hops, direction)` | `/api/accounts/{id}/trail/graph` | `TrailGraph` |
 | `useRings()` / `useRing(ringId)` | `/api/graph/rings[/{id}]` | `Ring[]` / `RingDetail` |
 | `useNetworkOverview()` | `/api/graph/overview` | `NetworkOverview` |
 | `useNodeTransactions(ref, account?, limit, offset, order)` | `/api/graph/nodes/{ref}/transactions` | `NodeConnections` |
@@ -126,7 +134,7 @@ pipeline) call `api.runPipeline()` directly from an event handler and then `relo
 
 ## 6. Routes used by the current UI
 
-`/` overview · `/leads` · `/accounts/:id` · `/network` and `/network/:ringId` · `/complaints` · `/models`
+`/` overview · `/leads` · `/trail` and `/trail/:id` (money trail) · `/accounts/:id` · `/network` and `/network/:ringId` · `/complaints` · `/models`
 
 ## 7. Replacing the UI: steps
 
@@ -152,6 +160,8 @@ response model in `backend/app/schemas/api.py`, run `python scripts/export_opena
       a working PDF download.
 - [ ] Account page for SOA2 shows "n/a" for anomaly and explains that dates are shuffled.
 - [ ] Unknown account (`/accounts/SOA999`) shows an error state, not a blank page.
+- [ ] Money Trail page for SOA7 draws sources on the left, destinations on the right, lists the
+      suspicious chains and highlights one when clicked; SOA14 explains why it has no trail.
 - [ ] Network page lists 3 rings and draws the selected ring; clicking an account node opens it.
 - [ ] Complaints page marks complaints as synthetic and shows matches with confidence.
 - [ ] Models page labels the metrics as synthetic-injection, not accuracy.
