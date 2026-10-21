@@ -18,6 +18,7 @@ from app.masking import node_ref
 TABLES = [
     "transactions", "accounts", "account_features", "indicators", "edges", "nodes", "rings",
     "network_scores", "complaints", "complaint_matches", "scores", "reasons", "leads", "alerts",
+    "window_scores", "shap_reasons", "account_anomaly", "account_roles", "role_profiles",
 ]
 
 
@@ -72,6 +73,21 @@ class Store:
     def require_account(self, account_id: str) -> None:
         if account_id not in self.subject_ids:
             raise HTTPException(404, f"unknown account '{account_id}'")
+
+    def optional_table(self, name: str) -> pd.DataFrame | None:
+        """Phase 2 outputs; None if the pipeline ran without them."""
+        if not (self.processed_dir / f"{name}.parquet").exists():
+            return None
+        return self.table(name)
+
+    def ml_context(self):
+        from app.scoring.reasons import MLContext
+
+        parts = [self.optional_table(n) for n in ("account_anomaly", "window_scores", "shap_reasons", "account_roles")]
+        if any(p is None for p in parts):
+            return None
+        uplift = self.table("scores").set_index("account_id")["anomaly_uplift"].to_dict() if "anomaly_uplift" in self.table("scores") else {}
+        return MLContext(*parts, uplift=uplift)
 
     def reload(self) -> None:
         with self._lock:

@@ -7,6 +7,7 @@ from app import config
 from app.api.deps import get_store, records
 from app.graph.money_trail import money_trail
 from app.masking import mask, mask_text, node_label, node_ref
+from app.models.summary import account_ml_summary
 from app.scoring.reasons import top_reasons
 
 router = APIRouter(prefix="/api/accounts", tags=["accounts"])
@@ -38,6 +39,7 @@ def account_detail(account_id: str) -> dict:
     net = s.table("network_scores").set_index("account_id").loc[[account_id]]
     ind = s.table("indicators")
     matches = s.table("complaint_matches")
+    ml = s.ml_context()
     return {
         "account_id": account_id,
         "holder_name": mask(acc["holder_name"]),
@@ -48,7 +50,8 @@ def account_detail(account_id: str) -> dict:
         "time_reliable": bool(acc["time_reliable"]),
         "n_rows": int(acc["n_rows"]),
         "score": records(score.reset_index())[0],
-        "reasons": top_reasons(account_id, ind, s.table("network_scores")),
+        "reasons": top_reasons(account_id, ind, s.table("network_scores"), ml),
+        **account_ml_summary(s, account_id),
         "indicators": records(ind.loc[ind["account_id"] == account_id].drop(columns="account_id")),
         "features": records(feats.reset_index())[0],
         "network": records(net.reset_index())[0],

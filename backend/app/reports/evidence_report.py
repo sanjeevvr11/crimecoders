@@ -11,6 +11,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from app import config
 from app.masking import mask, node_label
+from app.models.summary import account_ml_summary
 from app.scoring.reasons import top_reasons
 
 log = logging.getLogger(__name__)
@@ -48,7 +49,8 @@ def build_context(store, account_id: str) -> dict:
         "score": {**score.to_dict(), "ring_id": score["ring_id"] if isinstance(score["ring_id"], str) else None},
         "n_accounts": len(subj),
         "weights": config.SCORE_WEIGHTS,
-        "reasons": top_reasons(account_id, ind, store.table("network_scores")),
+        "reasons": top_reasons(account_id, ind, store.table("network_scores"), store.ml_context()),
+        "ml": account_ml_summary(store, account_id),
         "indicators": ind.loc[ind["account_id"] == account_id].to_dict(orient="records"),
         "net": net.to_dict(),
         "counterparties": cps,

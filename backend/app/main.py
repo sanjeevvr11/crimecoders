@@ -5,12 +5,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app import config
-from app.api.routes import accounts, alerts, complaints, graph, pipeline, reports
+from app.api.routes import accounts, alerts, complaints, graph, models, pipeline, reports
 
-app = FastAPI(title="Trace360", version="0.1.0", description="Mule account detection: Phase 1 (rules + graph, no ML)")
+app = FastAPI(title="Trace360", version="0.2.0", description="Mule account detection: rules, money-flow graph and unsupervised models")
 app.add_middleware(CORSMiddleware, allow_origins=config.CORS_ORIGINS, allow_methods=["*"], allow_headers=["*"])
 
-for module in (pipeline, alerts, accounts, graph, complaints, reports):
+for module in (pipeline, alerts, accounts, graph, complaints, reports, models):
     app.include_router(module.router)
 
 

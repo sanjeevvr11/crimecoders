@@ -17,7 +17,11 @@ class Lead(BaseModel):
     tier: str
     indicator_score: float
     network_score: float
-    anomaly_score: float
+    anomaly_score: float | None = None
+    anomaly_uplift: float | None = None
+    risk_score_phase1: float | None = None
+    flagged_weeks: int | None = None
+    role: str | None = None
     ring_id: str | None = None
     layout: str | None = None
     time_reliable: bool | None = None

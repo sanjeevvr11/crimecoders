@@ -20,7 +20,7 @@
 </head>
 <body>
   <h1>Trace360 evidence report</h1>
-  <div class="muted">Account {{ a.account_id }} · generated {{ generated_at }} · Phase 1 (rules + network, no ML)</div>
+  <div class="muted">Account {{ a.account_id }} · generated {{ generated_at }} · rules + network + unsupervised models</div>
 
   <table style="margin-top:5mm">
     <tr><td style="width:35%">
@@ -50,11 +50,24 @@
 
   <h2>Score breakdown</h2>
   <table>
-    <tr><th>Component</th><th class="num">Score (0–1)</th><th class="num">Weight</th></tr>
+    <tr><th>Component</th><th class="num">Score (0–1)</th><th class="num">Weight / effect</th></tr>
     <tr><td>Rule indicators</td><td class="num">{{ "%.3f"|format(score.indicator_score) }}</td><td class="num">{{ weights.indicator }}</td></tr>
     <tr><td>Network</td><td class="num">{{ "%.3f"|format(score.network_score) }}</td><td class="num">{{ weights.network }}</td></tr>
-    <tr><td>Anomaly (Phase 2)</td><td class="num">{{ "%.3f"|format(score.anomaly_score) }}</td><td class="num">{{ weights.anomaly }}</td></tr>
+    <tr><td>Base score (rules + network)</td><td class="num" colspan="2">{{ "%.1f"|format(score.base_score) }}</td></tr>
+    <tr><td>Anomaly (Isolation Forest)</td>
+        <td class="num">{{ "%.3f"|format(ml.anomaly_score) if ml.anomaly_score is not none else "n/a (no reliable timestamps)" }}</td>
+        <td class="num">+{{ "%.1f"|format(score.anomaly_uplift) }} pts</td></tr>
   </table>
+
+  <h2>Model signals</h2>
+  <table>
+    <tr><th>Behaviour role (HDBSCAN)</th><td>{{ ml.role or "—" }}{% if ml.role_source %} <span class="muted">from {{ ml.role_source }}</span>{% endif %}</td></tr>
+    <tr><th>Flagged weeks (Isolation Forest)</th><td>{{ ml.flagged_weeks if ml.flagged_weeks is not none else "n/a" }}</td></tr>
+  </table>
+  {% for wk in ml.shap_reasons[:3] %}
+  <p><b>Week of {{ wk.week_start }}</b> <span class="muted">(top {{ "%.0f"|format([1, (1 - wk.percentile) * 100]|max) }}% most unusual weeks)</span></p>
+  <ul>{% for r in wk.reasons %}<li>{{ r.text }}</li>{% endfor %}</ul>
+  {% endfor %}
 
   <h2>Indicators</h2>
   <table>
@@ -90,7 +103,8 @@
     {% endfor %}
   </table>
 
-  <div class="banner">Lead for investigation only, not a finding of wrongdoing. Names and identifiers are masked to the last 4 characters.
+  <div class="banner">Lead for investigation only, not a finding of wrongdoing. The models are unsupervised (no fraud labels exist);
+  an unusual week is a prompt to look, not proof. Names and identifiers are masked to the last 4 characters.
   Complaints shown are SYNTHETIC test records generated for demonstration. Balances in the source data are randomised and were not used.</div>
 </body>
 </html>
