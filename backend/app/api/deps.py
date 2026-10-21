@@ -26,6 +26,7 @@ class Store:
     def __init__(self, processed_dir: Path | None = None):
         self.processed_dir = processed_dir or config.PROCESSED_DIR
         self._tables: dict[str, pd.DataFrame] = {}
+        self._memo: dict[str, object] = {}
         self._lock = threading.Lock()
 
     @property
@@ -89,9 +90,16 @@ class Store:
         uplift = self.table("scores").set_index("account_id")["anomaly_uplift"].to_dict() if "anomaly_uplift" in self.table("scores") else {}
         return MLContext(*parts, uplift=uplift)
 
+    def memo(self, key: str, build):
+        """Cache a derived result until the next reload (e.g. the conclusion, which traces several accounts)."""
+        if key not in self._memo:
+            self._memo[key] = build()
+        return self._memo[key]
+
     def reload(self) -> None:
         with self._lock:
             self._tables.clear()
+            self._memo.clear()
             for attr in ("graph", "core", "subject_ids", "ref_to_node"):
                 self.__dict__.pop(attr, None)
 

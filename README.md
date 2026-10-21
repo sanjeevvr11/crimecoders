@@ -91,7 +91,9 @@ Outputs: `data/processed/*.parquet`, `data/processed/stats.json` and `data/trace
 ## Frontend
 
 `frontend/` is a plain React + Vite + TypeScript UI with seven screens: Overview, Leads, Money Trail,
-Account, Network, Complaints and Models. Money Trail (`/trail/:id`) is the investigation view: hop
+Account, Network, Complaints and Models. Overview opens with the conclusion of the whole investigation:
+what each screen found, the accounts to act on with a next step for each, rings, the largest
+account-to-account chains, a watchlist and the limits of the evidence. Money Trail (`/trail/:id`) is the investigation view: hop
 columns of where money came from and went, animated transfers, cross-account and shared-counterparty
 chains, and a hop-by-hop breakdown of the chosen chain. It is built so the UI can be replaced without touching the backend:
 `src/api/` (generated types + client) and `src/hooks/` stay, while `src/pages/` and `src/components/`
@@ -105,6 +107,7 @@ can be swapped. See **[docs/FRONTEND_INTEGRATION.md](docs/FRONTEND_INTEGRATION.m
 | GET | `/api/health` | health check |
 | GET | `/api/stats` | pipeline stats |
 | GET | `/api/alerts` | accounts at or above `ALERT_THRESHOLD` |
+| GET | `/api/conclusion` | overall conclusion: findings per screen, accounts to act on, rings, top chains, next steps |
 | GET | `/api/leads?tier=&limit=` | all accounts ranked by risk |
 | GET | `/api/accounts?tier=&role=&ring_id=&time_reliable=&q=` | account list with filters |
 | GET | `/api/accounts/{id}` | score, top-5 reasons, indicators, features, network, anomaly score, flagged weeks, role, SHAP reasons |

@@ -1,3 +1,4 @@
+import json
 import re
 
 import pytest
@@ -182,3 +183,24 @@ def test_models_summary(client):
 def test_cors(client):
     r = client.options("/api/stats", headers={"Origin": "http://localhost:5173", "Access-Control-Request-Method": "GET"})
     assert r.headers.get("access-control-allow-origin") == "http://localhost:5173"
+
+
+def test_conclusion(client):
+    r = client.get("/api/conclusion")
+    assert r.status_code == 200
+    c = r.json()
+    leads = client.get("/api/leads").json()
+    counts = c["counts"]
+    assert counts["accounts"] == len(leads) == counts["HIGH"] + counts["MEDIUM"] + counts["LOW"]
+    assert counts["alerts"] == len(c["accounts"]) == sum(lead["is_alert"] for lead in leads)
+    assert counts["accounts"] == counts["alerts"] + counts["watchlist"] + counts["no_action"]
+    assert c["headline"] and c["summary"] and c["limitations"] and c["next_steps"]
+    assert [a["risk_score"] for a in c["accounts"]] == sorted((a["risk_score"] for a in c["accounts"]), reverse=True)
+    assert {f["tab"] for f in c["findings"]} <= {"Leads", "Money Trail", "Network", "Complaints", "Models"}
+    assert all(f["route"].startswith("/") for f in c["findings"])
+    assert all(a["verdict"] == "Monitor" for a in c["watchlist"])
+    for ch in c["top_chains"]:
+        assert ch["nodes"][0].startswith("SOA") and ch["nodes"][-1].startswith("SOA")  # account to account
+        assert len(ch["labels"]) == len(ch["nodes"]) == ch["hops"] + 1
+        assert not any(re.search(r"\d{6,}", lab) for lab in ch["labels"])
+    assert not re.search(r"\d{6,}", json.dumps({k: c[k] for k in ("headline", "summary", "findings", "next_steps")}))

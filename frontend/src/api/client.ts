@@ -8,7 +8,7 @@
  * same origin, where the Vite dev proxy forwards /api to the backend.
  */
 import type {
-  AccountDetail, AccountFilters, AccountListItem, Alert, ComplaintListItem, ComplaintMatches, Lead,
+  AccountDetail, AccountFilters, AccountListItem, Alert, ComplaintListItem, ComplaintMatches, Conclusion, Lead,
   ModelSummary, NetworkOverview, NodeConnections, PipelineRunResult, Ring, RingDetail, SortOrder, Stats, Tier, Timeline, Trail, TrailDirection, TrailGraph,
 } from "./types";
 
@@ -53,6 +53,7 @@ export const api = {
 
   leads: (opts: { tier?: Tier; limit?: number } = {}) => request<Lead[]>("/api/leads", opts),
   alerts: () => request<Alert[]>("/api/alerts"),
+  conclusion: () => request<Conclusion>("/api/conclusion"),
 
   accounts: (filters: AccountFilters = {}) => request<AccountListItem[]>("/api/accounts", { ...filters }),
   account: (id: string) => request<AccountDetail>(`/api/accounts/${encodeURIComponent(id)}`),

@@ -14,6 +14,7 @@ export type { ApiState } from "./useApi";
 export const useStats = () => useApi(() => api.stats(), []);
 export const useLeads = (tier?: Tier) => useApi(() => api.leads({ tier, limit: 1000 }), [tier]);
 export const useAlerts = () => useApi(() => api.alerts(), []);
+export const useConclusion = () => useApi(() => api.conclusion(), []);
 export const useAccounts = (f: AccountFilters = {}) =>
   useApi(() => api.accounts(f), [f.tier, f.role, f.ring_id, f.time_reliable, f.q]);
 export const useAccount = (id: string | undefined) => useApi(() => api.account(id!), [id], !!id);

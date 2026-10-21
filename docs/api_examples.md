@@ -126,6 +126,105 @@ Lists are cut to the first item (`"…"` marks more). Field definitions: `docs/o
 ]
 ```
 
+## `GET /api/conclusion`
+
+`/api/conclusion`
+
+```json
+{
+  "generated_at": "2026-10-21T18:00:23",
+  "headline": "10 of 25 accounts show mule-account patterns and need investigation (4 high priority, 6 medium).",
+  "summary": "6 of them form 3 rings of accounts that share payers and payees, with ₹16.6 Cr moving through those rings. The money trail shows 16 distinct chains carrying money from one flagged account to another. 4 more accounts are on the watchlist and 11 need no action now. These are leads for an investigator to confirm, not proof of fraud.",
+  "counts": {
+    "accounts": 25,
+    "alerts": 10,
+    "HIGH": 4,
+    "MEDIUM": 6,
+    "LOW": 15,
+    "watchlist": 4,
+    "no_action": 11
+  },
+  "findings": [
+    {
+      "tab": "Leads",
+      "route": "/leads",
+      "title": "10 accounts flagged for investigation",
+      "text": "10 of 25 accounts score 50 or more out of 100: 4 HIGH and 6 MEDIUM. SOA7 ranks first at 82.1, layering role. Its strongest reason: Shares 992 counterparties with other investigated accounts."
+    },
+    "…"
+  ],
+  "accounts": [
+    {
+      "account_id": "SOA7",
+      "rank": 1,
+      "risk_score": 82.1,
+      "tier": "HIGH",
+      "verdict": "Priority investigation",
+      "role": "layering",
+      "ring_id": "R1",
+      "linked_accounts": [
+        "SOA6",
+        "…"
+      ],
+      "…": "6 more keys"
+    },
+    "…"
+  ],
+  "watchlist": [
+    {
+      "account_id": "SOA48",
+      "rank": 11,
+      "risk_score": 49.4,
+      "tier": "LOW",
+      "verdict": "Monitor",
+      "role": "layering",
+      "ring_id": null,
+      "linked_accounts": [],
+      "…": "6 more keys"
+    },
+    "…"
+  ],
+  "rings": [
+    {
+      "ring_id": "R1",
+      "accounts": [
+        "SOA6",
+        "…"
+      ],
+      "n_shared_counterparties": 944,
+      "total_amount": 152078911.66,
+      "max_risk": 82.1,
+      "text": "SOA6 and SOA7 share 944 counterparties; ₹15.2 Cr moved through the ring."
+    },
+    "…"
+  ],
+  "top_chains": [
+    {
+      "start": "SOA7",
+      "nodes": [
+        "SOA7",
+        "…"
+      ],
+      "labels": [
+        "SOA7",
+        "…"
+      ],
+      "amount": 149944.13,
+      "hops": 2
+    },
+    "…"
+  ],
+  "limitations": [
+    "There are no fraud labels, so scores are leads ranked by evidence, not confirmed verdicts.",
+    "…"
+  ],
+  "next_steps": [
+    "Escalate SOA7, SOA8, SOA4 and SOA9: verify KYC, request account-opening documents and consider temporary debit holds.",
+    "…"
+  ]
+}
+```
+
 ## `GET /api/accounts`
 
 `/api/accounts?tier=HIGH`

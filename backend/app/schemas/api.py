@@ -285,6 +285,72 @@ class TrailGraph(BaseModel):
     chains: list[TrailChain]
 
 
+# ---------------------------------------------------------------- conclusion
+class ConclusionFinding(BaseModel):
+    tab: str = Field(description="the screen the finding comes from: Leads, Money Trail, Network, Complaints, Models, Data")
+    route: str = Field(description="frontend route of that screen")
+    title: str
+    text: str
+
+
+class ConclusionTrail(BaseModel):
+    amount_in: float
+    amount_out: float
+    n_chains: int
+    n_cross_account_chains: int
+    n_circular: int
+    n_intermediaries: int
+    accounts_reached: list[str]
+
+
+class ConclusionAccount(BaseModel):
+    account_id: str
+    rank: int
+    risk_score: float
+    tier: str
+    verdict: str = Field(description="Priority investigation | Investigate | Monitor")
+    role: str | None = None
+    ring_id: str | None = None
+    linked_accounts: list[str] = Field(description="ring partners and accounts reached by the money trail")
+    reasons: list[str] = Field(description="top reasons, strongest first")
+    complaint_matches: int = Field(description="distinct (synthetic) complaints matched to this account")
+    flagged_weeks: int | None = None
+    time_reliable: bool
+    trail: ConclusionTrail | None = Field(None, description="null when the statement names no counterparties")
+    action: str = Field(description="suggested next step for an investigator")
+
+
+class ConclusionRing(BaseModel):
+    ring_id: str
+    accounts: list[str]
+    n_shared_counterparties: int
+    total_amount: float
+    max_risk: float
+    text: str
+
+
+class ConclusionChain(BaseModel):
+    start: str
+    nodes: list[str]
+    labels: list[str] = Field(description="masked display label of each node")
+    amount: float = Field(description="smallest hop on the chain (INR)")
+    hops: int
+
+
+class Conclusion(BaseModel):
+    generated_at: str
+    headline: str
+    summary: str
+    counts: dict[str, int] = Field(description="accounts, alerts, HIGH, MEDIUM, LOW, watchlist, no_action")
+    findings: list[ConclusionFinding] = Field(description="one conclusion per screen")
+    accounts: list[ConclusionAccount] = Field(description="accounts at or above the alert threshold, highest risk first")
+    watchlist: list[ConclusionAccount] = Field(description="below the threshold but close to it or with several unusual weeks")
+    rings: list[ConclusionRing]
+    top_chains: list[ConclusionChain] = Field(description="largest chains that carry money from one investigated account to another")
+    limitations: list[str]
+    next_steps: list[str]
+
+
 # ---------------------------------------------------------------- graph
 class Ring(BaseModel):
     ring_id: str

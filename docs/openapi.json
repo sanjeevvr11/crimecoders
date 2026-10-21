@@ -773,6 +773,369 @@
         "title": "ComplaintMatches",
         "type": "object"
       },
+      "Conclusion": {
+        "properties": {
+          "accounts": {
+            "description": "accounts at or above the alert threshold, highest risk first",
+            "items": {
+              "$ref": "#/components/schemas/ConclusionAccount"
+            },
+            "title": "Accounts",
+            "type": "array"
+          },
+          "counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "description": "accounts, alerts, HIGH, MEDIUM, LOW, watchlist, no_action",
+            "title": "Counts",
+            "type": "object"
+          },
+          "findings": {
+            "description": "one conclusion per screen",
+            "items": {
+              "$ref": "#/components/schemas/ConclusionFinding"
+            },
+            "title": "Findings",
+            "type": "array"
+          },
+          "generated_at": {
+            "title": "Generated At",
+            "type": "string"
+          },
+          "headline": {
+            "title": "Headline",
+            "type": "string"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Limitations",
+            "type": "array"
+          },
+          "next_steps": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Next Steps",
+            "type": "array"
+          },
+          "rings": {
+            "items": {
+              "$ref": "#/components/schemas/ConclusionRing"
+            },
+            "title": "Rings",
+            "type": "array"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          },
+          "top_chains": {
+            "description": "largest chains that carry money from one investigated account to another",
+            "items": {
+              "$ref": "#/components/schemas/ConclusionChain"
+            },
+            "title": "Top Chains",
+            "type": "array"
+          },
+          "watchlist": {
+            "description": "below the threshold but close to it or with several unusual weeks",
+            "items": {
+              "$ref": "#/components/schemas/ConclusionAccount"
+            },
+            "title": "Watchlist",
+            "type": "array"
+          }
+        },
+        "required": [
+          "generated_at",
+          "headline",
+          "summary",
+          "counts",
+          "findings",
+          "accounts",
+          "watchlist",
+          "rings",
+          "top_chains",
+          "limitations",
+          "next_steps"
+        ],
+        "title": "Conclusion",
+        "type": "object"
+      },
+      "ConclusionAccount": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "action": {
+            "description": "suggested next step for an investigator",
+            "title": "Action",
+            "type": "string"
+          },
+          "complaint_matches": {
+            "description": "distinct (synthetic) complaints matched to this account",
+            "title": "Complaint Matches",
+            "type": "integer"
+          },
+          "flagged_weeks": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Flagged Weeks"
+          },
+          "linked_accounts": {
+            "description": "ring partners and accounts reached by the money trail",
+            "items": {
+              "type": "string"
+            },
+            "title": "Linked Accounts",
+            "type": "array"
+          },
+          "rank": {
+            "title": "Rank",
+            "type": "integer"
+          },
+          "reasons": {
+            "description": "top reasons, strongest first",
+            "items": {
+              "type": "string"
+            },
+            "title": "Reasons",
+            "type": "array"
+          },
+          "ring_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ring Id"
+          },
+          "risk_score": {
+            "title": "Risk Score",
+            "type": "number"
+          },
+          "role": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role"
+          },
+          "tier": {
+            "title": "Tier",
+            "type": "string"
+          },
+          "time_reliable": {
+            "title": "Time Reliable",
+            "type": "boolean"
+          },
+          "trail": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ConclusionTrail"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "null when the statement names no counterparties"
+          },
+          "verdict": {
+            "description": "Priority investigation | Investigate | Monitor",
+            "title": "Verdict",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "rank",
+          "risk_score",
+          "tier",
+          "verdict",
+          "linked_accounts",
+          "reasons",
+          "complaint_matches",
+          "time_reliable",
+          "action"
+        ],
+        "title": "ConclusionAccount",
+        "type": "object"
+      },
+      "ConclusionChain": {
+        "properties": {
+          "amount": {
+            "description": "smallest hop on the chain (INR)",
+            "title": "Amount",
+            "type": "number"
+          },
+          "hops": {
+            "title": "Hops",
+            "type": "integer"
+          },
+          "labels": {
+            "description": "masked display label of each node",
+            "items": {
+              "type": "string"
+            },
+            "title": "Labels",
+            "type": "array"
+          },
+          "nodes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Nodes",
+            "type": "array"
+          },
+          "start": {
+            "title": "Start",
+            "type": "string"
+          }
+        },
+        "required": [
+          "start",
+          "nodes",
+          "labels",
+          "amount",
+          "hops"
+        ],
+        "title": "ConclusionChain",
+        "type": "object"
+      },
+      "ConclusionFinding": {
+        "properties": {
+          "route": {
+            "description": "frontend route of that screen",
+            "title": "Route",
+            "type": "string"
+          },
+          "tab": {
+            "description": "the screen the finding comes from: Leads, Money Trail, Network, Complaints, Models, Data",
+            "title": "Tab",
+            "type": "string"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tab",
+          "route",
+          "title",
+          "text"
+        ],
+        "title": "ConclusionFinding",
+        "type": "object"
+      },
+      "ConclusionRing": {
+        "properties": {
+          "accounts": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Accounts",
+            "type": "array"
+          },
+          "max_risk": {
+            "title": "Max Risk",
+            "type": "number"
+          },
+          "n_shared_counterparties": {
+            "title": "N Shared Counterparties",
+            "type": "integer"
+          },
+          "ring_id": {
+            "title": "Ring Id",
+            "type": "string"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          },
+          "total_amount": {
+            "title": "Total Amount",
+            "type": "number"
+          }
+        },
+        "required": [
+          "ring_id",
+          "accounts",
+          "n_shared_counterparties",
+          "total_amount",
+          "max_risk",
+          "text"
+        ],
+        "title": "ConclusionRing",
+        "type": "object"
+      },
+      "ConclusionTrail": {
+        "properties": {
+          "accounts_reached": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Accounts Reached",
+            "type": "array"
+          },
+          "amount_in": {
+            "title": "Amount In",
+            "type": "number"
+          },
+          "amount_out": {
+            "title": "Amount Out",
+            "type": "number"
+          },
+          "n_chains": {
+            "title": "N Chains",
+            "type": "integer"
+          },
+          "n_circular": {
+            "title": "N Circular",
+            "type": "integer"
+          },
+          "n_cross_account_chains": {
+            "title": "N Cross Account Chains",
+            "type": "integer"
+          },
+          "n_intermediaries": {
+            "title": "N Intermediaries",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "amount_in",
+          "amount_out",
+          "n_chains",
+          "n_cross_account_chains",
+          "n_circular",
+          "n_intermediaries",
+          "accounts_reached"
+        ],
+        "title": "ConclusionTrail",
+        "type": "object"
+      },
       "ConnectionAccount": {
         "properties": {
           "account_id": {
@@ -3034,6 +3397,28 @@
         "summary": "Complaint Matches",
         "tags": [
           "complaints"
+        ]
+      }
+    },
+    "/api/conclusion": {
+      "get": {
+        "description": "The investigation's overall conclusion: findings per screen, accounts to act on, rings, top chains, next steps.",
+        "operationId": "conclusion_api_conclusion_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Conclusion"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Conclusion",
+        "tags": [
+          "conclusion"
         ]
       }
     },

@@ -67,6 +67,7 @@ already running), 422 (bad query parameter) or 503 (pipeline not run yet).
 | `POST /api/pipeline/run` | none (takes about a minute) | `PipelineRunResult` | `api.runPipeline()` |
 | `GET /api/leads` | `tier` (HIGH/MEDIUM/LOW), `limit` (≤1000) | `Lead[]` ranked by risk | `api.leads({tier, limit})` |
 | `GET /api/alerts` | none | `Alert[]` (leads at or above the alert threshold) | `api.alerts()` |
+| `GET /api/conclusion` | none | `Conclusion` (headline, one finding per screen, accounts to act on with a next step, watchlist, rings, top account-to-account chains, limitations, next steps) | `api.conclusion()` |
 | `GET /api/accounts` | `tier`, `role`, `ring_id`, `time_reliable`, `q` | `AccountListItem[]` | `api.accounts(filters)` |
 | `GET /api/accounts/{id}` | none | `AccountDetail` | `api.account(id)` |
 | `GET /api/accounts/{id}/timeline` | `limit` (≤2000), `offset`, `direction` (CR/DR), `order` (asc/desc: sorts every row by date and time before paging) | `Timeline` | `api.timeline(id, opts)` |
@@ -100,6 +101,7 @@ ignores stale responses. Import from `src/hooks`.
 | `useStats()` | `/api/stats` | `Stats` |
 | `useLeads(tier?)` | `/api/leads` | `Lead[]` |
 | `useAlerts()` | `/api/alerts` | `Alert[]` |
+| `useConclusion()` | `/api/conclusion` | `Conclusion` |
 | `useAccounts(filters)` | `/api/accounts` | `AccountListItem[]` |
 | `useAccount(id)` | `/api/accounts/{id}` | `AccountDetail` |
 | `useTimeline(id, limit, offset, direction?, order?)` | `/api/accounts/{id}/timeline` | `Timeline` |
@@ -153,7 +155,9 @@ response model in `backend/app/schemas/api.py`, run `python scripts/export_opena
 
 - [ ] `npm run typecheck` and `npm run build` pass; `npm run check:api` reports no diff.
 - [ ] No `fetch(` outside `src/api/client.ts` (`grep -rn "fetch(" src | grep -v src/api`).
-- [ ] Overview shows `/api/stats` numbers (494,275 transactions, 25 accounts on the full data) and the alerts.
+- [ ] Overview shows the conclusion from `/api/conclusion` (on the full data: 10 of 25 accounts to investigate, 3 rings,
+      a finding for each screen, a card with a next step per flagged account) and the `/api/stats` numbers
+      (494,275 transactions).
 - [ ] Leads table ranks all 25 accounts; filters by level and role work.
 - [ ] Account page for a time-reliable account (e.g. SOA8) shows the score breakdown, reasons,
       flagged weeks with SHAP reasons, weekly and daily charts, paginated transactions, money trail and

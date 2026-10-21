@@ -146,6 +146,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/conclusion": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Conclusion
+         * @description The investigation's overall conclusion: findings per screen, accounts to act on, rings, top chains, next steps.
+         */
+        get: operations["conclusion_api_conclusion_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/graph/nodes/{ref}/transactions": {
         parameters: {
             query?: never;
@@ -571,6 +591,162 @@ export interface components {
             complaint: components["schemas"]["Complaint"];
             /** Matches */
             matches: components["schemas"]["ComplaintMatch"][];
+        };
+        /** Conclusion */
+        Conclusion: {
+            /**
+             * Accounts
+             * @description accounts at or above the alert threshold, highest risk first
+             */
+            accounts: components["schemas"]["ConclusionAccount"][];
+            /**
+             * Counts
+             * @description accounts, alerts, HIGH, MEDIUM, LOW, watchlist, no_action
+             */
+            counts: {
+                [key: string]: number;
+            };
+            /**
+             * Findings
+             * @description one conclusion per screen
+             */
+            findings: components["schemas"]["ConclusionFinding"][];
+            /** Generated At */
+            generated_at: string;
+            /** Headline */
+            headline: string;
+            /** Limitations */
+            limitations: string[];
+            /** Next Steps */
+            next_steps: string[];
+            /** Rings */
+            rings: components["schemas"]["ConclusionRing"][];
+            /** Summary */
+            summary: string;
+            /**
+             * Top Chains
+             * @description largest chains that carry money from one investigated account to another
+             */
+            top_chains: components["schemas"]["ConclusionChain"][];
+            /**
+             * Watchlist
+             * @description below the threshold but close to it or with several unusual weeks
+             */
+            watchlist: components["schemas"]["ConclusionAccount"][];
+        };
+        /** ConclusionAccount */
+        ConclusionAccount: {
+            /** Account Id */
+            account_id: string;
+            /**
+             * Action
+             * @description suggested next step for an investigator
+             */
+            action: string;
+            /**
+             * Complaint Matches
+             * @description distinct (synthetic) complaints matched to this account
+             */
+            complaint_matches: number;
+            /** Flagged Weeks */
+            flagged_weeks?: number | null;
+            /**
+             * Linked Accounts
+             * @description ring partners and accounts reached by the money trail
+             */
+            linked_accounts: string[];
+            /** Rank */
+            rank: number;
+            /**
+             * Reasons
+             * @description top reasons, strongest first
+             */
+            reasons: string[];
+            /** Ring Id */
+            ring_id?: string | null;
+            /** Risk Score */
+            risk_score: number;
+            /** Role */
+            role?: string | null;
+            /** Tier */
+            tier: string;
+            /** Time Reliable */
+            time_reliable: boolean;
+            /** @description null when the statement names no counterparties */
+            trail?: components["schemas"]["ConclusionTrail"] | null;
+            /**
+             * Verdict
+             * @description Priority investigation | Investigate | Monitor
+             */
+            verdict: string;
+        };
+        /** ConclusionChain */
+        ConclusionChain: {
+            /**
+             * Amount
+             * @description smallest hop on the chain (INR)
+             */
+            amount: number;
+            /** Hops */
+            hops: number;
+            /**
+             * Labels
+             * @description masked display label of each node
+             */
+            labels: string[];
+            /** Nodes */
+            nodes: string[];
+            /** Start */
+            start: string;
+        };
+        /** ConclusionFinding */
+        ConclusionFinding: {
+            /**
+             * Route
+             * @description frontend route of that screen
+             */
+            route: string;
+            /**
+             * Tab
+             * @description the screen the finding comes from: Leads, Money Trail, Network, Complaints, Models, Data
+             */
+            tab: string;
+            /** Text */
+            text: string;
+            /** Title */
+            title: string;
+        };
+        /** ConclusionRing */
+        ConclusionRing: {
+            /** Accounts */
+            accounts: string[];
+            /** Max Risk */
+            max_risk: number;
+            /** N Shared Counterparties */
+            n_shared_counterparties: number;
+            /** Ring Id */
+            ring_id: string;
+            /** Text */
+            text: string;
+            /** Total Amount */
+            total_amount: number;
+        };
+        /** ConclusionTrail */
+        ConclusionTrail: {
+            /** Accounts Reached */
+            accounts_reached: string[];
+            /** Amount In */
+            amount_in: number;
+            /** Amount Out */
+            amount_out: number;
+            /** N Chains */
+            n_chains: number;
+            /** N Circular */
+            n_circular: number;
+            /** N Cross Account Chains */
+            n_cross_account_chains: number;
+            /** N Intermediaries */
+            n_intermediaries: number;
         };
         /** ConnectionAccount */
         ConnectionAccount: {
@@ -1477,6 +1653,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    conclusion_api_conclusion_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Conclusion"];
                 };
             };
         };
