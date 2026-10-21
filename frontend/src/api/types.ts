@@ -1,0 +1,50 @@
+/**
+ * API response types: KEEP when replacing the UI.
+ *
+ * Every type is an alias of the generated OpenAPI schema (schema.gen.ts), which
+ * is produced from docs/openapi.json by `npm run gen:api`. Never edit
+ * schema.gen.ts by hand; change the backend model, re-export, regenerate.
+ */
+import type { components } from "./schema.gen";
+
+type S = components["schemas"];
+
+export type Stats = S["Stats"];
+export type Lead = S["Lead"];
+export type Alert = S["Alert"];
+export type AccountListItem = S["AccountListItem"];
+export type AccountDetail = S["AccountDetail"];
+export type AccountScore = S["AccountScore"];
+export type Reason = S["Reason"];
+export type Indicator = S["Indicator"];
+export type FlaggedWeek = S["FlaggedWeek"];
+export type ShapReason = S["ShapReason"];
+export type Timeline = S["Timeline"];
+export type TimelineTxn = S["TimelineTxn"];
+export type DailyFlow = S["DailyFlow"];
+export type WeekScore = S["WeekScore"];
+export type Trail = S["Trail"];
+export type TrailPath = S["TrailPath"];
+export type TrailNode = S["TrailNode"];
+export type TrailEdge = S["TrailEdge"];
+export type Ring = S["Ring"];
+export type RingDetail = S["RingDetail"];
+export type CyElements = S["CyElements"];
+export type ComplaintListItem = S["ComplaintListItem"];
+export type ComplaintMatches = S["ComplaintMatches"];
+export type ComplaintMatch = S["ComplaintMatch"];
+export type CounterpartyRef = S["CounterpartyRef"];
+export type ModelSummary = S["ModelSummary"];
+export type PipelineRunResult = S["PipelineRunResult"];
+
+export type Tier = "HIGH" | "MEDIUM" | "LOW";
+export type Role = "collector" | "distributor" | "layering" | "normal-looking" | "unclassified" | "sparse";
+export type TrailDirection = "forward" | "backward" | "both";
+
+export interface AccountFilters {
+  tier?: Tier;
+  role?: string;
+  ring_id?: string;
+  time_reliable?: boolean;
+  q?: string;
+}
