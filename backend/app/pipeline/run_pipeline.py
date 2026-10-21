@@ -22,16 +22,17 @@ from app.graph.builder import build_edges, build_graph, node_table
 from app.graph.centrality import centrality, network_scores
 from app.graph.communities import core_graph, detect_rings
 from app.ingestion.loader import load_all, write_outputs
+from app.models.trainer import train_models
 from app.scoring.alerts import alerts as make_alerts
 from app.scoring.alerts import lead_list
-from app.scoring.reasons import reasons_table
+from app.scoring.reasons import MLContext, reasons_table
 from app.scoring.risk_score import risk_scores
 
 log = logging.getLogger("trace360.pipeline")
 
 
 def run(raw_dir: Path | None = None, processed_dir: Path | None = None, db_path: Path | None = None,
-        synthetic_dir: Path | None = None) -> dict:
+        synthetic_dir: Path | None = None, model_dir: Path | None = None, return_tables: bool = False) -> dict:
     processed_dir = processed_dir or config.PROCESSED_DIR
     synthetic_dir = synthetic_dir or config.SYNTHETIC_DIR
     t0 = time.time()
@@ -60,6 +61,10 @@ def run(raw_dir: Path | None = None, processed_dir: Path | None = None, db_path:
     net = network_scores(accounts, nodes, edges, cent, members, rings)
     lap("graph")
 
+    trained = train_models(windows, feats, accounts, model_dir)
+    ml = MLContext(trained["anomaly"], trained["window_scores"], trained["shap_reasons"], trained["roles"])
+    lap("models")
+
     complaints = generate_complaints(txns)
     ring_of_account = net.dropna(subset=["ring_id"]).set_index("account_id")["ring_id"].to_dict()
     ring_of_node = members.dropna(subset=["ring_id"]).set_index("node_id")["ring_id"].to_dict()
@@ -69,9 +74,10 @@ def run(raw_dir: Path | None = None, processed_dir: Path | None = None, db_path:
     complaints.to_csv(synthetic_dir / "complaints.csv", index=False)
     lap("complaints")
 
-    scores = risk_scores(accounts, ind_scores, net)
-    reasons = reasons_table(accounts, ind, net)
-    leads = lead_list(scores, reasons, accounts)
+    scores = risk_scores(accounts, ind_scores, net, trained["anomaly"])
+    ml.uplift = scores.set_index("account_id")["anomaly_uplift"].to_dict()
+    reasons = reasons_table(accounts, ind, net, ml)
+    leads = lead_list(scores, reasons, accounts, trained["anomaly"], trained["roles"])
     alert_df = make_alerts(leads)
     lap("scoring")
 
@@ -94,6 +100,13 @@ def run(raw_dir: Path | None = None, processed_dir: Path | None = None, db_path:
         "n_alerts": int(len(alert_df)),
         "alert_threshold": config.ALERT_THRESHOLD,
         "complaints": match_eval,
+        "models": {
+            "windows": int(len(windows)),
+            "flagged_windows": int(trained["window_scores"]["is_flagged"].sum()) if len(trained["window_scores"]) else 0,
+            "accounts_with_anomaly_score": int(trained["anomaly"]["anomaly_score"].notna().sum()),
+            "role_clusters": int(len(trained["role_profiles"])),
+            "roles": trained["roles"]["role"].value_counts().astype(int).to_dict(),
+        },
         "timings_s": timings,
     }
 
@@ -114,12 +127,19 @@ def run(raw_dir: Path | None = None, processed_dir: Path | None = None, db_path:
         "reasons": reasons,
         "leads": leads,
         "alerts": alert_df,
+        "window_scores": trained["window_scores"],
+        "shap_reasons": trained["shap_reasons"],
+        "account_anomaly": trained["anomaly"],
+        "account_roles": trained["roles"],
+        "role_profiles": trained["role_profiles"],
     }
     write_outputs(tables, processed_dir, db_path)
     (processed_dir / "stats.json").write_text(json.dumps(stats, indent=2, default=str))
     lap("write")
     stats["timings_s"] = timings
     (processed_dir / "stats.json").write_text(json.dumps(stats, indent=2, default=str))
+    if return_tables:
+        return {"stats": stats, "tables": tables, "trained": trained}
     return stats
 
 

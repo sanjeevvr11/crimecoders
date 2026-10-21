@@ -69,6 +69,7 @@ def write_outputs(tables: dict[str, pd.DataFrame], processed_dir: Path | None = 
     processed_dir = processed_dir or config.PROCESSED_DIR
     db_path = db_path or config.DUCKDB_PATH
     processed_dir.mkdir(parents=True, exist_ok=True)
+    tables = {k: v for k, v in tables.items() if len(v.columns)}  # nothing to store for column-less frames
     for name, df in tables.items():
         df.to_parquet(processed_dir / f"{name}.parquet", index=False)
     con = duckdb.connect(str(db_path))
