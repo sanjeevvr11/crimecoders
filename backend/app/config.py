@@ -78,8 +78,47 @@ MATCH_AMOUNT_TOLERANCE = 0.02
 MATCH_TIME_WINDOW_DAYS = 3
 MATCH_MIN_CONFIDENCE = 0.55
 
+# ---------------------------------------------------------------- models (Phase 2)
+MODEL_DIR = Path(os.environ.get("TRACE360_MODEL_DIR", REPO_ROOT / "backend" / "app" / "models" / "artifacts"))
+REPORTS_DIR = Path(os.environ.get("TRACE360_REPORTS_DIR", REPO_ROOT / "reports"))
+MODEL_SEED = 42
+IFOREST_TREES = 300
+IFOREST_CONTAMINATION = 0.05  # share of account-weeks flagged as anomalous
+ACCOUNT_TOP_WINDOWS = 3  # account anomaly = mean of its top-k window scores
+# A week's anomaly_score is 0 below this percentile of training weeks and rises
+# linearly to 1 at the top; a flagged week (top 5%) scores >= 0.5. Without this
+# floor every long-history account's top-3 weeks sit near the top percentiles.
+ANOMALY_FLOOR_PCT = 0.90
+SHAP_TOP_FEATURES = 3
+# 'leaf' gives finer, more interpretable groups than the default 'eom' (which
+# finds only two coarse clusters here) at the cost of more noise; see the evaluation
+HDBSCAN_SELECTION = "leaf"
+HDBSCAN_WINDOW_MIN_CLUSTER = 15
+HDBSCAN_WINDOW_MIN_SAMPLES = 5
+HDBSCAN_ACCOUNT_MIN_CLUSTER = 3
+ROLE_MIN_WEEK_TXNS = 10  # sparser weeks are labelled 'sparse', not clustered
+ROLE_MIN_SHARE = 0.25  # an account's dominant role must cover >= this share of its weeks
+# role naming thresholds, applied to cluster medians in raw units
+ROLE_COLLECTOR_MIN_CR_SHARE = 0.75
+ROLE_DISTRIBUTOR_MAX_CR_SHARE = 0.25
+ROLE_LAYERING_PASS_THROUGH = (0.8, 1.25)
+ROLE_LAYERING_MIN_FAST_OUTFLOW = 0.4
+ROLE_LAYERING_MAX_DWELL_HOURS = 6.0
+EVAL_SEEDS = (0, 1, 2, 3, 4)
+EVAL_TEST_SHARE = 0.3
+EVAL_INJECT_SHARE = 0.10  # injected windows as a share of the test set
+EVAL_TIME_SPLIT = 0.7
+
 # ---------------------------------------------------------------- scoring
-SCORE_WEIGHTS = {"indicator": 0.65, "network": 0.35, "anomaly": 0.0}  # anomaly: Phase 2
+# risk = base + ANOMALY_UPLIFT * anomaly * (100 - base), base = weighted rules + network.
+# The anomaly model compares each week with the account's OWN history, so a
+# consistently mule-like account scores 0 there; as a weighted-average part that 0
+# would drag such accounts down (SOA9 fell 70.7 -> 49.6 when tried). As an uplift
+# it can only add evidence. Accounts without reliable timestamps get no uplift:
+# missing is never imputed as 0 risk or as a penalty.
+SCORE_WEIGHTS = {"indicator": 0.65, "network": 0.35}
+ANOMALY_UPLIFT = 0.30
+PHASE1_SCORE_WEIGHTS = {"indicator": 0.65, "network": 0.35}
 ALERT_THRESHOLD = 50.0
 TIERS = ((70.0, "HIGH"), (50.0, "MEDIUM"), (0.0, "LOW"))
 TOP_REASONS = 5
