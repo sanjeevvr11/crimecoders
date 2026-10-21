@@ -68,12 +68,24 @@ def test_risk_score_and_alerts():
     ind = pd.DataFrame({"account_id": ["A", "B", "C"], "indicator_score": [1.0, 0.5, 0.0]})
     net = pd.DataFrame({"account_id": ["A", "B", "C"], "network_score": [1.0, 0.5, 0.0], "ring_id": ["R1", None, None]})
     s = risk_scores(accounts, ind, net)
-    assert config.SCORE_WEIGHTS["anomaly"] == 0
     assert s.set_index("account_id")["risk_score"].to_dict() == {"A": 100.0, "B": 50.0, "C": 0.0}
-    assert s["anomaly_score"].eq(0).all()
+    assert s["anomaly_score"].isna().all() and s["anomaly_uplift"].eq(0).all()
     reasons = pd.DataFrame({"account_id": ["A"], "rank": [1], "source": ["indicator"], "text": ["x"], "contribution": [1.0]})
     leads = lead_list(s, reasons, accounts)
     assert leads["account_id"].tolist() == ["A", "B", "C"]
     a = alerts(leads, threshold=50)
     assert a["account_id"].tolist() == ["A", "B"] and a["alert_id"].tolist() == ["ALR-001", "ALR-002"]
     assert tier_for(75) == "HIGH" and tier_for(55) == "MEDIUM" and tier_for(10) == "LOW"
+
+
+def test_anomaly_is_an_uplift_and_missing_is_not_a_penalty():
+    accounts = pd.DataFrame({"account_id": ["A", "B", "C"]})
+    ind = pd.DataFrame({"account_id": ["A", "B", "C"], "indicator_score": [0.5, 0.5, 0.5]})
+    net = pd.DataFrame({"account_id": ["A", "B", "C"], "network_score": [0.5, 0.5, 0.5], "ring_id": [None] * 3})
+    anom = pd.DataFrame({"account_id": ["A", "B", "C"], "anomaly_score": [1.0, 0.0, None]})
+    s = risk_scores(accounts, ind, net, anom).set_index("account_id")
+    # base 50; A gets the full uplift on the remaining headroom, B (steady) and C (no timestamps) keep the base
+    assert s.loc["A", "risk_score"] == pytest.approx(50 + config.ANOMALY_UPLIFT * 50)
+    assert s.loc["B", "risk_score"] == 50.0 and s.loc["C", "risk_score"] == 50.0
+    assert s.loc["C", "score_parts"] == "indicator,network"
+    assert (s["risk_score_phase1"] == 50.0).all()

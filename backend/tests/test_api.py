@@ -15,6 +15,7 @@ def client(pipeline_dirs, monkeypatch):
     for attr, key in (("RAW_DIR", "raw_dir"), ("PROCESSED_DIR", "processed_dir"), ("DUCKDB_PATH", "db_path"), ("SYNTHETIC_DIR", "synthetic_dir")):
         monkeypatch.setattr(config, attr, pipeline_dirs[key])
     monkeypatch.setattr(config, "N_SYNTHETIC_COMPLAINTS", 12)
+    monkeypatch.setattr(config, "MODEL_DIR", pipeline_dirs["model_dir"])
     run(**pipeline_dirs)
     set_store(Store(pipeline_dirs["processed_dir"]))
     yield TestClient(app)
@@ -102,6 +103,24 @@ def test_pipeline_run_endpoint(client):
     r = client.post("/api/pipeline/run")
     assert r.status_code == 200 and r.json()["stats"]["n_accounts"] == 6
     assert client.get("/api/stats").json()["n_transactions"] > 0
+
+
+def test_ml_fields(client):
+    d = client.get("/api/accounts/SOA7").json()
+    assert {"anomaly_score", "flagged_weeks", "role", "shap_reasons"} <= set(d)
+    assert d["anomaly_score"] is not None and isinstance(d["shap_reasons"], list)
+    no_time = client.get("/api/accounts/SOA2").json()
+    assert no_time["anomaly_score"] is None and no_time["flagged_weeks"] is None  # not imputed as 0
+    lead = client.get("/api/leads").json()[0]
+    assert {"risk_score_phase1", "anomaly_uplift", "role"} <= set(lead)
+
+
+def test_models_summary(client):
+    r = client.get("/api/models/summary")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["model_card"]["labels_available"] is False
+    assert "isolation_forest" in body["model_card"]["models"]
 
 
 def test_cors(client):

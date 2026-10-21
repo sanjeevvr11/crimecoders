@@ -121,6 +121,15 @@ def raw_dir(tmp_path: Path, crn_df, debit_credit_df, icore_short_df, icore_full_
     return raw
 
 
+@pytest.fixture(autouse=True)
+def isolate_outputs(tmp_path, monkeypatch):
+    """Never let a test overwrite the committed model artefacts or reports."""
+    from app import config
+
+    monkeypatch.setattr(config, "MODEL_DIR", tmp_path / "models")
+    monkeypatch.setattr(config, "REPORTS_DIR", tmp_path / "reports")
+
+
 @pytest.fixture
 def pipeline_dirs(tmp_path: Path, raw_dir: Path) -> dict:
     return {
@@ -128,4 +137,5 @@ def pipeline_dirs(tmp_path: Path, raw_dir: Path) -> dict:
         "processed_dir": tmp_path / "processed",
         "db_path": tmp_path / "trace360.duckdb",
         "synthetic_dir": tmp_path / "synthetic",
+        "model_dir": tmp_path / "models",
     }
