@@ -1440,6 +1440,202 @@
         "title": "DailyFlow",
         "type": "object"
       },
+      "DataArchive": {
+        "properties": {
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "files": {
+            "description": "file names, digits masked",
+            "items": {
+              "type": "string"
+            },
+            "title": "Files",
+            "type": "array"
+          },
+          "n_files": {
+            "title": "N Files",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "reason": {
+            "description": "replaced | removed",
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "reason",
+          "files",
+          "n_files"
+        ],
+        "title": "DataArchive",
+        "type": "object"
+      },
+      "DataFile": {
+        "properties": {
+          "accounts": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Accounts",
+            "type": "array"
+          },
+          "analysed": {
+            "description": "included in the current results",
+            "title": "Analysed",
+            "type": "boolean"
+          },
+          "has_counterparties": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Has Counterparties"
+          },
+          "layouts": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Layouts",
+            "type": "array"
+          },
+          "n_rows": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "N Rows"
+          },
+          "name": {
+            "description": "stored name N_SOA.<ext>; N becomes the account id SOA<N>",
+            "title": "Name",
+            "type": "string"
+          },
+          "original_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "uploaded file name (digits masked); null for the original dataset",
+            "title": "Original Name"
+          },
+          "size_bytes": {
+            "title": "Size Bytes",
+            "type": "integer"
+          },
+          "time_reliable": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time Reliable"
+          },
+          "uploaded_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Uploaded At"
+          }
+        },
+        "required": [
+          "name",
+          "size_bytes",
+          "analysed",
+          "accounts",
+          "layouts"
+        ],
+        "title": "DataFile",
+        "type": "object"
+      },
+      "DatasetState": {
+        "properties": {
+          "accepted": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Accepted",
+            "type": "array"
+          },
+          "archives": {
+            "items": {
+              "$ref": "#/components/schemas/DataArchive"
+            },
+            "title": "Archives",
+            "type": "array"
+          },
+          "files": {
+            "items": {
+              "$ref": "#/components/schemas/DataFile"
+            },
+            "title": "Files",
+            "type": "array"
+          },
+          "job": {
+            "$ref": "#/components/schemas/PipelineJob"
+          },
+          "max_upload_mb": {
+            "title": "Max Upload Mb",
+            "type": "integer"
+          },
+          "needs_rerun": {
+            "description": "the statements changed since the results were computed",
+            "title": "Needs Rerun",
+            "type": "boolean"
+          },
+          "staged": {
+            "items": {
+              "$ref": "#/components/schemas/StagedFile"
+            },
+            "title": "Staged",
+            "type": "array"
+          }
+        },
+        "required": [
+          "files",
+          "staged",
+          "archives",
+          "job",
+          "needs_rerun",
+          "accepted",
+          "max_upload_mb"
+        ],
+        "title": "DatasetState",
+        "type": "object"
+      },
       "FlaggedWeek": {
         "properties": {
           "anomaly_score": {
@@ -1855,6 +2051,123 @@
         "title": "NodeConnections",
         "type": "object"
       },
+      "PipelineJob": {
+        "properties": {
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "mode": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "add | replace | restore | remove | rerun",
+            "title": "Mode"
+          },
+          "n_accounts": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "N Accounts"
+          },
+          "n_alerts": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "N Alerts"
+          },
+          "n_transactions": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "N Transactions"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started At"
+          },
+          "state": {
+            "description": "idle | running | done | failed",
+            "title": "State",
+            "type": "string"
+          },
+          "step": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "last finished step",
+            "title": "Step"
+          },
+          "steps": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Steps",
+            "type": "array"
+          },
+          "steps_done": {
+            "title": "Steps Done",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "state",
+          "steps",
+          "steps_done"
+        ],
+        "title": "PipelineJob",
+        "type": "object"
+      },
       "PipelineRunResult": {
         "properties": {
           "stats": {
@@ -1959,6 +2272,22 @@
         "title": "RingDetail",
         "type": "object"
       },
+      "RunRequest": {
+        "properties": {
+          "mode": {
+            "default": "add",
+            "description": "add = uploads join the current statements; replace = uploads become the whole dataset (current statements are archived)",
+            "enum": [
+              "add",
+              "replace"
+            ],
+            "title": "Mode",
+            "type": "string"
+          }
+        },
+        "title": "RunRequest",
+        "type": "object"
+      },
       "ShapReason": {
         "properties": {
           "contribution": {
@@ -1980,6 +2309,120 @@
           "text"
         ],
         "title": "ShapReason",
+        "type": "object"
+      },
+      "SheetCheck": {
+        "properties": {
+          "first_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "null when the layout's dates are unreliable",
+            "title": "First Date"
+          },
+          "last_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Date"
+          },
+          "layout": {
+            "description": "detected statement layout, e.g. icore_short",
+            "title": "Layout",
+            "type": "string"
+          },
+          "n_rows": {
+            "title": "N Rows",
+            "type": "integer"
+          },
+          "pct_counterparty": {
+            "description": "% of rows where a counterparty (UPI id, account, IFSC) was found",
+            "title": "Pct Counterparty",
+            "type": "number"
+          },
+          "sheet": {
+            "description": "sheet name, digits masked",
+            "title": "Sheet",
+            "type": "string"
+          },
+          "time_reliable": {
+            "title": "Time Reliable",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "sheet",
+          "layout",
+          "n_rows",
+          "time_reliable",
+          "pct_counterparty"
+        ],
+        "title": "SheetCheck",
+        "type": "object"
+      },
+      "StagedFile": {
+        "properties": {
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "id": {
+            "description": "id of the uploaded file; empty when rejected",
+            "title": "Id",
+            "type": "string"
+          },
+          "ok": {
+            "description": "false = rejected and not kept; see error",
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "original_name": {
+            "description": "uploaded file name, digits masked",
+            "title": "Original Name",
+            "type": "string"
+          },
+          "sheets": {
+            "items": {
+              "$ref": "#/components/schemas/SheetCheck"
+            },
+            "title": "Sheets",
+            "type": "array"
+          },
+          "size_bytes": {
+            "title": "Size Bytes",
+            "type": "integer"
+          },
+          "uploaded_at": {
+            "title": "Uploaded At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "original_name",
+          "size_bytes",
+          "uploaded_at",
+          "ok",
+          "sheets"
+        ],
+        "title": "StagedFile",
         "type": "object"
       },
       "Stats": {
@@ -3419,6 +3862,264 @@
         "summary": "Conclusion",
         "tags": [
           "conclusion"
+        ]
+      }
+    },
+    "/api/data": {
+      "get": {
+        "description": "The statements in the dataset, uploads waiting to be analysed, archived sets and the analysis job.",
+        "operationId": "get_dataset_api_data_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatasetState"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Dataset",
+        "tags": [
+          "data"
+        ]
+      }
+    },
+    "/api/data/archives/{name}/restore": {
+      "post": {
+        "description": "Bring an archived set back (a replaced dataset swaps places with the current one), then re-analyse.",
+        "operationId": "restore_archive_api_data_archives__name__restore_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "title": "Name",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatasetState"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Restore Archive",
+        "tags": [
+          "data"
+        ]
+      }
+    },
+    "/api/data/files/{name}": {
+      "delete": {
+        "description": "Set a statement aside (it goes to the archive and can be restored), then re-analyse.",
+        "operationId": "remove_statement_api_data_files__name__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "title": "Name",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatasetState"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Remove Statement",
+        "tags": [
+          "data"
+        ]
+      }
+    },
+    "/api/data/job": {
+      "get": {
+        "operationId": "get_job_api_data_job_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PipelineJob"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Job",
+        "tags": [
+          "data"
+        ]
+      }
+    },
+    "/api/data/run": {
+      "post": {
+        "description": "Move the uploads into the dataset (add, or replace the current statements) and analyse in the background.\nWith no uploads and mode=add it simply re-analyses the current statements.",
+        "operationId": "run_analysis_api_data_run_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RunRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatasetState"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Run Analysis",
+        "tags": [
+          "data"
+        ]
+      }
+    },
+    "/api/data/staged": {
+      "post": {
+        "description": "Upload one statement as the raw request body. It is checked like the pipeline would read it;\na file that cannot be analysed comes back with ok=false and is not kept.",
+        "operationId": "upload_statement_api_data_staged_post",
+        "parameters": [
+          {
+            "description": "the file's original name, e.g. 30_SOA.xlsx",
+            "in": "query",
+            "name": "filename",
+            "required": true,
+            "schema": {
+              "description": "the file's original name, e.g. 30_SOA.xlsx",
+              "title": "Filename",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StagedFile"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Upload Statement",
+        "tags": [
+          "data"
+        ]
+      }
+    },
+    "/api/data/staged/{file_id}": {
+      "delete": {
+        "operationId": "delete_staged_api_data_staged__file_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "file_id",
+            "required": true,
+            "schema": {
+              "title": "File Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatasetState"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Delete Staged",
+        "tags": [
+          "data"
         ]
       }
     },

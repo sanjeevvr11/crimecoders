@@ -65,6 +65,13 @@ already running), 422 (bad query parameter) or 503 (pipeline not run yet).
 | `GET /api/health` | none | `{status}` | `api.health()` |
 | `GET /api/stats` | none | `Stats` | `api.stats()` |
 | `POST /api/pipeline/run` | none (takes about a minute) | `PipelineRunResult` | `api.runPipeline()` |
+| `GET /api/data` | none | `DatasetState` (statements, uploads waiting, archived sets, analysis job, `needs_rerun`) | `api.dataset()` |
+| `GET /api/data/job` | none | `PipelineJob` (poll while `state` is `running`) | `api.dataJob()` |
+| `POST /api/data/staged?filename=` | the file as the raw request body | `StagedFile` (`ok=false` + `error` when rejected; nothing is kept) | `api.uploadStatement(file)` |
+| `DELETE /api/data/staged/{id}` | none | `DatasetState` | `api.removeUpload(id)` |
+| `POST /api/data/run` | JSON `{"mode": "add" \| "replace"}` | `DatasetState`; starts the analysis in the background | `api.runAnalysis(mode)` |
+| `DELETE /api/data/files/{name}` | none | `DatasetState`; archives the statement, re-analyses | `api.removeStatement(name)` |
+| `POST /api/data/archives/{name}/restore` | none | `DatasetState`; restores the set, re-analyses | `api.restoreArchive(name)` |
 | `GET /api/leads` | `tier` (HIGH/MEDIUM/LOW), `limit` (≤1000) | `Lead[]` ranked by risk | `api.leads({tier, limit})` |
 | `GET /api/alerts` | none | `Alert[]` (leads at or above the alert threshold) | `api.alerts()` |
 | `GET /api/conclusion` | none | `Conclusion` (headline, one finding per screen, accounts to act on with a next step, watchlist, rings, top account-to-account chains, limitations, next steps) | `api.conclusion()` |
@@ -112,6 +119,7 @@ ignores stale responses. Import from `src/hooks`.
 | `useNodeTransactions(ref, account?, limit, offset, order)` | `/api/graph/nodes/{ref}/transactions` | `NodeConnections` |
 | `useComplaints()` / `useComplaintMatches(id)` | `/api/complaints[/{id}/matches]` | `ComplaintListItem[]` / `ComplaintMatches` |
 | `useModelSummary()` | `/api/models/summary` | `ModelSummary` |
+| `useDataset()` | `/api/data` | `DatasetState` (poll `api.dataJob()` while an analysis runs, then `reload()`) |
 
 `useApi(fn, deps, enabled)` is the generic building block for new hooks. For actions (re-run the
 pipeline) call `api.runPipeline()` directly from an event handler and then `reload()` the hooks.
@@ -136,7 +144,7 @@ pipeline) call `api.runPipeline()` directly from an event handler and then `relo
 
 ## 6. Routes used by the current UI
 
-`/` overview · `/leads` · `/trail` and `/trail/:id` (money trail) · `/accounts/:id` · `/network` and `/network/:ringId` · `/complaints` · `/models`
+`/` overview · `/leads` · `/trail` and `/trail/:id` (money trail) · `/accounts/:id` · `/network` and `/network/:ringId` · `/complaints` · `/models` · `/data`
 
 ## 7. Replacing the UI: steps
 
@@ -169,5 +177,7 @@ response model in `backend/app/schemas/api.py`, run `python scripts/export_opena
 - [ ] Network page lists 3 rings and draws the selected ring; clicking an account node opens it.
 - [ ] Complaints page marks complaints as synthetic and shows matches with confidence.
 - [ ] Models page labels the metrics as synthetic-injection, not accuracy.
+- [ ] Data page: uploading a statement shows its layout, rows, dates and counterparties; a file in an unknown
+      layout is rejected with a reason; Run analysis (add or replace) shows progress and every screen updates after.
 - [ ] Loading and API-down states are visible (stop the API and reload).
 - [ ] Only masked identifiers appear anywhere.

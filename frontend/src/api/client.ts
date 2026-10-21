@@ -8,8 +8,8 @@
  * same origin, where the Vite dev proxy forwards /api to the backend.
  */
 import type {
-  AccountDetail, AccountFilters, AccountListItem, Alert, ComplaintListItem, ComplaintMatches, Conclusion, Lead,
-  ModelSummary, NetworkOverview, NodeConnections, PipelineRunResult, Ring, RingDetail, SortOrder, Stats, Tier, Timeline, Trail, TrailDirection, TrailGraph,
+  AccountDetail, AccountFilters, AccountListItem, Alert, ComplaintListItem, ComplaintMatches, Conclusion, DatasetState, Lead,
+  ModelSummary, NetworkOverview, NodeConnections, PipelineJob, PipelineRunResult, Ring, RingDetail, RunMode, SortOrder, StagedFile, Stats, Tier, Timeline, Trail, TrailDirection, TrailGraph,
 } from "./types";
 
 const BASE = (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/$/, "");
@@ -50,6 +50,23 @@ export const api = {
   health: () => request<{ status: string }>("/api/health"),
   stats: () => request<Stats>("/api/stats"),
   runPipeline: () => request<PipelineRunResult>("/api/pipeline/run", undefined, { method: "POST" }),
+
+  // Data screen: statements in the dataset, uploads, background analysis
+  dataset: () => request<DatasetState>("/api/data"),
+  dataJob: () => request<PipelineJob>("/api/data/job"),
+  /** Upload one statement file; rejected files come back with ok=false and are not kept. */
+  uploadStatement: (file: File) =>
+    request<StagedFile>("/api/data/staged", { filename: file.name }, {
+      method: "POST", body: file, headers: { "Content-Type": "application/octet-stream" },
+    }),
+  removeUpload: (id: string) => request<DatasetState>(`/api/data/staged/${encodeURIComponent(id)}`, undefined, { method: "DELETE" }),
+  runAnalysis: (mode: RunMode) =>
+    request<DatasetState>("/api/data/run", undefined, {
+      method: "POST", body: JSON.stringify({ mode }), headers: { "Content-Type": "application/json" },
+    }),
+  removeStatement: (name: string) => request<DatasetState>(`/api/data/files/${encodeURIComponent(name)}`, undefined, { method: "DELETE" }),
+  restoreArchive: (name: string) =>
+    request<DatasetState>(`/api/data/archives/${encodeURIComponent(name)}/restore`, undefined, { method: "POST" }),
 
   leads: (opts: { tier?: Tier; limit?: number } = {}) => request<Lead[]>("/api/leads", opts),
   alerts: () => request<Alert[]>("/api/alerts"),

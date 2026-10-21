@@ -48,6 +48,7 @@ def main() -> None:
         ("GET /api/leads", "/api/leads?limit=3"),
         ("GET /api/alerts", "/api/alerts"),
         ("GET /api/conclusion", "/api/conclusion"),
+        ("GET /api/data", "/api/data"),
         ("GET /api/accounts", "/api/accounts?tier=HIGH"),
         ("GET /api/accounts/{id}", f"/api/accounts/{account}"),
         ("GET /api/accounts/{id}/timeline", f"/api/accounts/{account}/timeline?limit=2"),

@@ -50,6 +50,13 @@ export type ComplaintMatch = S["ComplaintMatch"];
 export type CounterpartyRef = S["CounterpartyRef"];
 export type ModelSummary = S["ModelSummary"];
 export type PipelineRunResult = S["PipelineRunResult"];
+export type DatasetState = S["DatasetState"];
+export type DataFile = S["DataFile"];
+export type DataArchive = S["DataArchive"];
+export type StagedFile = S["StagedFile"];
+export type SheetCheck = S["SheetCheck"];
+export type PipelineJob = S["PipelineJob"];
+export type RunMode = "add" | "replace";
 
 export type Tier = "HIGH" | "MEDIUM" | "LOW";
 export type Role = "collector" | "distributor" | "layering" | "normal-looking" | "unclassified" | "sparse";

@@ -90,12 +90,15 @@ Outputs: `data/processed/*.parquet`, `data/processed/stats.json` and `data/trace
 
 ## Frontend
 
-`frontend/` is a plain React + Vite + TypeScript UI with seven screens: Overview, Leads, Money Trail,
-Account, Network, Complaints and Models. Overview opens with the conclusion of the whole investigation:
+`frontend/` is a plain React + Vite + TypeScript UI with eight screens: Overview, Leads, Money Trail,
+Account, Network, Complaints, Models and Data. Overview opens with the conclusion of the whole investigation:
 what each screen found, the accounts to act on with a next step for each, rings, the largest
 account-to-account chains, a watchlist and the limits of the evidence. Money Trail (`/trail/:id`) is the investigation view: hop
 columns of where money came from and went, animated transfers, cross-account and shared-counterparty
-chains, and a hop-by-hop breakdown of the chosen chain. It is built so the UI can be replaced without touching the backend:
+chains, and a hop-by-hop breakdown of the chosen chain. Data (`/data`) lets you upload more statements
+(.xls, .xlsx or .csv in one of the supported layouts), check what Trace360 found in each, then add them to
+the dataset or replace it and re-run the analysis; replaced or removed statements are kept in `data/archive/`
+and can be restored. The UI is built so the UI can be replaced without touching the backend:
 `src/api/` (generated types + client) and `src/hooks/` stay, while `src/pages/` and `src/components/`
 can be swapped. See **[docs/FRONTEND_INTEGRATION.md](docs/FRONTEND_INTEGRATION.md)**, plus
 `docs/openapi.json` and `docs/api_examples.md`.
@@ -121,6 +124,10 @@ can be swapped. See **[docs/FRONTEND_INTEGRATION.md](docs/FRONTEND_INTEGRATION.m
 | GET | `/api/reports/account/{id}.pdf` | evidence report |
 | GET | `/api/models/summary` | model card, evaluation metrics, role clusters |
 | POST | `/api/pipeline/run` | re-run the pipeline and reload |
+| GET | `/api/data` | statements in the dataset, uploads waiting, archived sets, analysis job |
+| POST | `/api/data/staged?filename=` | upload one statement (raw body); checked before it is kept |
+| POST | `/api/data/run` | `{"mode": "add"\|"replace"}`: apply uploads and re-analyse in the background |
+| DELETE / POST | `/api/data/files/{name}`, `/api/data/archives/{name}/restore` | set a statement aside / restore a set, then re-analyse |
 
 Names, account numbers, PAN, VPAs and long numbers are masked to their last 4 characters in every
 response. Counterparty node ids are replaced by stable hashed refs (`CP-xxxxxxxxxx`). CORS allows

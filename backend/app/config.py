@@ -15,7 +15,7 @@ PROCESSED_DIR = DATA_DIR / "processed"
 SYNTHETIC_DIR = DATA_DIR / "synthetic"
 DUCKDB_PATH = DATA_DIR / "trace360.duckdb"
 
-RAW_FILE_PATTERN = r"^(\d+)_SOA\.(xls|xlsx)$"
+RAW_FILE_PATTERN = r"^(\d+)_SOA\.(xls|xlsx|csv)$"
 
 # Narration tokens such as 'TXN-AB12CDUPI9' are random 10-char strings. In the
 # delivered dataset the channel codes appear inside them at roughly the rate

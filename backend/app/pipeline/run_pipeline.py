@@ -9,6 +9,7 @@ import json
 import logging
 import time
 from pathlib import Path
+from typing import Callable
 
 import pandas as pd
 
@@ -30,9 +31,13 @@ from app.scoring.risk_score import risk_scores
 
 log = logging.getLogger("trace360.pipeline")
 
+# the steps run() reports through on_step, in order
+STEPS = ("ingest", "features", "graph", "models", "complaints", "scoring", "write")
+
 
 def run(raw_dir: Path | None = None, processed_dir: Path | None = None, db_path: Path | None = None,
-        synthetic_dir: Path | None = None, model_dir: Path | None = None, return_tables: bool = False) -> dict:
+        synthetic_dir: Path | None = None, model_dir: Path | None = None, return_tables: bool = False,
+        on_step: Callable[[str], None] | None = None) -> dict:
     processed_dir = processed_dir or config.PROCESSED_DIR
     synthetic_dir = synthetic_dir or config.SYNTHETIC_DIR
     t0 = time.time()
@@ -41,6 +46,8 @@ def run(raw_dir: Path | None = None, processed_dir: Path | None = None, db_path:
     def lap(name: str) -> None:
         timings[name] = round(time.time() - t0 - sum(timings.values()), 2)
         log.info("%-12s %.2fs", name, timings[name])
+        if on_step:
+            on_step(name)
 
     txns, accounts = load_all(raw_dir)
     lap("ingest")

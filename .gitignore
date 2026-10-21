@@ -2,6 +2,8 @@
 data/raw/*
 data/processed/*
 data/synthetic/*
+data/staging/
+data/archive/
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 !data/synthetic/.gitkeep

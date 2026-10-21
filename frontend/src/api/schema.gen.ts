@@ -166,6 +166,142 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/data": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Dataset
+         * @description The statements in the dataset, uploads waiting to be analysed, archived sets and the analysis job.
+         */
+        get: operations["get_dataset_api_data_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/data/archives/{name}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Restore Archive
+         * @description Bring an archived set back (a replaced dataset swaps places with the current one), then re-analyse.
+         */
+        post: operations["restore_archive_api_data_archives__name__restore_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/data/files/{name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Remove Statement
+         * @description Set a statement aside (it goes to the archive and can be restored), then re-analyse.
+         */
+        delete: operations["remove_statement_api_data_files__name__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/data/job": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Job */
+        get: operations["get_job_api_data_job_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/data/run": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Run Analysis
+         * @description Move the uploads into the dataset (add, or replace the current statements) and analyse in the background.
+         *     With no uploads and mode=add it simply re-analyses the current statements.
+         */
+        post: operations["run_analysis_api_data_run_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/data/staged": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Upload Statement
+         * @description Upload one statement as the raw request body. It is checked like the pipeline would read it;
+         *     a file that cannot be analysed comes back with ok=false and is not kept.
+         */
+        post: operations["upload_statement_api_data_staged_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/data/staged/{file_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Staged */
+        delete: operations["delete_staged_api_data_staged__file_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/graph/nodes/{ref}/transactions": {
         parameters: {
             query?: never;
@@ -865,6 +1001,76 @@ export interface components {
             /** N Txns */
             n_txns: number;
         };
+        /** DataArchive */
+        DataArchive: {
+            /** Created At */
+            created_at?: string | null;
+            /**
+             * Files
+             * @description file names, digits masked
+             */
+            files: string[];
+            /** N Files */
+            n_files: number;
+            /** Name */
+            name: string;
+            /**
+             * Reason
+             * @description replaced | removed
+             */
+            reason: string;
+        };
+        /** DataFile */
+        DataFile: {
+            /** Accounts */
+            accounts: string[];
+            /**
+             * Analysed
+             * @description included in the current results
+             */
+            analysed: boolean;
+            /** Has Counterparties */
+            has_counterparties?: boolean | null;
+            /** Layouts */
+            layouts: string[];
+            /** N Rows */
+            n_rows?: number | null;
+            /**
+             * Name
+             * @description stored name N_SOA.<ext>; N becomes the account id SOA<N>
+             */
+            name: string;
+            /**
+             * Original Name
+             * @description uploaded file name (digits masked); null for the original dataset
+             */
+            original_name?: string | null;
+            /** Size Bytes */
+            size_bytes: number;
+            /** Time Reliable */
+            time_reliable?: boolean | null;
+            /** Uploaded At */
+            uploaded_at?: string | null;
+        };
+        /** DatasetState */
+        DatasetState: {
+            /** Accepted */
+            accepted: string[];
+            /** Archives */
+            archives: components["schemas"]["DataArchive"][];
+            /** Files */
+            files: components["schemas"]["DataFile"][];
+            job: components["schemas"]["PipelineJob"];
+            /** Max Upload Mb */
+            max_upload_mb: number;
+            /**
+             * Needs Rerun
+             * @description the statements changed since the results were computed
+             */
+            needs_rerun: boolean;
+            /** Staged */
+            staged: components["schemas"]["StagedFile"][];
+        };
         /** FlaggedWeek */
         FlaggedWeek: {
             /** Anomaly Score */
@@ -1018,6 +1224,40 @@ export interface components {
              */
             transactions: components["schemas"]["ConnectionTxn"][];
         };
+        /** PipelineJob */
+        PipelineJob: {
+            /** Error */
+            error?: string | null;
+            /** Finished At */
+            finished_at?: string | null;
+            /**
+             * Mode
+             * @description add | replace | restore | remove | rerun
+             */
+            mode?: string | null;
+            /** N Accounts */
+            n_accounts?: number | null;
+            /** N Alerts */
+            n_alerts?: number | null;
+            /** N Transactions */
+            n_transactions?: number | null;
+            /** Started At */
+            started_at?: string | null;
+            /**
+             * State
+             * @description idle | running | done | failed
+             */
+            state: string;
+            /**
+             * Step
+             * @description last finished step
+             */
+            step?: string | null;
+            /** Steps */
+            steps: string[];
+            /** Steps Done */
+            steps_done: number;
+        };
         /** PipelineRunResult */
         PipelineRunResult: {
             stats: components["schemas"]["Stats"];
@@ -1061,6 +1301,16 @@ export interface components {
             elements: components["schemas"]["CyElements"];
             ring: components["schemas"]["Ring"];
         };
+        /** RunRequest */
+        RunRequest: {
+            /**
+             * Mode
+             * @description add = uploads join the current statements; replace = uploads become the whole dataset (current statements are archived)
+             * @default add
+             * @enum {string}
+             */
+            mode: "add" | "replace";
+        };
         /** ShapReason */
         ShapReason: {
             /** Contribution */
@@ -1069,6 +1319,61 @@ export interface components {
             feature: string;
             /** Text */
             text: string;
+        };
+        /** SheetCheck */
+        SheetCheck: {
+            /**
+             * First Date
+             * @description null when the layout's dates are unreliable
+             */
+            first_date?: string | null;
+            /** Last Date */
+            last_date?: string | null;
+            /**
+             * Layout
+             * @description detected statement layout, e.g. icore_short
+             */
+            layout: string;
+            /** N Rows */
+            n_rows: number;
+            /**
+             * Pct Counterparty
+             * @description % of rows where a counterparty (UPI id, account, IFSC) was found
+             */
+            pct_counterparty: number;
+            /**
+             * Sheet
+             * @description sheet name, digits masked
+             */
+            sheet: string;
+            /** Time Reliable */
+            time_reliable: boolean;
+        };
+        /** StagedFile */
+        StagedFile: {
+            /** Error */
+            error?: string | null;
+            /**
+             * Id
+             * @description id of the uploaded file; empty when rejected
+             */
+            id: string;
+            /**
+             * Ok
+             * @description false = rejected and not kept; see error
+             */
+            ok: boolean;
+            /**
+             * Original Name
+             * @description uploaded file name, digits masked
+             */
+            original_name: string;
+            /** Sheets */
+            sheets: components["schemas"]["SheetCheck"][];
+            /** Size Bytes */
+            size_bytes: number;
+            /** Uploaded At */
+            uploaded_at: string;
         };
         /** Stats */
         Stats: {
@@ -1673,6 +1978,204 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Conclusion"];
+                };
+            };
+        };
+    };
+    get_dataset_api_data_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DatasetState"];
+                };
+            };
+        };
+    };
+    restore_archive_api_data_archives__name__restore_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DatasetState"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    remove_statement_api_data_files__name__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DatasetState"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_job_api_data_job_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PipelineJob"];
+                };
+            };
+        };
+    };
+    run_analysis_api_data_run_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RunRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DatasetState"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    upload_statement_api_data_staged_post: {
+        parameters: {
+            query: {
+                /** @description the file's original name, e.g. 30_SOA.xlsx */
+                filename: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StagedFile"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_staged_api_data_staged__file_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                file_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DatasetState"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

@@ -225,6 +225,58 @@ Lists are cut to the first item (`"…"` marks more). Field definitions: `docs/o
 }
 ```
 
+## `GET /api/data`
+
+`/api/data`
+
+```json
+{
+  "files": [
+    {
+      "name": "1_SOA.xlsx",
+      "original_name": null,
+      "uploaded_at": null,
+      "size_bytes": 14998,
+      "analysed": true,
+      "accounts": [
+        "SOA1"
+      ],
+      "layouts": [
+        "misc_ledger"
+      ],
+      "n_rows": 128,
+      "time_reliable": false,
+      "has_counterparties": false
+    },
+    "…"
+  ],
+  "staged": [],
+  "archives": [],
+  "job": {
+    "state": "idle",
+    "mode": null,
+    "step": null,
+    "steps": [
+      "ingest",
+      "…"
+    ],
+    "steps_done": 0,
+    "started_at": null,
+    "finished_at": null,
+    "error": null,
+    "n_transactions": null,
+    "n_accounts": null,
+    "n_alerts": null
+  },
+  "needs_rerun": false,
+  "accepted": [
+    ".xls",
+    "…"
+  ],
+  "max_upload_mb": 100
+}
+```
+
 ## `GET /api/accounts`
 
 `/api/accounts?tier=HIGH`

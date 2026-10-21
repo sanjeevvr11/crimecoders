@@ -1,4 +1,4 @@
-"""Load every N_SOA.xls(x) statement into the canonical transactions table."""
+"""Load every N_SOA.xls / .xlsx / .csv statement into the canonical transactions table."""
 from __future__ import annotations
 
 import logging
@@ -28,11 +28,19 @@ def discover_files(raw_dir: Path) -> list[tuple[int, Path]]:
     return sorted(found)
 
 
-def load_file(file_no: int, path: Path) -> tuple[list[pd.DataFrame], list[dict]]:
-    txns, accounts = [], []
+def read_sheets(path: Path):
+    """Yield (sheet name, all-string DataFrame) for each sheet; a CSV is one sheet named after the file."""
+    if path.suffix.lower() == ".csv":
+        yield path.stem, pd.read_csv(path, dtype=str)
+        return
     xl = pd.ExcelFile(path)
     for sheet in xl.sheet_names:
-        df = xl.parse(sheet, dtype=str)
+        yield sheet, xl.parse(sheet, dtype=str)
+
+
+def load_file(file_no: int, path: Path) -> tuple[list[pd.DataFrame], list[dict]]:
+    txns, accounts = [], []
+    for sheet, df in read_sheets(path):
         df.columns = [str(c).strip() for c in df.columns]
         if df.empty:
             continue
@@ -48,7 +56,7 @@ def load_all(raw_dir: Path | None = None) -> tuple[pd.DataFrame, pd.DataFrame]:
     raw_dir = raw_dir or config.RAW_DIR
     files = discover_files(raw_dir)
     if not files:
-        raise FileNotFoundError(f"no N_SOA.xls/.xlsx statements found in {raw_dir}")
+        raise FileNotFoundError(f"no N_SOA.xls/.xlsx/.csv statements found in {raw_dir}")
     all_txns, all_accounts = [], []
     for file_no, path in files:
         t, a = load_file(file_no, path)

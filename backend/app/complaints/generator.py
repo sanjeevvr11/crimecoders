@@ -49,7 +49,7 @@ def generate_complaints(txns: pd.DataFrame, n: int | None = None, seed: int | No
 
     rows = []
     for i, t in enumerate(seeds.itertuples(index=False)):
-        kind, ident = t.counterparty_key.split(":", 1)
+        kind, ident = t.counterparty_type, t.counterparty_key.split(":", 1)[1]  # key prefix is "acct:" for type "account"
         reported = _corrupt(ident, rng)
         if kind == "upi" and rng.random() < 0.6:
             reported = f"{reported}@{rng.choice(HANDLES)}"

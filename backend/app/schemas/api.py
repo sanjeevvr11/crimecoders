@@ -6,7 +6,7 @@ from that file. Change a model here -> re-export -> `npm run gen:api`.
 """
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
@@ -349,6 +349,76 @@ class Conclusion(BaseModel):
     top_chains: list[ConclusionChain] = Field(description="largest chains that carry money from one investigated account to another")
     limitations: list[str]
     next_steps: list[str]
+
+
+# ---------------------------------------------------------------- data (dataset management)
+class SheetCheck(BaseModel):
+    sheet: str = Field(description="sheet name, digits masked")
+    layout: str = Field(description="detected statement layout, e.g. icore_short")
+    n_rows: int
+    first_date: str | None = Field(None, description="null when the layout's dates are unreliable")
+    last_date: str | None = None
+    time_reliable: bool
+    pct_counterparty: float = Field(description="% of rows where a counterparty (UPI id, account, IFSC) was found")
+
+
+class StagedFile(BaseModel):
+    id: str = Field(description="id of the uploaded file; empty when rejected")
+    original_name: str = Field(description="uploaded file name, digits masked")
+    size_bytes: int
+    uploaded_at: str
+    ok: bool = Field(description="false = rejected and not kept; see error")
+    error: str | None = None
+    sheets: list[SheetCheck]
+
+
+class DataFile(BaseModel):
+    name: str = Field(description="stored name N_SOA.<ext>; N becomes the account id SOA<N>")
+    original_name: str | None = Field(None, description="uploaded file name (digits masked); null for the original dataset")
+    uploaded_at: str | None = None
+    size_bytes: int
+    analysed: bool = Field(description="included in the current results")
+    accounts: list[str]
+    layouts: list[str]
+    n_rows: int | None = None
+    time_reliable: bool | None = None
+    has_counterparties: bool | None = None
+
+
+class DataArchive(BaseModel):
+    name: str
+    created_at: str | None = None
+    reason: str = Field(description="replaced | removed")
+    files: list[str] = Field(description="file names, digits masked")
+    n_files: int
+
+
+class PipelineJob(BaseModel):
+    state: str = Field(description="idle | running | done | failed")
+    mode: str | None = Field(None, description="add | replace | restore | remove | rerun")
+    step: str | None = Field(None, description="last finished step")
+    steps: list[str]
+    steps_done: int
+    started_at: str | None = None
+    finished_at: str | None = None
+    error: str | None = None
+    n_transactions: int | None = None
+    n_accounts: int | None = None
+    n_alerts: int | None = None
+
+
+class DatasetState(BaseModel):
+    files: list[DataFile]
+    staged: list[StagedFile]
+    archives: list[DataArchive]
+    job: PipelineJob
+    needs_rerun: bool = Field(description="the statements changed since the results were computed")
+    accepted: list[str]
+    max_upload_mb: int
+
+
+class RunRequest(BaseModel):
+    mode: Literal["add", "replace"] = Field("add", description="add = uploads join the current statements; replace = uploads become the whole dataset (current statements are archived)")
 
 
 # ---------------------------------------------------------------- graph

@@ -142,7 +142,8 @@ def build_conclusion() -> dict:
 
     headline = (f"{len(alerts)} of {n} accounts show mule-account patterns and need investigation"
                 f" ({n_high} high priority, {n_med} medium)." if len(alerts) else
-                f"None of the {n} accounts reaches the alert threshold of {thr:.0f}.")
+                (f"The account does not reach the alert threshold of {thr:.0f}." if n == 1 else
+                 f"None of the {n} accounts reaches the alert threshold of {thr:.0f}."))
     summary = []
     if ring_out:
         total = sum(r["total_amount"] for r in ring_out)

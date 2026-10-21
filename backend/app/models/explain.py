@@ -17,6 +17,11 @@ from app.models.anomaly import AnomalyModel
 from app.models.features import MODEL_FEATURES, model_matrix
 
 
+def _num(x) -> float:
+    """0 for a missing share (NaN or pd.NA, e.g. a week with no credits)."""
+    return 0.0 if pd.isna(x) else float(x)
+
+
 def _pct(x: float) -> str:
     return f"{x * 100:.0f}%"
 
@@ -39,8 +44,8 @@ REASONS = {
     "log_active_hours": lambda w: f"Active in {int(w['active_hours'])} different hours of the week",
     "night_share": lambda w: f"{_pct(w['night_share'])} of the week's transactions between 00:00 and 05:00",
     "round_amount_share": lambda w: f"{_pct(w['round_amount_share'])} of the week's amounts are round (multiples of ₹500/₹1000)",
-    "small_credit_share": lambda w: f"{_pct(w['small_credit_share'] or 0)} of the week's credits are small (≤ ₹{config.SMALL_CREDIT_MAX:,.0f})",
-    "fast_outflow_share": lambda w: f"{_pct(w['fast_outflow_share'] or 0)} of the week's inflow left within {config.FAST_OUTFLOW_HOURS:g} hours",
+    "small_credit_share": lambda w: f"{_pct(_num(w['small_credit_share']))} of the week's credits are small (≤ ₹{config.SMALL_CREDIT_MAX:,.0f})",
+    "fast_outflow_share": lambda w: f"{_pct(_num(w['fast_outflow_share']))} of the week's inflow left within {config.FAST_OUTFLOW_HOURS:g} hours",
     "log_n_fast_credits": lambda w: f"{int(w['n_fast_credits']):,} credits were followed by a debit within {config.FAST_OUTFLOW_HOURS:g} hours",
     "log_n_night": lambda w: f"{int(w['n_night']):,} transactions between 00:00 and 05:00",
     "log_n_round": lambda w: f"{int(w['n_round']):,} round-amount transactions (multiples of ₹500/₹1000)",

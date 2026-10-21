@@ -32,3 +32,4 @@ export const useRing = (ringId: string | undefined) => useApi(() => api.ring(rin
 export const useComplaints = () => useApi(() => api.complaints(), []);
 export const useComplaintMatches = (id: string | undefined) => useApi(() => api.complaintMatches(id!), [id], !!id);
 export const useModelSummary = () => useApi(() => api.modelSummary(), []);
+export const useDataset = () => useApi(() => api.dataset(), []);
