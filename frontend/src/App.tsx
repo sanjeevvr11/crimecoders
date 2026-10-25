@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { NavLink, Route, Routes, useLocation } from "react-router-dom";
+import { NavLink, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { Account, Complaints, Data, Leads, Models, MoneyTrail, Network, NotFound, Overview } from "./pages";
 
 /** 20px line icons (stroke = currentColor) so the sidebar needs no icon library. */
@@ -17,13 +17,13 @@ const ICONS = {
 };
 
 const NAV = [
+  { to: "/ingestion", label: "Ingestion", hint: "Upload statements, re-run", icon: ICONS.data },
   { to: "/", label: "Dashboard", hint: "What the investigation found", icon: ICONS.overview },
-  { to: "/leads", label: "Leads", hint: "Accounts ranked by risk", icon: ICONS.leads },
   { to: "/trail", label: "Money Trail", hint: "Follow money between accounts", icon: ICONS.trail },
+  { to: "/leads", label: "Leads", hint: "Accounts ranked by risk", icon: ICONS.leads },
   { to: "/network", label: "Network", hint: "Rings and shared counterparties", icon: ICONS.network },
   { to: "/complaints", label: "Complaints", hint: "Victim reports matched to accounts", icon: ICONS.complaints },
   { to: "/models", label: "Models", hint: "How the scores are made", icon: ICONS.models },
-  { to: "/data", label: "Data", hint: "Upload statements, re-run", icon: ICONS.data },
 ];
 
 export default function App() {
@@ -35,7 +35,7 @@ export default function App() {
     <div className={`app${open ? " nav-open" : ""}`}>
       <aside className="sidebar">
         <div className="brand">
-          <span className="brand-mark" aria-hidden="true">T</span>
+          <img className="brand-mark" src="/trace360-icon.png" alt="" aria-hidden="true" />
           <span>
             <span className="brand-name">Trace360</span>
             <span className="brand-sub">Mule account detection</span>
@@ -71,7 +71,8 @@ export default function App() {
             <Route path="/network/:ringId" element={<Network />} />
             <Route path="/complaints" element={<Complaints />} />
             <Route path="/models" element={<Models />} />
-            <Route path="/data" element={<Data />} />
+            <Route path="/ingestion" element={<Data />} />
+            <Route path="/data" element={<Navigate to="/ingestion" replace />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

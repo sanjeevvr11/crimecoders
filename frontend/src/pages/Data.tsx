@@ -260,7 +260,7 @@ export function Data() {
 
   return (
     <div>
-      <h1>Data</h1>
+      <h1>Ingestion</h1>
       <p className="muted">Add new bank statements, check that Trace360 can read them, then re-run the analysis. Every screen updates when it finishes.</p>
       <Async state={dataset} what="the dataset">
         {(d) => <DataView d={current ? { ...d, job: current } : d} reload={reload} setJob={setJob} />}
