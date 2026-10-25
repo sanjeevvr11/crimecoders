@@ -4,14 +4,32 @@ import type { Conclusion, ConclusionAccount } from "../api/types";
 import { Async, RoleBadge, StatTile, TierBadge, inr, inrShort, num, score } from "../components";
 import { useConclusion, useStats } from "../hooks";
 
+/** 22px line icons for the How Trace360 works bar (stroke = currentColor). */
+const icon = (d: ReactNode) => (
+  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{d}</svg>
+);
+
+/** Pipeline steps: title, short line for the bar, full detail on hover, icon, accent colour. */
 const STAGES = [
-  ["1. Ingest", "25 bank statements in 5 different layouts are read and mapped to one common transaction table (494k rows). Only ICORE statements have usable timestamps; balances are randomised and ignored."],
-  ["2. Parse narrations", "UPI / IMPS / NEFT text is parsed for the channel and the counterparty (UPI id, account, IFSC). Identifiers are masked everywhere in the UI."],
-  ["3. Rule indicators", "Explainable mule traits per account: pass-through, many payers (fan-in), many payees (fan-out), money leaving within 2 hours, night activity, bursts, round amounts."],
-  ["4. Money-flow graph", "Accounts and counterparties form a network. Louvain finds rings of accounts sharing counterparties; PageRank and betweenness find hubs and bridges."],
-  ["5. Unsupervised models", "Isolation Forest flags unusual weeks (vs all weeks and vs the account's own history), SHAP explains each flag, HDBSCAN names behaviour roles (collector / distributor / layering)."],
-  ["6. Risk score & leads", "Rules + network form the base score (0-100); unusual weeks add an uplift. Accounts above the threshold become alerts with their top reasons and a PDF evidence report."],
-];
+  ["Ingest", "Bank statements, transactions, complaints and more.",
+    "25 bank statements in 5 different layouts are read and mapped to one common transaction table (494k rows). Only ICORE statements have usable timestamps; balances are randomised and ignored.",
+    icon(<><ellipse cx="12" cy="5" rx="8" ry="3" /><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5" /><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" /></>), "#f6c453"],
+  ["Parse & Normalize", "Clean data, link entities, standardise formats.",
+    "UPI / IMPS / NEFT text is parsed for the channel and the counterparty (UPI id, account, IFSC). Identifiers are masked everywhere in the UI.",
+    icon(<><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z" /></>), "#f6c453"],
+  ["Analyse", "ML models, behaviour patterns, graph analysis.",
+    "Explainable rule indicators (pass-through, fan-in, fan-out, quick exits, night activity, bursts, round amounts), Isolation Forest with SHAP for unusual weeks, and HDBSCAN behaviour roles.",
+    icon(<><path d="M12 5a3 3 0 0 0-5.8-1A3 3 0 0 0 4 8a3 3 0 0 0-1 5 3 3 0 0 0 2 4.8A3 3 0 0 0 12 19Z" /><path d="M12 5a3 3 0 0 1 5.8-1A3 3 0 0 1 20 8a3 3 0 0 1 1 5 3 3 0 0 1-2 4.8A3 3 0 0 1 12 19Z" /><path d="M12 5v14" /></>), "#f08a8a"],
+  ["Correlate & Score", "Rank accounts, link complaints, explain risk.",
+    "Louvain finds rings of accounts sharing counterparties; PageRank and betweenness find hubs. Rules + network form the base score (0-100), unusual weeks add an uplift, and complaints are matched to accounts.",
+    icon(<><circle cx="12" cy="5" r="2" /><circle cx="5" cy="19" r="2" /><circle cx="19" cy="19" r="2" /><path d="M12 7v5M12 12l-5.5 5.5M12 12l5.5 5.5" /></>), "#e2c27a"],
+  ["Investigate", "Money trails, networks, evidence timeline.",
+    "Each flagged account shows its top reasons, money trail, ring and unusual weeks, so an investigator can follow the money hop by hop.",
+    icon(<><circle cx="12" cy="8" r="4" /><path d="M4 21a8 8 0 0 1 16 0" /></>), "#f6c453"],
+  ["Report", "Actionable insights, exportable reports.",
+    "Accounts above the threshold become alerts with a next step and a PDF evidence report.",
+    icon(<><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9Z" /><path d="M14 3v6h6M8 13h8M8 17h8" /></>), "#f3a6c8"],
+] as const;
 
 /** A plain dashboard section: a white box with a heading. */
 function Box({ title, children }: { title: ReactNode; children: ReactNode }) {
@@ -225,10 +243,18 @@ export function Overview() {
       </Async>
 
       <footer className="flow-bar">
-        <span className="flow-title">How Trace360 works</span>
+        <div className="flow-head">
+          <span className="flow-icon" style={{ color: "#f6c453" }} title="How Trace360 works: from data to decisive action">
+            {icon(<><path d="m12 3 9 5-9 5-9-5 9-5Z" /><path d="m3 13 9 5 9-5" /><path d="m3 17 9 5 9-5" /></>)}
+          </span>
+          <span><b>How Trace360 works</b><small>From data to decisive action.</small></span>
+        </div>
         <ol className="flow">
-          {STAGES.map(([t, d]) => (
-            <li className="flow-step" key={t} title={d}>{t.replace(/^\d+\. /, "")}</li>
+          {STAGES.map(([t, short, detail, ic, color], i) => (
+            <li className="flow-step" key={t} title={detail}>
+              <span className="flow-icon" style={{ color }}>{ic}</span>
+              <span><b>{i + 1}. {t}</b><small>{short}</small></span>
+            </li>
           ))}
         </ol>
       </footer>
