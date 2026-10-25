@@ -30,7 +30,7 @@ const MODELS = [
 export function Models() {
   const summary = useModelSummary();
   return (
-    <div>
+    <div className="models-page">
       <h1>Models</h1>
       <table>
         <thead><tr><th>Model</th><th>Use in Trace360</th><th>Why</th></tr></thead>

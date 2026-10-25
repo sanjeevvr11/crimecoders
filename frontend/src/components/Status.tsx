@@ -1,10 +1,12 @@
 import type { ReactNode } from "react";
 import type { ApiState } from "../hooks";
 
-export const Loading = ({ what = "data" }: { what?: string }) => <div className="status">Loading {what}…</div>;
+export const Loading = ({ what = "data" }: { what?: string }) => (
+  <div className="status loading" role="status"><span className="spinner" aria-hidden="true" /> Loading {what}…</div>
+);
 
 export const ErrorBox = ({ error, onRetry }: { error: Error; onRetry?: () => void }) => (
-  <div className="status error">
+  <div className="status error" role="alert">
     <b>Could not load.</b> {error.message}
     {error.message.includes("pipeline") || error.message.includes("Failed to fetch") ? (
       <div className="muted">Is the API running (make api) and has the pipeline been run (make pipeline)?</div>
@@ -13,7 +15,7 @@ export const ErrorBox = ({ error, onRetry }: { error: Error; onRetry?: () => voi
   </div>
 );
 
-export const Empty = ({ children }: { children: ReactNode }) => <div className="status muted">{children}</div>;
+export const Empty = ({ children }: { children: ReactNode }) => <div className="status empty muted">{children}</div>;
 
 /** Renders loading / error / empty states for a hook result, else children(data). */
 export function Async<T>({ state, what, isEmpty, empty, children }: {

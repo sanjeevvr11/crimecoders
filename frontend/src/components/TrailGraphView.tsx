@@ -13,7 +13,7 @@ const GAP = 260; // px between hop columns
 const SUB = 130; // px between sub-columns when a hop has many nodes
 const ROW = 64; // px between nodes in a column
 const PER_COL = 9; // nodes per sub-column before wrapping
-const TIER_RING: Record<string, string> = { HIGH: "#ff3d55", MEDIUM: "#ff9f45", LOW: "#51cf66" };
+const TIER_RING: Record<string, string> = { HIGH: "#ff304f", MEDIUM: "#ff9d35", LOW: "#4d83ff" };
 
 /**
  * Hop columns: money sources on the left (negative levels), the investigated
@@ -67,7 +67,7 @@ function columnTitle(level: number) {
 }
 
 /**
- * Money trail graph: orange transfers with moving dashes in the direction
+ * Money trail graph: blue transfers with moving dashes in the direction
  * money flowed (thicker = more money), dotted teal links where a counterparty also deals with another investigated
  * account. `chain` highlights one chain end to end with amounts on each hop.
  */
@@ -110,40 +110,40 @@ export function TrailGraphView({ graph, chain, selection, onSelect, height = "ca
       ] as cytoscape.ElementDefinition[],
       style: [
         { selector: "node", style: {
-          label: "data(display)", color: "#c2c8d6", "font-size": 13, "text-valign": "bottom", "text-margin-y": 6,
-          "text-wrap": "wrap", "text-max-width": "140px", "background-color": "#0f131d", "border-width": 2, "border-color": "#6b8cc7",
+          label: "data(display)", color: "#a9b8d0", "font-size": 13, "text-valign": "bottom", "text-margin-y": 6,
+          "text-wrap": "wrap", "text-max-width": "140px", "background-color": "#091323", "border-width": 2, "border-color": "#6f8db8",
           width: 26, height: 26,
         } },
-        { selector: "node.kind-upi", style: { shape: "round-rectangle", "border-color": "#38b2ac" } },
-        { selector: "node.kind-ifsc", style: { shape: "diamond", width: 30, height: 30, "border-color": "#9f7aea" } },
-        { selector: "node.kind-account", style: { shape: "rectangle", "border-color": "#63b3ed" } },
-        { selector: "node.kind-name", style: { shape: "ellipse", "border-color": "#a0aec0" } },
+        { selector: "node.kind-upi", style: { shape: "round-rectangle", "border-color": "#35d9e8" } },
+        { selector: "node.kind-ifsc", style: { shape: "diamond", width: 30, height: 30, "border-color": "#8857ff" } },
+        { selector: "node.kind-account", style: { shape: "rectangle", "border-color": "#4d83ff" } },
+        { selector: "node.kind-name", style: { shape: "ellipse", "border-color": "#8a9bb6" } },
         { selector: "node.subject", style: {
-          width: 54, height: 54, "background-color": "#141927", "border-width": 4, "font-size": 13, "font-weight": "bold",
-          color: "#eef1f7", "text-valign": "center", "text-margin-y": 0,
+          width: 54, height: 54, "background-color": "#0d192b", "border-width": 4, "font-size": 13, "font-weight": "bold",
+          color: "#edf3ff", "text-valign": "center", "text-margin-y": 0,
           "border-color": (n: cytoscape.NodeSingular) => TIER_RING[n.data("tier")] ?? "#a0aec0",
         } },
         { selector: "node.circular", style: { "border-style": "double", "border-width": 7 } },
         { selector: "node.start", style: {
-          width: 84, height: 84, "font-size": 16, "underlay-color": "#ff3d55", "underlay-opacity": 0.3, "underlay-padding": 14,
+          width: 84, height: 84, "font-size": 16, "underlay-color": "#ff304f", "underlay-opacity": 0.3, "underlay-padding": 14,
           "underlay-shape": "ellipse",
         } as cytoscape.Css.Node },
         { selector: "node.colhead", style: {
-          shape: "rectangle", width: 1, height: 1, "background-opacity": 0, "border-width": 0, color: "#ff9f45",
+          shape: "rectangle", width: 1, height: 1, "background-opacity": 0, "border-width": 0, color: "#a9b8d0",
           "font-size": 15, "font-weight": "bold", "text-valign": "center", "text-margin-y": 0, events: "no",
         } },
         { selector: "edge", style: {
-          width: "data(w)", "line-color": "#dd6b20", "target-arrow-color": "#f6ad55", "target-arrow-shape": "triangle",
-          "arrow-scale": 0.9, "curve-style": "bezier", opacity: 0.8, "line-style": "dashed", "line-dash-pattern": [10, 6],
+          width: "data(w)", "line-color": "#4d83ff", "target-arrow-color": "#7aa3ff", "target-arrow-shape": "triangle",
+          "arrow-scale": 0.9, "curve-style": "bezier", opacity: 0.75, "line-style": "dashed", "line-dash-pattern": [10, 6],
         } },
         { selector: "edge.shared", style: {
-          "line-color": "#38d9a9", "target-arrow-color": "#38d9a9", "line-dash-pattern": [3, 6], width: 1.5, opacity: 0.8,
+          "line-color": "#35d9e8", "target-arrow-color": "#35d9e8", "line-dash-pattern": [3, 6], width: 1.5, opacity: 0.8,
         } },
         { selector: ".faded", style: { opacity: 0.1 } },
-        { selector: "node.hl", style: { "border-color": "#f5c84b", "border-width": 4 } },
+        { selector: "node.hl", style: { "border-color": "#ff3d81", "border-width": 4 } },
         { selector: "edge.hl", style: {
-          "line-color": "#f5c84b", "target-arrow-color": "#f5c84b", opacity: 1, label: "data(amt)", color: "#eef1f7",
-          "font-size": 12, "font-weight": "bold", "text-background-color": "#0a0d16", "text-background-opacity": 0.9,
+          "line-color": "#ff3d81", "target-arrow-color": "#ff3d81", opacity: 1, label: "data(amt)", color: "#edf3ff",
+          "font-size": 12, "font-weight": "bold", "text-background-color": "#030711", "text-background-opacity": 0.9,
           "text-background-padding": "3px", "z-index": 10,
         } },
       ],
@@ -165,7 +165,9 @@ export function TrailGraphView({ graph, chain, selection, onSelect, height = "ca
     // moving dashes show the direction money flowed
     let offset = 0;
     let frame = 0;
+    const still = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     const tick = () => {
+      if (still) return;
       offset = (offset - 0.6) % 1000;
       cy.edges().style("line-dash-offset", offset);
       frame = requestAnimationFrame(tick);

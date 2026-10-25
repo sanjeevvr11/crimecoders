@@ -13,25 +13,25 @@ const icon = (d: ReactNode) => (
 const STAGES = [
   ["Ingest", "Bank statements, transactions, complaints and more.",
     "25 bank statements in 5 different layouts are read and mapped to one common transaction table (494k rows). Only ICORE statements have usable timestamps; balances are randomised and ignored.",
-    icon(<><ellipse cx="12" cy="5" rx="8" ry="3" /><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5" /><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" /></>), "#f6c453"],
+    icon(<><ellipse cx="12" cy="5" rx="8" ry="3" /><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5" /><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" /></>), "var(--accent-cyan)"],
   ["Parse & Normalize", "Clean data, link entities, standardise formats.",
     "UPI / IMPS / NEFT text is parsed for the channel and the counterparty (UPI id, account, IFSC). Identifiers are masked everywhere in the UI.",
-    icon(<><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z" /></>), "#f6c453"],
+    icon(<><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z" /></>), "var(--accent-electric-blue)"],
   ["Analyse", "ML models, behaviour patterns, graph analysis.",
     "Explainable rule indicators (pass-through, fan-in, fan-out, quick exits, night activity, bursts, round amounts), Isolation Forest with SHAP for unusual weeks, and HDBSCAN behaviour roles.",
-    icon(<><path d="M12 5a3 3 0 0 0-5.8-1A3 3 0 0 0 4 8a3 3 0 0 0-1 5 3 3 0 0 0 2 4.8A3 3 0 0 0 12 19Z" /><path d="M12 5a3 3 0 0 1 5.8-1A3 3 0 0 1 20 8a3 3 0 0 1 1 5 3 3 0 0 1-2 4.8A3 3 0 0 1 12 19Z" /><path d="M12 5v14" /></>), "#f08a8a"],
+    icon(<><path d="M12 5a3 3 0 0 0-5.8-1A3 3 0 0 0 4 8a3 3 0 0 0-1 5 3 3 0 0 0 2 4.8A3 3 0 0 0 12 19Z" /><path d="M12 5a3 3 0 0 1 5.8-1A3 3 0 0 1 20 8a3 3 0 0 1 1 5 3 3 0 0 1-2 4.8A3 3 0 0 1 12 19Z" /><path d="M12 5v14" /></>), "var(--accent-violet)"],
   ["Correlate & Score", "Rank accounts, link complaints, explain risk.",
     "Louvain finds rings of accounts sharing counterparties; PageRank and betweenness find hubs. Rules + network form the base score (0-100), unusual weeks add an uplift, and complaints are matched to accounts.",
-    icon(<><circle cx="12" cy="5" r="2" /><circle cx="5" cy="19" r="2" /><circle cx="19" cy="19" r="2" /><path d="M12 7v5M12 12l-5.5 5.5M12 12l5.5 5.5" /></>), "#e2c27a"],
+    icon(<><circle cx="12" cy="5" r="2" /><circle cx="5" cy="19" r="2" /><circle cx="19" cy="19" r="2" /><path d="M12 7v5M12 12l-5.5 5.5M12 12l5.5 5.5" /></>), "var(--accent-amber)"],
   ["Investigate", "Money trails, networks, evidence timeline.",
     "Each flagged account shows its top reasons, money trail, ring and unusual weeks, so an investigator can follow the money hop by hop.",
-    icon(<><circle cx="12" cy="8" r="4" /><path d="M4 21a8 8 0 0 1 16 0" /></>), "#f6c453"],
+    icon(<><circle cx="12" cy="8" r="4" /><path d="M4 21a8 8 0 0 1 16 0" /></>), "var(--accent-hot-pink)"],
   ["Report", "Actionable insights, exportable reports.",
     "Accounts above the threshold become alerts with a next step and a PDF evidence report.",
-    icon(<><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9Z" /><path d="M14 3v6h6M8 13h8M8 17h8" /></>), "#f3a6c8"],
+    icon(<><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9Z" /><path d="M14 3v6h6M8 13h8M8 17h8" /></>), "var(--accent-crimson)"],
 ] as const;
 
-/** A plain dashboard section: a white box with a heading. */
+/** A plain dashboard section: a panel with a heading. */
 function Box({ title, children }: { title: ReactNode; children: ReactNode }) {
   return (
     <section className="box">
@@ -72,6 +72,37 @@ function OutcomeBar({ c }: { c: Conclusion["counts"] }) {
     </div>
   );
 }
+
+/** "10 of 25 accounts show …": the count is the headline figure, the rest reads as its explanation. */
+function Headline({ text }: { text: string }) {
+  const m = text.match(/^(\d+ of \d+)( accounts?)(.*)$/);
+  if (!m) return <>{text}</>;
+  const [, count, noun, rest] = m;
+  const paren = rest.match(/^(.*?)(\s*\(.*\)\.?)$/);
+  return (
+    <>
+      <span className="hl-num">{count}</span><span className="hl-strong">{noun}</span>
+      {paren ? <>{paren[1]}<span className="hl-rest">{paren[2]}</span></> : rest}
+    </>
+  );
+}
+
+/** Money moving through the rings and the number of distinct account-to-account chains, beside the conclusion. */
+function HeroMetrics({ c }: { c: Conclusion }) {
+  const ringMoney = c.rings.reduce((s, r) => s + r.total_amount, 0);
+  const chains = Number(c.summary.match(/(\d+) distinct chains/)?.[1] ?? c.top_chains.length);
+  return (
+    <div className="verdict-side">
+      {c.rings.length > 0 && (
+        <div className="verdict-metric"><b>{inrShort(ringMoney)}</b><span>moving through {c.rings.length} ring{c.rings.length > 1 ? "s" : ""}</span></div>
+      )}
+      <div className="verdict-metric"><b>{num(chains)}</b><span>distinct chains</span></div>
+    </div>
+  );
+}
+
+const updated = (iso: string) =>
+  new Date(iso).toLocaleString("en-IN", { day: "numeric", month: "short", year: "numeric", hour: "numeric", minute: "2-digit" });
 
 function AccountCard({ a }: { a: ConclusionAccount }) {
   return (
@@ -115,9 +146,12 @@ function ConclusionView({ c, glance }: { c: Conclusion; glance: ReactNode }) {
   return (
     <>
       <section className="verdict-hero">
-        <div className="verdict-kicker">CONCLUSION OF THE INVESTIGATION</div>
-        <h2>{c.headline}</h2>
-        <p>{c.summary}</p>
+        <div className="verdict-main">
+          <div className="verdict-kicker">CONCLUSION OF THE INVESTIGATION</div>
+          <h2><Headline text={c.headline} /></h2>
+          <p>{c.summary}</p>
+        </div>
+        <HeroMetrics c={c} />
         <OutcomeBar c={c.counts} />
       </section>
 
@@ -149,8 +183,9 @@ function ConclusionView({ c, glance }: { c: Conclusion; glance: ReactNode }) {
       </Box>
       <div className="findings">
         {c.findings.map((f) => (
-          <Link key={f.tab} to={f.route} className="finding">
-            <span className="finding-tab">{TAB_ICONS[f.tab]}{f.tab}</span>
+          <Link key={f.tab} to={f.route} className={`finding t-${f.tab.toLowerCase().replace(/[^a-z]/g, "")}`}>
+            <span className="finding-icon">{TAB_ICONS[f.tab]}</span>
+            <span className="finding-tab">{f.tab}</span>
             <b>{f.title}</b>
             <p>{f.text}</p>
             <span className="finding-open">Open {f.tab} →</span>
@@ -219,7 +254,18 @@ export function Overview() {
 
   return (
     <div className="dash-page">
-      <h1>Dashboard</h1>
+      <div className="page-head">
+        <div>
+          <h1>Dashboard</h1>
+          <p>Key findings from bank statement analysis and model outputs</p>
+        </div>
+        {conclusion.data?.generated_at && (
+          <div className="page-meta">
+            {icon(<><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18M8 3v4M16 3v4" /></>)}
+            <span>Last updated<b>{updated(conclusion.data.generated_at)}</b></span>
+          </div>
+        )}
+      </div>
       <Async state={conclusion} what="the conclusion">
         {(c) => (
           <ConclusionView
@@ -244,7 +290,7 @@ export function Overview() {
 
       <footer className="flow-bar">
         <div className="flow-head">
-          <span className="flow-icon" style={{ color: "#f6c453" }} title="How Trace360 works: from data to decisive action">
+          <span className="flow-icon" title="How Trace360 works: from data to decisive action">
             {icon(<><path d="m12 3 9 5-9 5-9-5 9-5Z" /><path d="m3 13 9 5 9-5" /><path d="m3 17 9 5 9-5" /></>)}
           </span>
           <span><b>How Trace360 works</b><small>From data to decisive action.</small></span>

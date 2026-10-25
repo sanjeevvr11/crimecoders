@@ -24,7 +24,7 @@ export default function App() {
         <div className="brand">
           <img className="brand-mark" src="/trace360-icon.png" alt="" aria-hidden="true" />
           <span>
-            <span className="brand-name">Trace360</span>
+            <span className="brand-name">Trace<em>360</em></span>
             <span className="brand-sub">Mule account detection</span>
           </span>
         </div>
@@ -45,7 +45,7 @@ export default function App() {
       <div className="content">
         <div className="topbar">
           <button className="menu-btn" onClick={() => setOpen(true)} aria-label="Open menu">☰</button>
-          <span className="brand-name">Trace360</span>
+          <span className="brand-name">Trace<em>360</em></span>
         </div>
         <main>
           <Routes>

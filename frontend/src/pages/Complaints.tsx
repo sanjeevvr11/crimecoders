@@ -10,7 +10,7 @@ export function Complaints() {
 
   return (
     <div>
-      <h1>Complaints</h1>
+      <h1>Complaints <span className="badge badge-synthetic" title="The dataset has no real complaints; these are generated to demonstrate matching">synthetic data</span></h1>
       <p className="muted">Each complaint's reported UPI ID or account is matched against the counterparties in the statements. Select a complaint to see what it matches.</p>
       <div className="complaints-stack">
         <section className="complaints-matches">
@@ -57,7 +57,9 @@ export function Complaints() {
                         <td className="small">{c.date?.slice(0, 10)}</td>
                         <td className="mono small">{c.reported_upi_or_account} <span className="muted">({c.reported_type})</span></td>
                         <td className="num">{inr(c.amount)}</td>
-                        <td className="num">{c.best_confidence == null ? <span className="muted">none</span> : `${c.best_account_id} · ${(c.best_confidence * 100).toFixed(0)}%`}</td>
+                        <td className="num">{c.best_confidence == null
+                          ? <span className="badge badge-nomatch">no match</span>
+                          : <span className="badge badge-match">{c.best_account_id} · {(c.best_confidence * 100).toFixed(0)}%</span>}</td>
                       </tr>
                     ))}
                   </tbody>

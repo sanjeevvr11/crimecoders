@@ -154,7 +154,7 @@ const TrailLegend = () => (
       <div><span className="sym"><span className="lg-node start" /></span> The account being traced (glowing, in the middle)</div>
       <div><span className="sym"><span className="lg-node subject" /></span> Investigated account; the number inside is its risk score</div>
       <div><span className="sym"><span className="lg-node subject" /><span className="lg-node subject med" /><span className="lg-node subject low" /></span>
-        Ring colour = risk tier: red high, orange medium, green low</div>
+        Ring colour = risk tier: crimson high, amber medium, blue low</div>
       <div><span className="sym"><span className="lg-node circular" /></span> Double ring: circular flow, money goes both to and from it</div>
       <div><span className="sym"><span className="lg-node upi" /></span> UPI ID</div>
       <div><span className="sym"><span className="lg-node ifsc" /></span> Bank branch (IFSC)</div>
@@ -163,7 +163,7 @@ const TrailLegend = () => (
       <div><span className="sym"><span className="lg-line" /></span> Transfer; the moving dashes show which way the money went</div>
       <div><span className="sym"><span className="lg-line thick" /></span> Thicker line = more money</div>
       <div><span className="sym"><span className="lg-line shared" /></span> Common counterparty: also deals with another investigated account</div>
-      <div><span className="sym"><span className="lg-line hl" /></span> Yellow = the chain, dot or line you selected, with amounts on each hop</div>
+      <div><span className="sym"><span className="lg-line hl" /></span> Pink glow = the chain, dot or line you selected, with amounts on each hop</div>
     </div>
   </section>
 );

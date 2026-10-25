@@ -4,8 +4,8 @@ import type { CyElements } from "../api/types";
 import { GraphFrame } from "./GraphFrame";
 
 /** Colour per ring; accounts in no ring are slate. */
-export const RING_COLORS = ["#5b8def", "#ff9f45", "#51cf66", "#a78bfa", "#f06595", "#38d9a9", "#f5c84b", "#ff3d55"];
-export const NO_RING_COLOR = "#6b7385";
+export const RING_COLORS = ["#4d83ff", "#8857ff", "#35d9e8", "#ff9d35", "#ff3d81", "#ffd166", "#7aa3ff", "#b39bff"];
+export const NO_RING_COLOR = "#4a5b78";
 export const ringColor = (ringId: string | null | undefined) =>
   ringId ? RING_COLORS[(Number(ringId.replace(/\D/g, "")) - 1) % RING_COLORS.length] : NO_RING_COLOR;
 
@@ -84,16 +84,16 @@ export function RingGraph({ elements, onSelect, height = 520 }: {
       container: ref.current,
       elements: [...elements.nodes, ...elements.edges] as cytoscape.ElementDefinition[],
       style: [
-        { selector: "node", style: { width: "mapData(degree, 1, 6, 6, 18)", height: "mapData(degree, 1, 6, 6, 18)", "background-color": "#7c859b" } },
+        { selector: "node", style: { width: "mapData(degree, 1, 6, 6, 18)", height: "mapData(degree, 1, 6, 6, 18)", "background-color": "#5d6f8c" } },
         { selector: "node[?is_subject]", style: {
           width: 40 * big, height: 40 * big, "background-color": (n: cytoscape.NodeSingular) => ringColor(n.data("ring_id")),
-          label: "data(label)", color: "#eef1f7", "font-weight": "bold", "font-size": 16 * big, "text-valign": "bottom", "text-margin-y": 4,
+          label: "data(label)", color: "#edf3ff", "font-weight": "bold", "font-size": 16 * big, "text-valign": "bottom", "text-margin-y": 4,
         } },
-        { selector: "node[degree >= 3][!is_subject]", style: { "background-color": "#f5c84b" } },
-        { selector: "edge", style: { width: 0.6, "line-color": "#4a5268", "curve-style": "haystack", opacity: 0.6 } },
+        { selector: "node[degree >= 3][!is_subject]", style: { "background-color": "#ffd166" } },
+        { selector: "edge", style: { width: 0.6, "line-color": "#2a3d5c", "curve-style": "haystack", opacity: 0.7 } },
         { selector: ".faded", style: { opacity: 0.12 } },
-        { selector: "edge.hl", style: { width: 2, "line-color": "#ff3d55", opacity: 1 } },
-        { selector: "node.hl", style: { "border-width": 3, "border-color": "#ff3d55" } },
+        { selector: "edge.hl", style: { width: 2, "line-color": "#ff3d81", opacity: 1 } },
+        { selector: "node.hl", style: { "border-width": 3, "border-color": "#ff3d81" } },
       ],
       layout: { name: "preset", positions: pos, fit: true, padding: 30 },
       userZoomingEnabled: false, // GraphFrame zooms with buttons, Ctrl/⌘ + wheel or a pinch
