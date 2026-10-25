@@ -147,6 +147,17 @@ function ConclusionView({ c, glance }: { c: Conclusion; glance: ReactNode }) {
             </table>
           )}
       </Box>
+      <div className="findings">
+        {c.findings.map((f) => (
+          <Link key={f.tab} to={f.route} className="finding">
+            <span className="finding-tab">{TAB_ICONS[f.tab]}{f.tab}</span>
+            <b>{f.title}</b>
+            <p>{f.text}</p>
+            <span className="finding-open">Open {f.tab} →</span>
+          </Link>
+        ))}
+      </div>
+
       <div className="box-row">
       <Box title={`Largest account-to-account chains (${c.top_chains.length})`}>
           {c.top_chains.length === 0 ? <p className="muted">No chain carries money from one investigated account to another.</p> : (
@@ -188,17 +199,6 @@ function ConclusionView({ c, glance }: { c: Conclusion; glance: ReactNode }) {
           </table>
         </Box>
       )}
-      </div>
-
-      <div className="findings">
-        {c.findings.map((f) => (
-          <Link key={f.tab} to={f.route} className="finding">
-            <span className="finding-tab">{TAB_ICONS[f.tab]}{f.tab}</span>
-            <b>{f.title}</b>
-            <p>{f.text}</p>
-            <span className="finding-open">Open {f.tab} →</span>
-          </Link>
-        ))}
       </div>
 
       <div className="fold-row">
