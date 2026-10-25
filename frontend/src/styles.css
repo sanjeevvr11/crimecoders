@@ -222,3 +222,12 @@ details.verdict-card > summary .verdict-top::after { order: 3; }
 details.verdict-card[open] > summary .verdict-top::after { transform: rotate(90deg); }
 details.verdict-card:not([open]) { gap: 0; }
 .verdict-grid { align-items: start; }
+
+/* Dashboard layout: stat tiles in one row, paired sections side by side */
+.tiles-row { grid-template-columns: repeat(6, minmax(0, 1fr)); margin-top: 18px; }
+@media (max-width: 1100px) { .tiles-row { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 700px) { .tiles-row { grid-template-columns: 1fr; } }
+.fold-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; align-items: start; margin-top: 18px; }
+.fold-row > details.fold { margin-top: 0; }
+.fold-row .fold-body { overflow-x: auto; }
+@media (max-width: 1000px) { .fold-row { grid-template-columns: 1fr; } }

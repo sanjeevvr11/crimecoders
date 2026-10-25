@@ -84,7 +84,7 @@ function AccountCard({ a }: { a: ConclusionAccount }) {
   );
 }
 
-function ConclusionView({ c }: { c: Conclusion }) {
+function ConclusionView({ c, glance }: { c: Conclusion; glance: ReactNode }) {
   return (
     <>
       <section className="verdict-hero">
@@ -94,17 +94,7 @@ function ConclusionView({ c }: { c: Conclusion }) {
         <OutcomeBar c={c.counts} />
       </section>
 
-      <h2>Overview</h2>
-      <div className="findings">
-        {c.findings.map((f) => (
-          <Link key={f.tab} to={f.route} className="finding">
-            <span className="finding-tab">{f.tab}</span>
-            <b>{f.title}</b>
-            <p>{f.text}</p>
-            <span className="finding-open">Open {f.tab} →</span>
-          </Link>
-        ))}
-      </div>
+      {glance}
 
       <Fold open title={<>Accounts to act on ({c.accounts.length}) <span className="fold-hint">click an account to see why and what to do</span></>}>
         <div className="verdict-grid">
@@ -130,6 +120,7 @@ function ConclusionView({ c }: { c: Conclusion }) {
             </table>
           )}
       </Fold>
+      <div className="fold-row">
       <Fold title={`Largest account-to-account chains (${c.top_chains.length})`}>
           {c.top_chains.length === 0 ? <p className="muted">No chain carries money from one investigated account to another.</p> : (
             <ol className="chain-list">
@@ -170,13 +161,28 @@ function ConclusionView({ c }: { c: Conclusion }) {
           </table>
         </Fold>
       )}
+      </div>
 
+      <h2>Overview</h2>
+      <div className="findings">
+        {c.findings.map((f) => (
+          <Link key={f.tab} to={f.route} className="finding">
+            <span className="finding-tab">{f.tab}</span>
+            <b>{f.title}</b>
+            <p>{f.text}</p>
+            <span className="finding-open">Open {f.tab} →</span>
+          </Link>
+        ))}
+      </div>
+
+      <div className="fold-row">
       <Fold title="Recommended next steps">
         <ol className="steps-list">{c.next_steps.map((s) => <li key={s}>{s}</li>)}</ol>
       </Fold>
       <Fold title="How far to trust this">
         <ul className="limits-list">{c.limitations.map((s) => <li key={s}>{s}</li>)}</ul>
       </Fold>
+      </div>
     </>
   );
 }
@@ -206,29 +212,32 @@ export function Overview() {
     <div>
       <h1>Dashboard</h1>
       <Async state={conclusion} what="the conclusion">
-        {(c) => <ConclusionView c={c} />}
-      </Async>
-
-      <Fold title="Data at a glance">
-      <Async state={stats} what="statistics">
-        {(s) => (
-          <>
-            <div className="tiles">
-              <StatTile label="Transactions" value={num(s.n_transactions)} hint={`${s.n_accounts} accounts`} />
-              <StatTile label="Alerts" value={s.n_alerts} hint={`risk ≥ ${s.alert_threshold}`} />
-              <StatTile label="Rings" value={s.n_rings} hint={`${num(s.n_shared_counterparties)} shared counterparties`} />
-              <StatTile label="Narrations parsed" value={`${s.pct_text_narrations_parsed}%`} hint={`of ${num(s.narrations_with_text)} with real text`} />
-              <StatTile label="Flagged weeks" value={String(s.models?.flagged_windows ?? "—")} hint={`of ${s.models?.windows ?? "—"} account-weeks`} />
-              <StatTile label="Complaints matched" value={`${s.complaints.matched}/${s.complaints.complaints}`} hint="synthetic complaints" />
-            </div>
-            <p className="muted">Data generated {s.generated_at}.{" "}
-              <button onClick={rerun} disabled={running}>{running ? "Running pipeline (~1 min)…" : "Re-run pipeline"}</button>{" "}
-              {runMsg}
-            </p>
-          </>
+        {(c) => (
+          <ConclusionView
+            c={c}
+            glance={
+              <Async state={stats} what="statistics">
+                {(s) => (
+                  <>
+                    <div className="tiles tiles-row">
+                      <StatTile label="Transactions" value={num(s.n_transactions)} hint={`${s.n_accounts} accounts`} />
+                      <StatTile label="Alerts" value={s.n_alerts} hint={`risk ≥ ${s.alert_threshold}`} />
+                      <StatTile label="Rings" value={s.n_rings} hint={`${num(s.n_shared_counterparties)} shared counterparties`} />
+                      <StatTile label="Narrations parsed" value={`${s.pct_text_narrations_parsed}%`} hint={`of ${num(s.narrations_with_text)} with real text`} />
+                      <StatTile label="Flagged weeks" value={String(s.models?.flagged_windows ?? "—")} hint={`of ${s.models?.windows ?? "—"} account-weeks`} />
+                      <StatTile label="Complaints matched" value={`${s.complaints.matched}/${s.complaints.complaints}`} hint="synthetic complaints" />
+                    </div>
+                    <p className="muted">Data generated {s.generated_at}.{" "}
+                      <button onClick={rerun} disabled={running}>{running ? "Running pipeline (~1 min)…" : "Re-run pipeline"}</button>{" "}
+                      {runMsg}
+                    </p>
+                  </>
+                )}
+              </Async>
+            }
+          />
         )}
       </Async>
-      </Fold>
 
       <Fold title="How Trace360 works">
         <div className="stages">
