@@ -179,7 +179,7 @@ select:focus, input:focus { outline: 2px solid #bac8ff; border-color: var(--acce
 .finding { display: flex; flex-direction: column; gap: 4px; background: white; border: 1px solid var(--line); border-top: 3px solid var(--accent); border-radius: 6px; padding: 12px; color: var(--fg); text-decoration: none; }
 .finding:hover { border-color: var(--accent); box-shadow: 0 2px 8px rgba(43, 108, 176, .15); }
 .finding p { margin: 2px 0 6px; font-size: 13px; line-height: 1.45; color: #4a5568; flex: 1; }
-.finding-tab { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.finding-tab { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
 .finding-open { font-size: 12px; color: var(--accent); }
 .verdict-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 12px; }
 .verdict-card { background: white; border: 1px solid var(--line); border-left: 5px solid #a0aec0; border-radius: 6px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
@@ -285,3 +285,4 @@ details.verdict-card:not([open]) { gap: 0; }
 .complaints-list .scroll-box table { border: 0; border-radius: 0; overflow: visible; }
 .complaints-list .scroll-box thead th { position: sticky; top: 0; z-index: 1; }
 @media (max-width: 900px) { .complaints-stack { height: auto; } .complaints-list .scroll-box { max-height: 60vh; } }
+.finding-tab svg { width: 18px; height: 18px; flex: none; }

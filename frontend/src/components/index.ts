@@ -7,6 +7,7 @@ export * from "./ConnectionDetails";
 export * from "./DailyFlowChart";
 export * from "./format";
 export * from "./GraphFrame";
+export * from "./icons";
 export * from "./ReasonList";
 export * from "./RingGraph";
 export * from "./StatTile";

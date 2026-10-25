@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import type { Conclusion, ConclusionAccount } from "../api/types";
-import { Async, RoleBadge, StatTile, TierBadge, inr, inrShort, num, score } from "../components";
+import { Async, RoleBadge, StatTile, TAB_ICONS, TierBadge, inr, inrShort, num, score } from "../components";
 import { useConclusion, useStats } from "../hooks";
 
 /** 22px line icons for the How Trace360 works bar (stroke = currentColor). */
@@ -193,7 +193,7 @@ function ConclusionView({ c, glance }: { c: Conclusion; glance: ReactNode }) {
       <div className="findings">
         {c.findings.map((f) => (
           <Link key={f.tab} to={f.route} className="finding">
-            <span className="finding-tab">{f.tab}</span>
+            <span className="finding-tab">{TAB_ICONS[f.tab]}{f.tab}</span>
             <b>{f.title}</b>
             <p>{f.text}</p>
             <span className="finding-open">Open {f.tab} →</span>
