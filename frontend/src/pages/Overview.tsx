@@ -172,7 +172,6 @@ function ConclusionView({ c, glance }: { c: Conclusion; glance: ReactNode }) {
       )}
       </div>
 
-      <h2>Overview</h2>
       <div className="findings">
         {c.findings.map((f) => (
           <Link key={f.tab} to={f.route} className="finding">
@@ -201,7 +200,7 @@ export function Overview() {
   const stats = useStats();
 
   return (
-    <div>
+    <div className="dash-page">
       <h1>Dashboard</h1>
       <Async state={conclusion} what="the conclusion">
         {(c) => (
@@ -225,14 +224,14 @@ export function Overview() {
         )}
       </Async>
 
-      <section className="box flow-box">
-        <h2>How Trace360 works</h2>
+      <footer className="flow-bar">
+        <span className="flow-title">How Trace360 works</span>
         <ol className="flow">
           {STAGES.map(([t, d]) => (
             <li className="flow-step" key={t} title={d}>{t.replace(/^\d+\. /, "")}</li>
           ))}
         </ol>
-      </section>
+      </footer>
     </div>
   );
 }

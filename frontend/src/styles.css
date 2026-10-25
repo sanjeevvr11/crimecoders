@@ -237,11 +237,16 @@ details.verdict-card:not([open]) { gap: 0; }
 .box-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 18px; }
 .box-row > .box { margin-top: 0; }
 @media (max-width: 1000px) { .box-row { grid-template-columns: 1fr; } }
-/* How Trace360 works: the pipeline as a compact flowchart */
-.flow-box { padding-bottom: 14px; }
-.flow { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 0; counter-reset: flow; }
-.flow-step { counter-increment: flow; display: flex; align-items: center; font-size: 13px; font-weight: 600; cursor: help; }
-.flow-step::before { content: counter(flow); display: inline-grid; place-items: center; width: 20px; height: 20px; margin-right: 6px; border-radius: 50%; background: var(--fg); color: white; font-size: 11px; }
-.flow-step { background: var(--bg); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px 6px 6px; }
+/* How Trace360 works: a navy flowchart bar fixed to the bottom of the Dashboard */
+.dash-page { padding-bottom: 64px; }
+.flow-bar { position: fixed; left: var(--sidebar); right: 0; bottom: 0; z-index: 9; display: flex; align-items: center; gap: 16px; padding: 10px 24px;
+  background: linear-gradient(90deg, var(--navy) 0%, var(--navy2) 100%); color: #e2e8f0; box-shadow: 0 -2px 10px rgba(15,27,51,.18); overflow-x: auto; }
+.flow-title { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #8696b4; white-space: nowrap; }
+.flow { list-style: none; margin: 0; padding: 0; display: flex; align-items: center; counter-reset: flow; }
+.flow-step { counter-increment: flow; display: flex; align-items: center; white-space: nowrap; font-size: 13px; font-weight: 600; cursor: help;
+  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12); border-radius: 999px; padding: 5px 12px 5px 5px; }
+.flow-step::before { content: counter(flow); display: inline-grid; place-items: center; width: 20px; height: 20px; margin-right: 6px; border-radius: 50%; background: var(--accent); color: white; font-size: 11px; }
 .flow-step + .flow-step { margin-left: 26px; position: relative; }
-.flow-step + .flow-step::after { content: "→"; position: absolute; left: -20px; color: var(--muted); font-size: 15px; }
+.flow-step + .flow-step::after { content: "→"; position: absolute; left: -20px; color: #8696b4; font-size: 15px; }
+@media (max-width: 900px) { .flow-bar { left: 0; } }
+.dash-page .findings { margin-top: 18px; }
