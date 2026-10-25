@@ -17,6 +17,10 @@
   /* derived */
   --grad-brand: linear-gradient(90deg, var(--accent-crimson), var(--accent-hot-pink));
   --glow-crimson: 0 0 0 1px rgba(255, 48, 79, .10), 0 0 24px rgba(255, 48, 79, .16);
+  /* the Dashboard conclusion box's glowing red border, shared by every box */
+  --box-border: rgba(255, 48, 79, .6);
+  --box-glow: 0 0 0 1px rgba(255, 48, 79, .12), 0 0 26px rgba(255, 48, 79, .18), inset 0 0 32px rgba(255, 48, 79, .04);
+  --box-glow-hover: 0 0 0 1px rgba(255, 48, 79, .2), 0 0 34px rgba(255, 48, 79, .3), inset 0 0 32px rgba(255, 48, 79, .06);
   --focus-ring: 0 0 0 2px var(--bg-primary), 0 0 0 4px rgba(255, 61, 129, .75);
   --radius: 12px; --radius-sm: 8px;
   --shadow: 0 1px 0 rgba(255, 255, 255, .02) inset, 0 8px 24px rgba(0, 0, 0, .35);
@@ -253,7 +257,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--accent-crimson
 /* ---- Dashboard: conclusion of the investigation ---- */
 .verdict-hero { position: relative; overflow: hidden; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 28px; color: var(--text-primary); padding: 22px 28px; border-radius: 14px;
   background: radial-gradient(600px 240px at 0% 0%, rgba(255, 48, 79, .14), transparent 70%), linear-gradient(180deg, rgba(41, 16, 30, .55), rgba(9, 19, 35, .92));
-  border: 1px solid rgba(255, 48, 79, .6); box-shadow: 0 0 0 1px rgba(255, 48, 79, .12), 0 0 34px rgba(255, 48, 79, .22), inset 0 0 40px rgba(255, 48, 79, .05); }
+  border: 1px solid var(--box-border); box-shadow: 0 0 0 1px rgba(255, 48, 79, .12), 0 0 34px rgba(255, 48, 79, .22), inset 0 0 40px rgba(255, 48, 79, .05); }
 .verdict-main { min-width: 0; }
 .verdict-hero h2 { margin: 6px 0 8px; font-size: 22px; line-height: 1.3; font-weight: 700; }
 .verdict-hero h2 .hl-num { font-size: 32px; font-weight: 800; color: var(--accent-crimson); text-shadow: 0 0 18px rgba(255, 48, 79, .45); }
@@ -443,3 +447,18 @@ details.verdict-card:not([open]) { gap: 0; }
   .flow { flex: none; } .flow-step { flex: none; width: 150px; }
   .dash-page { padding-bottom: 150px; }
 }
+
+/* ---- every box gets the conclusion box's glowing red border ---- */
+.grid2 > section, .panel, .box, .stage, .legend-box, .trail-steps, details.fold, .tile, .status, .graph-frame, .finding, .verdict-card,
+.complaints-stack > section, .flow-step, .mode label, .job, .dropzone, .warning, main > div > table, .models-page > table, .models-page table, main table:not(.box table):not(.grid2 table):not(.panel table):not(.fold-body table):not(.complaints-stack table) {
+  border-color: var(--box-border) !important; box-shadow: var(--box-glow) !important; }
+.tile:hover, .finding:hover, .verdict-card:hover, .flow-step:hover, .mode label:hover, .graph-frame:hover { box-shadow: var(--box-glow-hover) !important; }
+/* keep the risk strip on account cards and the selected state on choices */
+.verdict-card.v-MEDIUM { box-shadow: inset 3px 0 0 var(--accent-amber), var(--box-glow) !important; }
+.verdict-card.v-HIGH { box-shadow: inset 3px 0 0 var(--accent-crimson), var(--box-glow) !important; }
+.verdict-card.v-LOW { box-shadow: inset 3px 0 0 var(--accent-electric-blue), var(--box-glow) !important; }
+.mode label.on { box-shadow: 0 0 0 1px var(--accent-crimson), var(--box-glow-hover) !important; }
+.dropzone { border-style: dashed !important; }
+/* tables inside a box keep a quiet border so the box's glow is not doubled */
+.box table, .grid2 table, .panel table, .fold-body table, .complaints-stack table, .scroll-box table { border-color: var(--border-default); box-shadow: none; }
+.models-page table + table { margin-top: 16px; }
