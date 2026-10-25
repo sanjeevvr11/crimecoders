@@ -17,7 +17,7 @@ const ICONS = {
 };
 
 const NAV = [
-  { to: "/", label: "Overview", hint: "What the investigation found", icon: ICONS.overview },
+  { to: "/", label: "Dashboard", hint: "What the investigation found", icon: ICONS.overview },
   { to: "/leads", label: "Leads", hint: "Accounts ranked by risk", icon: ICONS.leads },
   { to: "/trail", label: "Money Trail", hint: "Follow money between accounts", icon: ICONS.trail },
   { to: "/network", label: "Network", hint: "Rings and shared counterparties", icon: ICONS.network },

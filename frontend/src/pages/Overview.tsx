@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../api";
 import type { Conclusion, ConclusionAccount } from "../api/types";
@@ -13,6 +13,16 @@ const STAGES = [
   ["5. Unsupervised models", "Isolation Forest flags unusual weeks (vs all weeks and vs the account's own history), SHAP explains each flag, HDBSCAN names behaviour roles (collector / distributor / layering)."],
   ["6. Risk score & leads", "Rules + network form the base score (0-100); unusual weeks add an uplift. Accounts above the threshold become alerts with their top reasons and a PDF evidence report."],
 ];
+
+/** A dashboard section that shows only its heading until opened. */
+function Fold({ title, open = false, children }: { title: ReactNode; open?: boolean; children: ReactNode }) {
+  return (
+    <details className="fold" open={open}>
+      <summary><h2>{title}</h2></summary>
+      <div className="fold-body">{children}</div>
+    </details>
+  );
+}
 
 /** Share of accounts per outcome, as one bar: high / medium / watchlist / no action. */
 function OutcomeBar({ c }: { c: Conclusion["counts"] }) {
@@ -38,16 +48,18 @@ function OutcomeBar({ c }: { c: Conclusion["counts"] }) {
 
 function AccountCard({ a }: { a: ConclusionAccount }) {
   return (
-    <div className={`verdict-card v-${a.tier}`}>
-      <div className="verdict-top">
-        <span className="verdict-label">{a.verdict}</span>
-        <span className="verdict-score">{score(a.risk_score)}</span>
-      </div>
-      <div className="verdict-id">
-        <Link to={`/accounts/${a.account_id}`}>{a.account_id}</Link>{" "}
-        <TierBadge tier={a.tier} /> <RoleBadge role={a.role} />
-        {a.ring_id && <> <Link className="badge" to={`/network/${a.ring_id}`}>ring {a.ring_id}</Link></>}
-      </div>
+    <details className={`verdict-card v-${a.tier}`}>
+      <summary>
+        <div className="verdict-top">
+          <span className="verdict-label">{a.verdict}</span>
+          <span className="verdict-score">{score(a.risk_score)}</span>
+        </div>
+        <div className="verdict-id">
+          <Link to={`/accounts/${a.account_id}`}>{a.account_id}</Link>{" "}
+          <TierBadge tier={a.tier} /> <RoleBadge role={a.role} />
+          {a.ring_id && <> <Link className="badge" to={`/network/${a.ring_id}`}>ring {a.ring_id}</Link></>}
+        </div>
+      </summary>
       <ul className="tight small">
         {a.reasons.map((r) => <li key={r}>{r}</li>)}
       </ul>
@@ -68,7 +80,7 @@ function AccountCard({ a }: { a: ConclusionAccount }) {
         <Link to={`/accounts/${a.account_id}`}>Account details →</Link>
         {a.trail && <Link to={`/trail/${a.account_id}`}>Money trail →</Link>}
       </div>
-    </div>
+    </details>
   );
 }
 
@@ -82,7 +94,7 @@ function ConclusionView({ c }: { c: Conclusion }) {
         <OutcomeBar c={c.counts} />
       </section>
 
-      <h2>What each screen found</h2>
+      <h2>Overview</h2>
       <div className="findings">
         {c.findings.map((f) => (
           <Link key={f.tab} to={f.route} className="finding">
@@ -94,14 +106,13 @@ function ConclusionView({ c }: { c: Conclusion }) {
         ))}
       </div>
 
-      <h2>Accounts to act on ({c.accounts.length})</h2>
-      <div className="verdict-grid">
-        {c.accounts.map((a) => <AccountCard key={a.account_id} a={a} />)}
-      </div>
+      <Fold open title={<>Accounts to act on ({c.accounts.length}) <span className="fold-hint">click an account to see why and what to do</span></>}>
+        <div className="verdict-grid">
+          {c.accounts.map((a) => <AccountCard key={a.account_id} a={a} />)}
+        </div>
+      </Fold>
 
-      <div className="grid2">
-        <div>
-          <h2>Mule rings</h2>
+      <Fold title={`Mule rings (${c.rings.length})`}>
           {c.rings.length === 0 ? <p className="muted">No ring of accounts sharing counterparties was found.</p> : (
             <table>
               <thead><tr><th>Ring</th><th>Accounts</th><th className="num">Shared counterparties</th><th className="num">Money through ring</th><th className="num">Top risk</th></tr></thead>
@@ -118,9 +129,8 @@ function ConclusionView({ c }: { c: Conclusion }) {
               </tbody>
             </table>
           )}
-        </div>
-        <div>
-          <h2>Largest account-to-account chains</h2>
+      </Fold>
+      <Fold title={`Largest account-to-account chains (${c.top_chains.length})`}>
           {c.top_chains.length === 0 ? <p className="muted">No chain carries money from one investigated account to another.</p> : (
             <ol className="chain-list">
               {c.top_chains.map((ch) => (
@@ -140,12 +150,10 @@ function ConclusionView({ c }: { c: Conclusion }) {
               ))}
             </ol>
           )}
-        </div>
-      </div>
+      </Fold>
 
       {c.watchlist.length > 0 && (
-        <>
-          <h2>Watchlist ({c.watchlist.length})</h2>
+        <Fold title={`Watchlist (${c.watchlist.length})`}>
           <table>
             <thead><tr><th>Account</th><th className="num">Risk</th><th>Role</th><th className="num">Unusual weeks</th><th>Why it is watched</th></tr></thead>
             <tbody>
@@ -160,19 +168,15 @@ function ConclusionView({ c }: { c: Conclusion }) {
               ))}
             </tbody>
           </table>
-        </>
+        </Fold>
       )}
 
-      <div className="grid2">
-        <div>
-          <h2>Recommended next steps</h2>
-          <ol className="steps-list">{c.next_steps.map((s) => <li key={s}>{s}</li>)}</ol>
-        </div>
-        <div>
-          <h2>How far to trust this</h2>
-          <ul className="limits-list">{c.limitations.map((s) => <li key={s}>{s}</li>)}</ul>
-        </div>
-      </div>
+      <Fold title="Recommended next steps">
+        <ol className="steps-list">{c.next_steps.map((s) => <li key={s}>{s}</li>)}</ol>
+      </Fold>
+      <Fold title="How far to trust this">
+        <ul className="limits-list">{c.limitations.map((s) => <li key={s}>{s}</li>)}</ul>
+      </Fold>
     </>
   );
 }
@@ -200,12 +204,12 @@ export function Overview() {
 
   return (
     <div>
-      <h1>Overview</h1>
+      <h1>Dashboard</h1>
       <Async state={conclusion} what="the conclusion">
         {(c) => <ConclusionView c={c} />}
       </Async>
 
-      <h2>Data at a glance</h2>
+      <Fold title="Data at a glance">
       <Async state={stats} what="statistics">
         {(s) => (
           <>
@@ -224,13 +228,15 @@ export function Overview() {
           </>
         )}
       </Async>
+      </Fold>
 
-      <h2>How Trace360 works</h2>
-      <div className="stages">
-        {STAGES.map(([t, d]) => (
-          <div className="stage" key={t}><b>{t}</b><p>{d}</p></div>
-        ))}
-      </div>
+      <Fold title="How Trace360 works">
+        <div className="stages">
+          {STAGES.map(([t, d]) => (
+            <div className="stage" key={t}><b>{t}</b><p>{d}</p></div>
+          ))}
+        </div>
+      </Fold>
       <p className="muted">Leads are prompts for investigation, not proof. There are no fraud labels in the data, so model quality is measured with a synthetic test. See <Link to="/models">Models</Link>.</p>
     </div>
   );
