@@ -1,6 +1,5 @@
-import { useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { api } from "../api";
 import type { Conclusion, ConclusionAccount } from "../api/types";
 import { Async, RoleBadge, StatTile, TierBadge, inr, inrShort, num, score } from "../components";
 import { useConclusion, useStats } from "../hooks";
@@ -13,6 +12,16 @@ const STAGES = [
   ["5. Unsupervised models", "Isolation Forest flags unusual weeks (vs all weeks and vs the account's own history), SHAP explains each flag, HDBSCAN names behaviour roles (collector / distributor / layering)."],
   ["6. Risk score & leads", "Rules + network form the base score (0-100); unusual weeks add an uplift. Accounts above the threshold become alerts with their top reasons and a PDF evidence report."],
 ];
+
+/** A plain dashboard section: a white box with a heading. */
+function Box({ title, children }: { title: ReactNode; children: ReactNode }) {
+  return (
+    <section className="box">
+      <h2>{title}</h2>
+      {children}
+    </section>
+  );
+}
 
 /** A dashboard section that shows only its heading until opened. */
 function Fold({ title, open = false, children }: { title: ReactNode; open?: boolean; children: ReactNode }) {
@@ -96,13 +105,13 @@ function ConclusionView({ c, glance }: { c: Conclusion; glance: ReactNode }) {
 
       {glance}
 
-      <Fold open title={<>Accounts to act on ({c.accounts.length}) <span className="fold-hint">click an account to see why and what to do</span></>}>
+      <Box title={<>Accounts to act on ({c.accounts.length}) <span className="fold-hint">click an account to see why and what to do</span></>}>
         <div className="verdict-grid">
           {c.accounts.map((a) => <AccountCard key={a.account_id} a={a} />)}
         </div>
-      </Fold>
+      </Box>
 
-      <Fold title={`Mule rings (${c.rings.length})`}>
+      <Box title={`Mule rings (${c.rings.length})`}>
           {c.rings.length === 0 ? <p className="muted">No ring of accounts sharing counterparties was found.</p> : (
             <table>
               <thead><tr><th>Ring</th><th>Accounts</th><th className="num">Shared counterparties</th><th className="num">Money through ring</th><th className="num">Top risk</th></tr></thead>
@@ -119,9 +128,9 @@ function ConclusionView({ c, glance }: { c: Conclusion; glance: ReactNode }) {
               </tbody>
             </table>
           )}
-      </Fold>
-      <div className="fold-row">
-      <Fold title={`Largest account-to-account chains (${c.top_chains.length})`}>
+      </Box>
+      <div className="box-row">
+      <Box title={`Largest account-to-account chains (${c.top_chains.length})`}>
           {c.top_chains.length === 0 ? <p className="muted">No chain carries money from one investigated account to another.</p> : (
             <ol className="chain-list">
               {c.top_chains.map((ch) => (
@@ -141,10 +150,10 @@ function ConclusionView({ c, glance }: { c: Conclusion; glance: ReactNode }) {
               ))}
             </ol>
           )}
-      </Fold>
+      </Box>
 
       {c.watchlist.length > 0 && (
-        <Fold title={`Watchlist (${c.watchlist.length})`}>
+        <Box title={`Watchlist (${c.watchlist.length})`}>
           <table>
             <thead><tr><th>Account</th><th className="num">Risk</th><th>Role</th><th className="num">Unusual weeks</th><th>Why it is watched</th></tr></thead>
             <tbody>
@@ -159,7 +168,7 @@ function ConclusionView({ c, glance }: { c: Conclusion; glance: ReactNode }) {
               ))}
             </tbody>
           </table>
-        </Fold>
+        </Box>
       )}
       </div>
 
@@ -190,23 +199,6 @@ function ConclusionView({ c, glance }: { c: Conclusion; glance: ReactNode }) {
 export function Overview() {
   const conclusion = useConclusion();
   const stats = useStats();
-  const [running, setRunning] = useState(false);
-  const [runMsg, setRunMsg] = useState<string>();
-
-  const rerun = async () => {
-    setRunning(true);
-    setRunMsg(undefined);
-    try {
-      const r = await api.runPipeline();
-      setRunMsg(`Pipeline finished: ${num(r.stats.n_transactions)} transactions, ${r.stats.n_alerts} alerts.`);
-      stats.reload();
-      conclusion.reload();
-    } catch (e) {
-      setRunMsg(`Pipeline failed: ${(e as Error).message}`);
-    } finally {
-      setRunning(false);
-    }
-  };
 
   return (
     <div>
@@ -218,20 +210,14 @@ export function Overview() {
             glance={
               <Async state={stats} what="statistics">
                 {(s) => (
-                  <>
-                    <div className="tiles tiles-row">
-                      <StatTile label="Transactions" value={num(s.n_transactions)} hint={`${s.n_accounts} accounts`} />
-                      <StatTile label="Alerts" value={s.n_alerts} hint={`risk ≥ ${s.alert_threshold}`} />
-                      <StatTile label="Rings" value={s.n_rings} hint={`${num(s.n_shared_counterparties)} shared counterparties`} />
-                      <StatTile label="Narrations parsed" value={`${s.pct_text_narrations_parsed}%`} hint={`of ${num(s.narrations_with_text)} with real text`} />
-                      <StatTile label="Flagged weeks" value={String(s.models?.flagged_windows ?? "—")} hint={`of ${s.models?.windows ?? "—"} account-weeks`} />
-                      <StatTile label="Complaints matched" value={`${s.complaints.matched}/${s.complaints.complaints}`} hint="synthetic complaints" />
-                    </div>
-                    <p className="muted">Data generated {s.generated_at}.{" "}
-                      <button onClick={rerun} disabled={running}>{running ? "Running pipeline (~1 min)…" : "Re-run pipeline"}</button>{" "}
-                      {runMsg}
-                    </p>
-                  </>
+                  <div className="tiles tiles-row">
+                    <StatTile label="Transactions" value={num(s.n_transactions)} hint={`${s.n_accounts} accounts`} />
+                    <StatTile label="Alerts" value={s.n_alerts} hint={`risk ≥ ${s.alert_threshold}`} />
+                    <StatTile label="Rings" value={s.n_rings} hint={`${num(s.n_shared_counterparties)} shared counterparties`} />
+                    <StatTile label="Narrations parsed" value={`${s.pct_text_narrations_parsed}%`} hint={`of ${num(s.narrations_with_text)} with real text`} />
+                    <StatTile label="Flagged weeks" value={String(s.models?.flagged_windows ?? "—")} hint={`of ${s.models?.windows ?? "—"} account-weeks`} />
+                    <StatTile label="Complaints matched" value={`${s.complaints.matched}/${s.complaints.complaints}`} hint="synthetic complaints" />
+                  </div>
                 )}
               </Async>
             }
@@ -239,14 +225,14 @@ export function Overview() {
         )}
       </Async>
 
-      <Fold title="How Trace360 works">
-        <div className="stages">
+      <section className="box flow-box">
+        <h2>How Trace360 works</h2>
+        <ol className="flow">
           {STAGES.map(([t, d]) => (
-            <div className="stage" key={t}><b>{t}</b><p>{d}</p></div>
+            <li className="flow-step" key={t} title={d}>{t.replace(/^\d+\. /, "")}</li>
           ))}
-        </div>
-      </Fold>
-      <p className="muted">Leads are prompts for investigation, not proof. There are no fraud labels in the data, so model quality is measured with a synthetic test. See <Link to="/models">Models</Link>.</p>
+        </ol>
+      </section>
     </div>
   );
 }

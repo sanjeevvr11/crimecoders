@@ -231,3 +231,17 @@ details.verdict-card:not([open]) { gap: 0; }
 .fold-row > details.fold { margin-top: 0; }
 .fold-row .fold-body { overflow-x: auto; }
 @media (max-width: 1000px) { .fold-row { grid-template-columns: 1fr; } }
+.box { margin-top: 18px; background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow); padding: 4px 18px 18px; overflow-x: auto; }
+.box > h2 { margin: 12px 0 12px; font-size: 16px; }
+.box table { box-shadow: none; }
+.box-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 18px; }
+.box-row > .box { margin-top: 0; }
+@media (max-width: 1000px) { .box-row { grid-template-columns: 1fr; } }
+/* How Trace360 works: the pipeline as a compact flowchart */
+.flow-box { padding-bottom: 14px; }
+.flow { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 0; counter-reset: flow; }
+.flow-step { counter-increment: flow; display: flex; align-items: center; font-size: 13px; font-weight: 600; cursor: help; }
+.flow-step::before { content: counter(flow); display: inline-grid; place-items: center; width: 20px; height: 20px; margin-right: 6px; border-radius: 50%; background: var(--fg); color: white; font-size: 11px; }
+.flow-step { background: var(--bg); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px 6px 6px; }
+.flow-step + .flow-step { margin-left: 26px; position: relative; }
+.flow-step + .flow-step::after { content: "→"; position: absolute; left: -20px; color: var(--muted); font-size: 15px; }
