@@ -155,7 +155,6 @@ a.badge:hover { text-decoration: none; border-color: var(--text-muted); color: v
 .tier-LOW { background: var(--surface-blue); color: #7aa3ff; border-color: rgba(77, 131, 255, .4); }
 .role { background: var(--surface-violet); color: #b39bff; border-color: rgba(136, 87, 255, .4); }
 .role-unclassified { background: var(--bg-hover); color: var(--text-secondary); border-color: var(--border-active); }
-.badge-synthetic { background: var(--surface-violet); color: #b39bff; border-color: rgba(136, 87, 255, .45); text-transform: uppercase; font-size: 10.5px; letter-spacing: .08em; }
 .badge-match { background: var(--surface-cyan); color: var(--accent-cyan); border-color: rgba(53, 217, 232, .4); }
 .badge-nomatch { background: transparent; color: var(--text-muted); border-style: dashed; }
 .tag { font-size: 11px; padding: 1px 7px; border: 1px solid var(--border-active); border-radius: 999px; color: var(--text-muted); background: var(--bg-elevated); }

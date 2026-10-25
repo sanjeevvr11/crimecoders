@@ -10,7 +10,7 @@ export function Complaints() {
 
   return (
     <div>
-      <h1>Complaints <span className="badge badge-synthetic" title="The dataset has no real complaints; these are generated to demonstrate matching">synthetic data</span></h1>
+      <h1>Complaints</h1>
       <p className="muted">Each complaint's reported UPI ID or account is matched against the counterparties in the statements. Select a complaint to see what it matches.</p>
       <div className="complaints-stack">
         <section className="complaints-matches">
