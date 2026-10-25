@@ -11,29 +11,9 @@ export function Complaints() {
   return (
     <div>
       <h1>Complaints</h1>
-      <p className="warning">These complaints are SYNTHETIC: generated from real counterparties with deliberate typos to demonstrate matching. The dataset contains no real complaints.</p>
-      <div className="grid2">
-        <section>
-          <Async state={complaints} what="complaints" isEmpty={(c) => c.length === 0} empty="No complaints.">
-            {(list) => (
-              <table>
-                <thead><tr><th>Complaint</th><th>Date</th><th>Reported ID</th><th className="num">Amount</th><th className="num">Best match</th></tr></thead>
-                <tbody>
-                  {list.map((c) => (
-                    <tr key={c.complaint_id} className={c.complaint_id === selected ? "selected clickable" : "clickable"} onClick={() => setSelected(c.complaint_id)}>
-                      <td>{c.complaint_id}</td>
-                      <td className="small">{c.date?.slice(0, 10)}</td>
-                      <td className="mono small">{c.reported_upi_or_account} <span className="muted">({c.reported_type})</span></td>
-                      <td className="num">{inr(c.amount)}</td>
-                      <td className="num">{c.best_confidence == null ? <span className="muted">none</span> : `${c.best_account_id} · ${(c.best_confidence * 100).toFixed(0)}%`}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </Async>
-        </section>
-        <section>
+      <p className="muted">Each complaint's reported UPI ID or account is matched against the counterparties in the statements. Select a complaint to see what it matches.</p>
+      <div className="complaints-stack">
+        <section className="complaints-matches">
           <h2>Matches</h2>
           {!selected ? <p className="muted">Select a complaint to see which transactions, accounts and rings it matches.</p> : (
             <Async state={matches} what="matches">
@@ -62,6 +42,29 @@ export function Complaints() {
               )}
             </Async>
           )}
+        </section>
+        <section className="complaints-list">
+          <h2>Complaints</h2>
+          <div className="scroll-box">
+            <Async state={complaints} what="complaints" isEmpty={(c) => c.length === 0} empty="No complaints.">
+              {(list) => (
+                <table>
+                  <thead><tr><th>Complaint</th><th>Date</th><th>Reported ID</th><th className="num">Amount</th><th className="num">Best match</th></tr></thead>
+                  <tbody>
+                    {list.map((c) => (
+                      <tr key={c.complaint_id} className={c.complaint_id === selected ? "selected clickable" : "clickable"} onClick={() => setSelected(c.complaint_id)}>
+                        <td>{c.complaint_id}</td>
+                        <td className="small">{c.date?.slice(0, 10)}</td>
+                        <td className="mono small">{c.reported_upi_or_account} <span className="muted">({c.reported_type})</span></td>
+                        <td className="num">{inr(c.amount)}</td>
+                        <td className="num">{c.best_confidence == null ? <span className="muted">none</span> : `${c.best_account_id} · ${(c.best_confidence * 100).toFixed(0)}%`}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </Async>
+          </div>
         </section>
       </div>
     </div>

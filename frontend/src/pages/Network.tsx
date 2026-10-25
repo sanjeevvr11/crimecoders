@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import type { SortOrder } from "../api";
 import {
-  Async, ConnectionDetails, NO_RING_COLOR, RingGraph, inr, num, ringColor, type GraphSelection,
+  Async, ConnectionDetails, NO_RING_COLOR, RING_COLORS, RingGraph, inr, num, ringColor, type GraphSelection,
 } from "../components";
 import { useNetworkOverview, useNodeTransactions, useRing, useRings } from "../hooks";
 
@@ -24,11 +24,7 @@ export function Network() {
   return (
     <div>
       <h1>Network</h1>
-      <p className="muted">
-        A ring is a group of investigated accounts that deal with many of the same outside people or accounts
-        (Louvain communities on the money-flow graph). The graph shows every investigated account; click any dot or line to see the
-        transactions behind it.
-      </p>
+      <p className="muted">A ring is a group of investigated accounts that deal with many of the same outside people or accounts.</p>
       <Async state={rings} what="rings">
         {(list) => (
           <table>
@@ -55,17 +51,31 @@ export function Network() {
         )}
       </Async>
 
-      <h2>{ringId ? `Ring ${ringId}` : "All accounts and rings"}</h2>
-      <p className="muted legend">
-        <span className="swatch big" style={{ background: ringColor("R1") }} /> Large dots are investigated accounts, coloured by ring
-        (<span className="swatch" style={{ background: NO_RING_COLOR }} /> = in no ring).{" "}
-        <span className="swatch" style={{ background: "#a0aec0" }} /> Small dots are outside counterparties shared by 2+ accounts (masked);{" "}
-        <span className="swatch" style={{ background: "#d69e2e" }} /> gold = shared by 3+.
-        {!ringId && " Accounts in the bottom row share no counterparty with any other account."} Scroll to zoom, drag to pan.
+      <h2>Graph</h2>
+      <p className="muted">
+        The graph shows {ringId ? `the accounts in ring ${ringId}` : "every investigated account"}; click any dot or line to see the transactions behind it.
       </p>
       {ringId
-        ? <Async state={ring} what="ring graph">{(g) => <RingGraph elements={g.elements} onSelect={onSelect} height={560} />}</Async>
-        : <Async state={overview} what="network graph">{(g) => <RingGraph elements={g.elements} onSelect={onSelect} height={760} />}</Async>}
+        ? <Async state={ring} what="ring graph">{(g) => <RingGraph elements={g.elements} onSelect={onSelect} height="calc(100vh - 140px)" />}</Async>
+        : <Async state={overview} what="network graph">{(g) => <RingGraph elements={g.elements} onSelect={onSelect} height="calc(100vh - 140px)" />}</Async>}
+      <p className="muted graph-help">Use + and − (or Ctrl / ⌘ + scroll, or pinch) to zoom, drag the background to move around,
+        Fit to see everything again, and Full screen for more room.</p>
+      <section className="legend-box">
+        <h3>How to read the graph</h3>
+        <div className="legend-grid">
+          <div><span className="sym">{RING_COLORS.slice(0, 3).map((c) => <span key={c} className="lg-dot" style={{ width: 16, height: 16, background: c }} />)}</span>
+            Large dot: investigated account, coloured by its ring (see the table above)</div>
+          <div><span className="sym"><span className="lg-dot" style={{ width: 16, height: 16, background: NO_RING_COLOR }} /></span> Slate large dot: account in no ring</div>
+          <div><span className="sym"><span className="lg-dot" style={{ width: 8, height: 8, background: "#a0aec0" }} /></span> Small grey dot: outside counterparty shared by 2 accounts (masked)</div>
+          <div><span className="sym"><span className="lg-dot" style={{ width: 10, height: 10, background: "#d69e2e" }} /></span> Small gold dot: counterparty shared by 3 or more accounts</div>
+          <div><span className="sym"><span className="lg-line plain" /></span> Line: the account sent money to or received money from that counterparty</div>
+          <div><span className="sym"><span className="lg-line red" /></span> Red: the dot or line you clicked and its links; everything else fades</div>
+          <div><span className="sym"><span className="lg-dot" style={{ width: 8, height: 8, background: "#a0aec0" }} /><span className="lg-dot" style={{ width: 8, height: 8, background: "#a0aec0" }} /><span className="lg-dot" style={{ width: 8, height: 8, background: "#a0aec0" }} /></span>
+            A cluster of small dots between accounts = people or accounts they all deal with</div>
+          {!ringId && <div><span className="sym"><span className="lg-dot" style={{ width: 16, height: 16, background: NO_RING_COLOR }} /><span className="lg-dot" style={{ width: 16, height: 16, background: NO_RING_COLOR }} /></span>
+            Bottom row: accounts that share no counterparty with any other account</div>}
+        </div>
+      </section>
 
       <h2>Connection details</h2>
       {!sel ? <p className="muted">Click a dot or a line in the graph.</p> : (

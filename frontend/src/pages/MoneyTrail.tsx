@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import type { TrailChain, TrailDirection, TrailGraph, TrailGraphNode } from "../api/types";
-import { Async, RoleBadge, TierBadge, TrailGraphView, day, inr, inrShort, num } from "../components";
+import { Async, RoleBadge, StatTile, TierBadge, TrailGraphView, day, inr, inrShort, num } from "../components";
 import type { TrailSelection } from "../components";
 import { useLeads, useTrailGraph } from "../hooks";
 
@@ -34,34 +34,30 @@ export function MoneyTrail() {
 
   return (
     <div className="trail-page">
-      <div className="trail-head">
-        <div>
-          <div className="trail-kicker">MONEY TRAIL INVESTIGATION</div>
-          <h1>Where did the money come from, and where did it go?</h1>
-        </div>
-        <div className="trail-controls">
-          <label>Account{" "}
-            <select value={start ?? ""} onChange={(e) => go(e.target.value)}>
-              {(leads.data ?? []).map((l) => (
-                <option key={l.account_id} value={l.account_id}>
-                  {l.account_id} · {l.risk_score.toFixed(0)} {l.tier}{l.network_score === 0 ? " · no counterparties" : ""}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>Follow{" "}
-            <select value={direction} onChange={(e) => { setChainIdx(null); setDirection(e.target.value as TrailDirection); }}>
-              <option value="both">both ways</option>
-              <option value="backward">money in (sources)</option>
-              <option value="forward">money out (destinations)</option>
-            </select>
-          </label>
-          <label>Hops{" "}
-            <select value={hops} onChange={(e) => { setChainIdx(null); setHops(Number(e.target.value)); }}>
-              {[1, 2, 3, 4].map((h) => <option key={h}>{h}</option>)}
-            </select>
-          </label>
-        </div>
+      <h1>Money Trail</h1>
+      <p className="muted">Where did the money come from, and where did it go?</p>
+      <div className="controls">
+        <label>Account{" "}
+          <select value={start ?? ""} onChange={(e) => go(e.target.value)}>
+            {(leads.data ?? []).map((l) => (
+              <option key={l.account_id} value={l.account_id}>
+                {l.account_id} · {l.risk_score.toFixed(0)} {l.tier}{l.network_score === 0 ? " · no counterparties" : ""}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>Follow{" "}
+          <select value={direction} onChange={(e) => { setChainIdx(null); setDirection(e.target.value as TrailDirection); }}>
+            <option value="both">both ways</option>
+            <option value="backward">money in (sources)</option>
+            <option value="forward">money out (destinations)</option>
+          </select>
+        </label>
+        <label>Hops{" "}
+          <select value={hops} onChange={(e) => { setChainIdx(null); setHops(Number(e.target.value)); }}>
+            {[1, 2, 3, 4].map((h) => <option key={h}>{h}</option>)}
+          </select>
+        </label>
       </div>
 
       <Async state={trail} what="money trail" isEmpty={(t) => t.edges.length === 0}
@@ -91,18 +87,23 @@ function TrailBody({ t, chainIdx, setChainIdx, selection, setSelection, go }: {
   const shown = t.chains.slice(0, 25);
   return (
     <>
-      <div className="trail-stats">
-        <Stat label="Traced in" value={inrShort(s.amount_in)} hint="into the account along the trail" />
-        <Stat label="Traced out" value={inrShort(s.amount_out)} hint="out of the account along the trail" />
-        <Stat label="Intermediaries" value={num(s.n_intermediaries)} hint="received and passed money on" />
-        <Stat label="Cross-account chains" value={num(s.n_cross_account_chains)} hint="reach another investigated account" />
-        <Stat label="Circular flows" value={num(s.n_circular)} hint="money goes both to and from these" />
-        <Stat label="Shared counterparties" value={num(s.n_shared_counterparties)} hint="also deal with other mule accounts" />
-        <Stat label="Period" value={s.first_ts ? `${day(s.first_ts)} → ${day(s.last_ts)}` : "dates unreliable"} hint={s.time_reliable ? "timestamps reliable" : "statement dates are shuffled"} />
+      <div className="tiles cols3">
+        <StatTile label="Traced in" value={inrShort(s.amount_in)} hint="into the account along the trail" />
+        <StatTile label="Traced out" value={inrShort(s.amount_out)} hint="out of the account along the trail" />
+        <StatTile label="Intermediaries" value={num(s.n_intermediaries)} hint="received and passed money on" />
+        <StatTile label="Cross-account chains" value={num(s.n_cross_account_chains)} hint="reach another investigated account" />
+        <StatTile label="Circular flows" value={num(s.n_circular)} hint="money goes both to and from these" />
+        <StatTile label="Shared counterparties" value={num(s.n_shared_counterparties)} hint="also deal with other mule accounts" />
+        <StatTile label="Period" value={<span className="tile-value-sm">{s.first_ts ? `${day(s.first_ts)} → ${day(s.last_ts)}` : "dates unreliable"}</span>} hint={s.time_reliable ? "timestamps reliable" : "statement dates are shuffled"} />
       </div>
 
-      <div className="trail-main">
-        <aside className="trail-card">
+      <TrailGraphView graph={t} chain={chain} selection={selection} onSelect={setSelection} />
+      <p className="muted graph-help">Click a dot or a line to see its details below. Use + and − (or Ctrl / ⌘ + scroll, or pinch) to zoom,
+        drag the background to move around, Fit to see everything again, and Full screen for more room.</p>
+      <TrailLegend />
+
+      <div className="grid2 trail-panels">
+        <section className="trail-card">
           <div className="trail-badge">UNDER INVESTIGATION</div>
           <div className="trail-title">{startNode.label}</div>
           <div><TierBadge tier={startNode.tier} /> <RoleBadge role={startNode.role} /></div>
@@ -115,36 +116,27 @@ function TrailBody({ t, chainIdx, setChainIdx, selection, setSelection, go }: {
             )) : "none found"}</dd>
           </dl>
           <Link to={`/accounts/${startNode.ref}`}>Open account details →</Link>
-          <div className="trail-legend">
-            <div><span className="lg-line" /> transfer (thicker = more money, dashes move with the money)</div>
-            <div><span className="lg-line shared" /> common counterparty with another mule account</div>
-            <div><span className="lg-node subject" /> investigated account (ring colour = risk tier)</div>
-            <div><span className="lg-node circular" /> double ring: circular flow, money goes both to and from it</div>
-            <div><span className="lg-node upi" /> UPI ID <span className="lg-node ifsc" /> bank branch <span className="lg-node name" /> payee</div>
-          </div>
-        </aside>
+        </section>
 
-        <div className="trail-graph-wrap">
-          <TrailGraphView graph={t} chain={chain} selection={selection} onSelect={setSelection} />
-        </div>
-
-        <aside className="trail-side">
+        <section className="trail-side">
           {selection ? <SelectionPanel t={t} sel={selection} byRef={byRef} go={go} onClose={() => setSelection(null)} /> : (
             <>
               <h3>Suspicious chains</h3>
               <p className="trail-muted">Click a chain to light it up on the graph, hop by hop.</p>
-              <ol className="trail-chains">
-                {shown.map((c, i) => (
-                  <li key={i} className={chainIdx === i ? "active" : ""} onClick={() => setChainIdx(chainIdx === i ? null : i)}>
-                    <span className={`chain-kind ${c.kind}`}>{c.kind}</span> <b>{inrShort(c.amount)}</b> · {c.hops} hop{c.hops > 1 ? "s" : ""}
-                    <div className="chain-path">{chainLabel(c, byRef)}</div>
-                  </li>
-                ))}
-              </ol>
+              {shown.length === 0 ? <p className="trail-muted">No suspicious chains on this trail.</p> : (
+                <ol className="trail-chains">
+                  {shown.map((c, i) => (
+                    <li key={i} className={chainIdx === i ? "active" : ""} onClick={() => setChainIdx(chainIdx === i ? null : i)}>
+                      <span className={`chain-kind ${c.kind}`}>{c.kind}</span> <b>{inrShort(c.amount)}</b> · {c.hops} hop{c.hops > 1 ? "s" : ""}
+                      <div className="chain-path">{chainLabel(c, byRef)}</div>
+                    </li>
+                  ))}
+                </ol>
+              )}
               {t.chains.length > shown.length && <p className="trail-muted">+{t.chains.length - shown.length} more chains</p>}
             </>
           )}
-        </aside>
+        </section>
       </div>
 
       {chain && <ChainSteps chain={chain} t={t} byRef={byRef} />}
@@ -152,8 +144,28 @@ function TrailBody({ t, chainIdx, setChainIdx, selection, setSelection, go }: {
   );
 }
 
-const Stat = ({ label, value, hint }: { label: string; value: string; hint: string }) => (
-  <div className="trail-stat"><div className="v">{value}</div><div className="l">{label}</div><div className="h">{hint}</div></div>
+/** What every shape, colour and line on the money trail graph means. */
+const TrailLegend = () => (
+  <section className="legend-box">
+    <h3>How to read the graph</h3>
+    <div className="legend-grid">
+      <div><span className="sym"><span className="lg-col">SOURCE</span></span> Left columns: where the money came from, one or more hops back</div>
+      <div><span className="sym"><span className="lg-col">DEST.</span></span> Right columns: where the money went, one or more hops on</div>
+      <div><span className="sym"><span className="lg-node start" /></span> The account being traced (glowing, in the middle)</div>
+      <div><span className="sym"><span className="lg-node subject" /></span> Investigated account; the number inside is its risk score</div>
+      <div><span className="sym"><span className="lg-node subject" /><span className="lg-node subject med" /><span className="lg-node subject low" /></span>
+        Ring colour = risk tier: red high, orange medium, green low</div>
+      <div><span className="sym"><span className="lg-node circular" /></span> Double ring: circular flow, money goes both to and from it</div>
+      <div><span className="sym"><span className="lg-node upi" /></span> UPI ID</div>
+      <div><span className="sym"><span className="lg-node ifsc" /></span> Bank branch (IFSC)</div>
+      <div><span className="sym"><span className="lg-node account" /></span> Bank account</div>
+      <div><span className="sym"><span className="lg-node name" /></span> Named payee</div>
+      <div><span className="sym"><span className="lg-line" /></span> Transfer; the moving dashes show which way the money went</div>
+      <div><span className="sym"><span className="lg-line thick" /></span> Thicker line = more money</div>
+      <div><span className="sym"><span className="lg-line shared" /></span> Common counterparty: also deals with another investigated account</div>
+      <div><span className="sym"><span className="lg-line hl" /></span> Blue = the chain, dot or line you selected, with amounts on each hop</div>
+    </div>
+  </section>
 );
 
 function chainLabel(c: TrailChain, byRef: Map<string, TrailGraphNode>) {

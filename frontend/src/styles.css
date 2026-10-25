@@ -45,6 +45,7 @@ main { padding: 24px 32px 56px; max-width: 1440px; margin: 0 auto; }
 /* ---- type ---- */
 h1 { font-size: 26px; font-weight: 700; letter-spacing: -.01em; margin: 4px 0 6px; }
 h1 + p.muted { margin-top: 0; font-size: 14px; max-width: 900px; line-height: 1.5; }
+h2 + p.muted { margin-top: 0; font-size: 14px; line-height: 1.5; }
 h2 { font-size: 18px; font-weight: 650; margin: 32px 0 10px; letter-spacing: -.005em; }
 h3 { font-size: 15px; font-weight: 600; margin: 20px 0 8px; } h4 { font-size: 13px; margin: 14px 0 6px; color: var(--fg2); }
 .muted { color: var(--muted); } .small { font-size: 12px; } .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
@@ -105,53 +106,64 @@ select, input[type="text"], input[type="search"], input[type="number"], input:no
   font: inherit; font-size: 13px; padding: 6px 10px; border: 1px solid #d0d7e2; border-radius: 8px; background: var(--card); color: var(--fg); margin-left: 6px; }
 select:focus, input:focus { outline: 2px solid #bac8ff; border-color: var(--accent); }
 
-/* ---- Money Trail investigation view (dark, scoped to .trail-page) ---- */
-.trail-page { --t-bg: #0b1220; --t-panel: #111c30; --t-line: #22324f; --t-fg: #e2e8f0; --t-muted: #8a9bb8; --t-orange: #f6ad55;
-  background: radial-gradient(1200px 600px at 50% 0%, #13223f 0%, var(--t-bg) 60%); color: var(--t-fg);
-  box-sizing: border-box; padding: 24px 28px 32px; border-radius: 16px; box-shadow: 0 10px 30px rgba(11,18,32,.25); }
-@media (max-width: 900px) { .trail-page { padding: 16px; border-radius: 12px; } }
-.trail-page a { color: #90cdf4; }
-.trail-page h1 { margin: 2px 0 0; font-size: 22px; font-weight: 600; } .trail-page h3 { margin: 0 0 6px; color: var(--t-orange); font-size: 14px; letter-spacing: .04em; }
-.trail-kicker { color: var(--t-orange); font-size: 12px; font-weight: 700; letter-spacing: .18em; }
-.trail-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
-.trail-controls { display: flex; gap: 14px; flex-wrap: wrap; } .trail-controls label { color: var(--t-muted); font-size: 13px; }
-.trail-controls select { background: var(--t-panel); color: var(--t-fg); border: 1px solid var(--t-line); border-radius: 6px; padding: 5px 8px; }
-.trail-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; margin: 16px 0; }
-.trail-stat { background: var(--t-panel); border: 1px solid var(--t-line); border-radius: 8px; padding: 10px 12px; }
-.trail-stat .v { font-size: 20px; font-weight: 700; color: var(--t-orange); } .trail-stat .l { font-size: 12px; font-weight: 600; } .trail-stat .h { font-size: 11px; color: var(--t-muted); }
-.trail-main { display: grid; grid-template-columns: 240px 1fr 300px; gap: 12px; } @media (max-width: 1200px) { .trail-main { grid-template-columns: 1fr; } }
-.trail-card, .trail-side { background: var(--t-panel); border: 1px solid var(--t-line); border-radius: 8px; padding: 12px; font-size: 13px; }
-.trail-card { border-left: 3px solid var(--t-orange); }
-.trail-badge { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .12em; color: #1a202c; background: var(--t-orange); padding: 2px 6px; border-radius: 3px; }
+/* ---- Money Trail (same light cards as the rest of the app) ---- */
+.trail-page { --t-orange: #dd6b20; }
+.tile-value-sm { font-size: 20px; }
+.tiles.cols3 { grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 4px 0 16px; } @media (max-width: 700px) { .tiles.cols3 { grid-template-columns: 1fr; } }
+.trail-panels { margin-top: 16px; align-items: start; }
+.trail-panels > section { font-size: 13px; }
+.trail-card { border-top: 3px solid var(--t-orange); }
+.trail-badge { display: inline-block; margin-top: 16px; font-size: 10px; font-weight: 700; letter-spacing: .12em; color: white; background: var(--t-orange); padding: 2px 6px; border-radius: 3px; }
 .trail-title { font-size: 26px; font-weight: 700; margin: 6px 0; }
-.trail-page dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; margin: 12px 0; } .trail-page dt { color: var(--t-muted); } .trail-page dd { margin: 0; }
+.trail-page dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; margin: 12px 0; } .trail-page dt { color: var(--muted); } .trail-page dd { margin: 0; }
 .trail-page .big { font-size: 16px; font-weight: 600; word-break: break-all; }
-.trail-chip { background: #2a3b5c; color: var(--t-fg); padding: 2px 8px; margin: 0 4px 4px 0; border-radius: 10px; font-size: 12px; }
-.trail-page button.link { color: #90cdf4; }
-.trail-muted { color: var(--t-muted); font-size: 12px; }
-.trail-graph-wrap { border: 1px solid var(--t-line); border-radius: 8px; overflow: hidden; background: rgba(5, 10, 20, .6); }
-.trail-canvas { width: 100%; filter: drop-shadow(0 0 3px rgba(246, 173, 85, .55)); }
-.trail-chains { list-style: none; padding: 0; margin: 0; max-height: 540px; overflow: auto; }
-.trail-chains li { padding: 8px; border: 1px solid var(--t-line); border-radius: 6px; margin-bottom: 6px; cursor: pointer; }
-.trail-chains li:hover { border-color: #4a6fa5; } .trail-chains li.active { border-color: var(--t-orange); background: #1d2a44; }
-.chain-path { color: var(--t-muted); font-size: 11px; margin-top: 4px; word-break: break-all; }
-.chain-kind { font-size: 10px; font-weight: 700; text-transform: uppercase; padding: 1px 6px; border-radius: 3px; background: #2a3b5c; }
-.chain-kind.cross-account { background: #9b2c2c; color: #fed7d7; } .chain-kind.shared { background: #234e52; color: #b2f5ea; }
-.trail-legend { margin-top: 14px; border-top: 1px solid var(--t-line); padding-top: 10px; color: var(--t-muted); font-size: 11px; display: grid; gap: 6px; }
-.lg-line { display: inline-block; width: 26px; border-top: 3px dashed #dd6b20; vertical-align: middle; margin-right: 6px; } .lg-line.shared { border-top: 2px dotted #4fd1c5; }
-.lg-node { display: inline-block; width: 12px; height: 12px; border: 2px solid #4a6fa5; background: #1a2a44; vertical-align: middle; margin: 0 4px 0 2px; }
-.lg-node.subject { border-radius: 50%; border-color: #f56565; width: 14px; height: 14px; } .lg-node.upi { border-radius: 3px; border-color: #38b2ac; }
-.lg-node.ifsc { transform: rotate(45deg); border-color: #9f7aea; width: 10px; height: 10px; } .lg-node.name { border-radius: 50%; border-color: #a0aec0; } .lg-node.circular { border: 4px double #cbd5e0; border-radius: 50%; width: 12px; height: 12px; }
-.trail-steps { margin-top: 14px; background: var(--t-panel); border: 1px solid var(--t-line); border-radius: 8px; padding: 12px; }
+.trail-chip { background: var(--accent-soft); color: var(--accent); box-shadow: none; padding: 2px 9px; margin: 0 4px 4px 0; border-radius: 999px; font-size: 12px; }
+.trail-chip:hover { background: #dbe4ff; }
+.trail-muted { color: var(--muted); font-size: 12px; }
+.trail-chains { list-style: none; padding: 0; margin: 0; max-height: 420px; overflow: auto; }
+.trail-chains li { padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; margin-bottom: 6px; cursor: pointer; }
+.trail-chains li:hover { border-color: #bac8ff; } .trail-chains li.active { border-color: var(--accent); background: var(--accent-soft); }
+.chain-path { color: var(--muted); font-size: 11px; margin-top: 4px; word-break: break-all; }
+.chain-kind { font-size: 10px; font-weight: 700; text-transform: uppercase; padding: 1px 6px; border-radius: 3px; background: #e9ecef; color: #495057; }
+.chain-kind.cross-account { background: #ffe3e3; color: #c92a2a; } .chain-kind.shared { background: #e6fcf5; color: #087f5b; }
+.trail-steps { margin-top: 16px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 4px 18px 14px; }
 .steps { display: flex; align-items: center; overflow-x: auto; padding: 8px 0; }
 .step-wrap { display: flex; align-items: center; }
-.step { min-width: 150px; border: 1px solid #4a6fa5; border-radius: 8px; padding: 8px 10px; background: #14213a; }
-.step.subject { border-color: #f56565; } .step.start { box-shadow: 0 0 14px rgba(246, 173, 85, .6); border-color: var(--t-orange); }
-.step .k { font-size: 10px; color: var(--t-muted); text-transform: uppercase; letter-spacing: .06em; } .step .n { font-weight: 700; word-break: break-all; }
-.hop { min-width: 150px; text-align: center; padding: 0 6px; } .hop .amt { color: var(--t-orange); font-weight: 700; } .hop .meta { color: var(--t-muted); font-size: 11px; }
-.hop .arrow-line { height: 3px; margin: 4px 0; background: linear-gradient(90deg, rgba(221,107,32,.2), #f6ad55); position: relative; box-shadow: 0 0 8px rgba(246,173,85,.7); }
-.hop .arrow-line::after { content: ""; position: absolute; right: -2px; top: -5px; border: 6px solid transparent; border-left: 9px solid #f6ad55; }
-.trail-page .status { background: var(--t-panel); border-color: var(--t-line); color: var(--t-fg); }
+.step { min-width: 150px; border: 1px solid #a5b4d4; border-radius: 8px; padding: 8px 10px; background: #f8f9fc; }
+.step.subject { border-color: #f56565; } .step.start { box-shadow: 0 0 0 3px rgba(246,173,85,.45); border-color: var(--t-orange); }
+.step .k { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; } .step .n { font-weight: 700; word-break: break-all; }
+.hop { min-width: 150px; text-align: center; padding: 0 6px; } .hop .amt { color: var(--t-orange); font-weight: 700; } .hop .meta { color: var(--muted); font-size: 11px; }
+.hop .arrow-line { height: 3px; margin: 4px 0; background: linear-gradient(90deg, rgba(221,107,32,.2), #dd6b20); position: relative; }
+.hop .arrow-line::after { content: ""; position: absolute; right: -2px; top: -5px; border: 6px solid transparent; border-left: 9px solid #dd6b20; }
+
+/* ---- graph frame: canvas + zoom / fit / full screen buttons (Money Trail, Network) ---- */
+.graph-frame { position: relative; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+.graph-frame:fullscreen { border-radius: 0; border: 0; }
+.graph-canvas { width: 100%; min-height: 480px; }
+.graph-tools { position: absolute; top: 10px; right: 10px; display: flex; gap: 6px; z-index: 2; }
+.graph-tools button { background: var(--card); color: var(--fg); border: 1px solid #d0d7e2; box-shadow: var(--shadow); padding: 5px 10px; min-width: 34px; font-size: 13px; }
+.graph-tools button:hover { background: var(--accent-soft); color: var(--accent); }
+.graph-hint { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); background: rgba(15,27,51,.85); color: white; font-size: 12.5px;
+  padding: 7px 12px; border-radius: 8px; pointer-events: none; opacity: 0; transition: opacity .2s; white-space: nowrap; }
+.graph-hint.show { opacity: 1; }
+.graph-help { font-size: 12.5px; margin: 6px 0 0; }
+
+/* ---- graph legend box under a graph ---- */
+.legend-box { margin-top: 12px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 4px 18px 14px; }
+.legend-box h3 { margin: 14px 0 8px; }
+.legend-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px 24px; font-size: 13px; color: var(--fg2); }
+.legend-grid > div { display: flex; align-items: center; gap: 10px; line-height: 1.35; }
+.legend-grid .sym { flex: none; width: 76px; display: flex; justify-content: center; align-items: center; gap: 4px; }
+.lg-line { display: inline-block; width: 30px; border-top: 3px dashed #dd6b20; } .lg-line.thick { border-top-width: 6px; } .lg-line.shared { border-top: 2px dotted #319795; }
+.lg-line.hl { border-top: 3px solid #3b5bdb; } .lg-line.plain { border-top: 1px solid #a0aec0; } .lg-line.red { border-top: 2px solid #e53e3e; }
+.lg-node { display: inline-block; width: 14px; height: 14px; border: 2px solid #4a6fa5; background: white; box-sizing: border-box; }
+.lg-node.subject { border-radius: 50%; border: 3px solid #f56565; width: 22px; height: 22px; } .lg-node.subject.med { border-color: #ed8936; } .lg-node.subject.low { border-color: #48bb78; }
+.lg-node.start { border-radius: 50%; border: 3px solid #f56565; width: 22px; height: 22px; box-shadow: 0 0 0 5px rgba(246,173,85,.35); }
+.lg-node.upi { border-radius: 4px; border-color: #38b2ac; } .lg-node.ifsc { transform: rotate(45deg); border-color: #9f7aea; width: 12px; height: 12px; }
+.lg-node.account { border-color: #63b3ed; } .lg-node.name { border-radius: 50%; border-color: #a0aec0; }
+.lg-node.circular { border: 5px double #4a6fa5; border-radius: 50%; width: 20px; height: 20px; }
+.lg-col { font-size: 11px; font-weight: 700; color: #c05621; letter-spacing: .03em; }
+.lg-dot { display: inline-block; border-radius: 50%; }
 
 /* ---- Overview: conclusion of the investigation ---- */
 .verdict-hero { background: linear-gradient(135deg, #0f1b33 0%, #1c3366 55%, #3b5bdb 100%); color: white; padding: 24px 28px; border-radius: 14px; box-shadow: 0 10px 30px rgba(15,27,51,.18); }
@@ -262,3 +274,15 @@ details.verdict-card:not([open]) { gap: 0; }
   .flow-step { padding: 8px 10px; } .flow-step b { font-size: 12px; } .flow-step small { font-size: 10.5px; }
   .flow-step + .flow-step { margin-left: 20px; } .flow-step + .flow-step::before { left: -15px; }
 }
+
+/* ---- Complaints: Matches fixed on top, the complaints list fills the rest of the screen and scrolls ---- */
+.complaints-stack { display: flex; flex-direction: column; gap: 12px; height: calc(100vh - 150px); min-height: 520px; }
+.complaints-stack > section { background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow); padding: 4px 18px 16px; }
+.complaints-stack > section > h2:first-child { margin-top: 14px; }
+.complaints-stack table { box-shadow: none; }
+.complaints-matches { flex: none; max-height: 42vh; overflow: auto; }
+.complaints-list { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.complaints-list .scroll-box { flex: 1; min-height: 0; overflow: auto; border: 1px solid var(--line); border-radius: var(--radius); }
+.complaints-list .scroll-box table { border: 0; border-radius: 0; overflow: visible; }
+.complaints-list .scroll-box thead th { position: sticky; top: 0; z-index: 1; }
+@media (max-width: 900px) { .complaints-stack { height: auto; } .complaints-list .scroll-box { max-height: 60vh; } }

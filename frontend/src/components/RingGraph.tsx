@@ -1,6 +1,7 @@
 import cytoscape from "cytoscape";
 import { useEffect, useRef } from "react";
 import type { CyElements } from "../api/types";
+import { GraphFrame } from "./GraphFrame";
 
 /** Colour per ring; accounts in no ring are slate. */
 export const RING_COLORS = ["#2b6cb0", "#c05621", "#2f855a", "#6b46c1", "#b83280", "#2c7a7b", "#975a16", "#c53030"];
@@ -70,9 +71,10 @@ export interface GraphSelection {
 export function RingGraph({ elements, onSelect, height = 520 }: {
   elements: CyElements;
   onSelect?: (sel: GraphSelection) => void;
-  height?: number;
+  height?: number | string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const cyRef = useRef<cytoscape.Core>();
   useEffect(() => {
     if (!ref.current) return;
     const subjects = new Set(elements.nodes.filter((n) => n.data.is_subject).map((n) => n.data.id));
@@ -94,8 +96,11 @@ export function RingGraph({ elements, onSelect, height = 520 }: {
         { selector: "node.hl", style: { "border-width": 3, "border-color": "#e53e3e" } },
       ],
       layout: { name: "preset", positions: pos, fit: true, padding: 30 },
-      wheelSensitivity: 0.2,
+      userZoomingEnabled: false, // GraphFrame zooms with buttons, Ctrl/⌘ + wheel or a pinch
+      minZoom: 0.05,
+      maxZoom: 4,
     });
+    cyRef.current = cy;
     const highlight = (els: cytoscape.Collection) => {
       cy.elements().removeClass("hl").addClass("faded");
       els.removeClass("faded").addClass("hl");
@@ -116,7 +121,10 @@ export function RingGraph({ elements, onSelect, height = 520 }: {
     cy.on("tap", (e) => {
       if (e.target === cy) cy.elements().removeClass("hl faded");
     });
-    return () => cy.destroy();
+    return () => {
+      cyRef.current = undefined;
+      cy.destroy();
+    };
   }, [elements, onSelect]);
-  return <div ref={ref} className="graph" style={{ height }} />;
+  return <GraphFrame boxRef={ref} cyRef={cyRef} height={height} />;
 }

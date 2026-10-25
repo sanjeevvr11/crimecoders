@@ -2,6 +2,7 @@ import cytoscape from "cytoscape";
 import { useEffect, useRef } from "react";
 import type { TrailChain, TrailGraph } from "../api/types";
 import { inrShort } from "./format";
+import { GraphFrame } from "./GraphFrame";
 
 export type TrailSelection =
   | { type: "node"; ref: string }
@@ -66,17 +67,16 @@ function columnTitle(level: number) {
 }
 
 /**
- * Investigation-style money trail graph: dark canvas, glowing orange transfers
- * with moving dashes in the direction money flowed (thicker = more money),
- * dashed cyan links where a counterparty also deals with another investigated
+ * Money trail graph: orange transfers with moving dashes in the direction
+ * money flowed (thicker = more money), dotted teal links where a counterparty also deals with another investigated
  * account. `chain` highlights one chain end to end with amounts on each hop.
  */
-export function TrailGraphView({ graph, chain, selection, onSelect, height = 720 }: {
+export function TrailGraphView({ graph, chain, selection, onSelect, height = "calc(100vh - 120px)" }: {
   graph: TrailGraph;
   chain?: TrailChain | null;
   selection?: TrailSelection;
   onSelect?: (sel: TrailSelection) => void;
-  height?: number;
+  height?: number | string;
 }) {
   const box = useRef<HTMLDivElement>(null);
   const cyRef = useRef<cytoscape.Core>();
@@ -110,8 +110,8 @@ export function TrailGraphView({ graph, chain, selection, onSelect, height = 720
       ] as cytoscape.ElementDefinition[],
       style: [
         { selector: "node", style: {
-          label: "data(display)", color: "#cbd5e0", "font-size": 13, "text-valign": "bottom", "text-margin-y": 6,
-          "text-wrap": "wrap", "text-max-width": "140px", "background-color": "#1a2a44", "border-width": 2, "border-color": "#4a6fa5",
+          label: "data(display)", color: "#2d3748", "font-size": 13, "text-valign": "bottom", "text-margin-y": 6,
+          "text-wrap": "wrap", "text-max-width": "140px", "background-color": "#ffffff", "border-width": 2, "border-color": "#4a6fa5",
           width: 26, height: 26,
         } },
         { selector: "node.kind-upi", style: { shape: "round-rectangle", "border-color": "#38b2ac" } },
@@ -119,17 +119,17 @@ export function TrailGraphView({ graph, chain, selection, onSelect, height = 720
         { selector: "node.kind-account", style: { shape: "rectangle", "border-color": "#63b3ed" } },
         { selector: "node.kind-name", style: { shape: "ellipse", "border-color": "#a0aec0" } },
         { selector: "node.subject", style: {
-          width: 54, height: 54, "background-color": "#14213a", "border-width": 4, "font-size": 13, "font-weight": "bold",
-          color: "#f7fafc", "text-valign": "center", "text-margin-y": 0,
+          width: 54, height: 54, "background-color": "#f8f9fc", "border-width": 4, "font-size": 13, "font-weight": "bold",
+          color: "#1a202c", "text-valign": "center", "text-margin-y": 0,
           "border-color": (n: cytoscape.NodeSingular) => TIER_RING[n.data("tier")] ?? "#a0aec0",
         } },
-        { selector: "node.circular", style: { "border-style": "double", "border-width": 6 } },
+        { selector: "node.circular", style: { "border-style": "double", "border-width": 7 } },
         { selector: "node.start", style: {
-          width: 84, height: 84, "font-size": 16, "underlay-color": "#f6ad55", "underlay-opacity": 0.35, "underlay-padding": 14,
+          width: 84, height: 84, "font-size": 16, "underlay-color": "#f6ad55", "underlay-opacity": 0.3, "underlay-padding": 14,
           "underlay-shape": "ellipse",
         } as cytoscape.Css.Node },
         { selector: "node.colhead", style: {
-          shape: "rectangle", width: 1, height: 1, "background-opacity": 0, "border-width": 0, color: "#f6ad55",
+          shape: "rectangle", width: 1, height: 1, "background-opacity": 0, "border-width": 0, color: "#c05621",
           "font-size": 15, "font-weight": "bold", "text-valign": "center", "text-margin-y": 0, events: "no",
         } },
         { selector: "edge", style: {
@@ -137,18 +137,18 @@ export function TrailGraphView({ graph, chain, selection, onSelect, height = 720
           "arrow-scale": 0.9, "curve-style": "bezier", opacity: 0.8, "line-style": "dashed", "line-dash-pattern": [10, 6],
         } },
         { selector: "edge.shared", style: {
-          "line-color": "#4fd1c5", "target-arrow-color": "#4fd1c5", "line-dash-pattern": [3, 6], width: 1.5, opacity: 0.7,
+          "line-color": "#319795", "target-arrow-color": "#319795", "line-dash-pattern": [3, 6], width: 1.5, opacity: 0.8,
         } },
         { selector: ".faded", style: { opacity: 0.1 } },
-        { selector: "node.hl", style: { "border-color": "#fbd38d", "border-width": 4 } },
+        { selector: "node.hl", style: { "border-color": "#3b5bdb", "border-width": 4 } },
         { selector: "edge.hl", style: {
-          "line-color": "#fbd38d", "target-arrow-color": "#fbd38d", opacity: 1, label: "data(amt)", color: "#fefcbf",
-          "font-size": 12, "font-weight": "bold", "text-background-color": "#0b1220", "text-background-opacity": 0.85,
+          "line-color": "#3b5bdb", "target-arrow-color": "#3b5bdb", opacity: 1, label: "data(amt)", color: "#1a202c",
+          "font-size": 12, "font-weight": "bold", "text-background-color": "#ffffff", "text-background-opacity": 0.9,
           "text-background-padding": "3px", "z-index": 10,
         } },
       ],
       layout: { name: "preset", fit: true, padding: 40 },
-      wheelSensitivity: 0.2,
+      userZoomingEnabled: false, // GraphFrame zooms with buttons, Ctrl/⌘ + wheel or a pinch
       minZoom: 0.2,
       maxZoom: 3,
     });
@@ -174,6 +174,7 @@ export function TrailGraphView({ graph, chain, selection, onSelect, height = 720
     cyRef.current = cy;
     return () => {
       cancelAnimationFrame(frame);
+      cyRef.current = undefined;
       cy.destroy();
     };
   }, [graph]);
@@ -206,5 +207,5 @@ export function TrailGraphView({ graph, chain, selection, onSelect, height = 720
     }
   }, [chain, selection, graph]);
 
-  return <div ref={box} className="trail-canvas" style={{ height }} />;
+  return <GraphFrame boxRef={box} cyRef={cyRef} height={height} className="trail-canvas" />;
 }
