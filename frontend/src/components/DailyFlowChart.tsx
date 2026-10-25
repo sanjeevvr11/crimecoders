@@ -10,8 +10,8 @@ export const DailyFlowChart = ({ daily }: { daily: DailyFlow[] }) => (
       <YAxis tickFormatter={(v) => `${(v / 1e5).toFixed(0)}L`} width={50} />
       <Tooltip formatter={(v: number) => inr(v)} />
       <Legend />
-      <Bar dataKey="cr_amount" name="Credits" fill="#2f855a" />
-      <Bar dataKey="dr_amount" name="Debits" fill="#c05621" />
+      <Bar dataKey="cr_amount" name="Credits" fill="#51cf66" />
+      <Bar dataKey="dr_amount" name="Debits" fill="#ff9f45" />
     </BarChart>
   </ResponsiveContainer>
 );

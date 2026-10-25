@@ -9,10 +9,10 @@ export const WeeklyAnomalyChart = ({ weeks }: { weeks: WeekScore[] }) => (
       <XAxis dataKey="week_start" minTickGap={40} />
       <YAxis domain={[0, 1]} width={40} />
       <Tooltip formatter={(v: number, _n, p) => [v.toFixed(2), p.payload.is_flagged ? "anomaly (FLAGGED)" : "anomaly"]} />
-      <ReferenceLine y={0.5} stroke="#999" strokeDasharray="4 4" />
+      <ReferenceLine y={0.5} stroke="#8a93a8" strokeDasharray="4 4" />
       <Bar dataKey="anomaly_score" name="Anomaly">
         {weeks.map((w) => (
-          <Cell key={w.week_start} fill={w.is_flagged ? "#c53030" : "#a0aec0"} />
+          <Cell key={w.week_start} fill={w.is_flagged ? "#ff3d55" : "#4a5268"} />
         ))}
       </Bar>
     </BarChart>

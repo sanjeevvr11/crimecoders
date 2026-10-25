@@ -13,7 +13,7 @@ const GAP = 260; // px between hop columns
 const SUB = 130; // px between sub-columns when a hop has many nodes
 const ROW = 64; // px between nodes in a column
 const PER_COL = 9; // nodes per sub-column before wrapping
-const TIER_RING: Record<string, string> = { HIGH: "#f56565", MEDIUM: "#ed8936", LOW: "#48bb78" };
+const TIER_RING: Record<string, string> = { HIGH: "#ff3d55", MEDIUM: "#ff9f45", LOW: "#51cf66" };
 
 /**
  * Hop columns: money sources on the left (negative levels), the investigated
@@ -110,8 +110,8 @@ export function TrailGraphView({ graph, chain, selection, onSelect, height = "ca
       ] as cytoscape.ElementDefinition[],
       style: [
         { selector: "node", style: {
-          label: "data(display)", color: "#2d3748", "font-size": 13, "text-valign": "bottom", "text-margin-y": 6,
-          "text-wrap": "wrap", "text-max-width": "140px", "background-color": "#ffffff", "border-width": 2, "border-color": "#4a6fa5",
+          label: "data(display)", color: "#c2c8d6", "font-size": 13, "text-valign": "bottom", "text-margin-y": 6,
+          "text-wrap": "wrap", "text-max-width": "140px", "background-color": "#0f131d", "border-width": 2, "border-color": "#6b8cc7",
           width: 26, height: 26,
         } },
         { selector: "node.kind-upi", style: { shape: "round-rectangle", "border-color": "#38b2ac" } },
@@ -119,17 +119,17 @@ export function TrailGraphView({ graph, chain, selection, onSelect, height = "ca
         { selector: "node.kind-account", style: { shape: "rectangle", "border-color": "#63b3ed" } },
         { selector: "node.kind-name", style: { shape: "ellipse", "border-color": "#a0aec0" } },
         { selector: "node.subject", style: {
-          width: 54, height: 54, "background-color": "#f8f9fc", "border-width": 4, "font-size": 13, "font-weight": "bold",
-          color: "#1a202c", "text-valign": "center", "text-margin-y": 0,
+          width: 54, height: 54, "background-color": "#141927", "border-width": 4, "font-size": 13, "font-weight": "bold",
+          color: "#eef1f7", "text-valign": "center", "text-margin-y": 0,
           "border-color": (n: cytoscape.NodeSingular) => TIER_RING[n.data("tier")] ?? "#a0aec0",
         } },
         { selector: "node.circular", style: { "border-style": "double", "border-width": 7 } },
         { selector: "node.start", style: {
-          width: 84, height: 84, "font-size": 16, "underlay-color": "#f6ad55", "underlay-opacity": 0.3, "underlay-padding": 14,
+          width: 84, height: 84, "font-size": 16, "underlay-color": "#ff3d55", "underlay-opacity": 0.3, "underlay-padding": 14,
           "underlay-shape": "ellipse",
         } as cytoscape.Css.Node },
         { selector: "node.colhead", style: {
-          shape: "rectangle", width: 1, height: 1, "background-opacity": 0, "border-width": 0, color: "#c05621",
+          shape: "rectangle", width: 1, height: 1, "background-opacity": 0, "border-width": 0, color: "#ff9f45",
           "font-size": 15, "font-weight": "bold", "text-valign": "center", "text-margin-y": 0, events: "no",
         } },
         { selector: "edge", style: {
@@ -137,13 +137,13 @@ export function TrailGraphView({ graph, chain, selection, onSelect, height = "ca
           "arrow-scale": 0.9, "curve-style": "bezier", opacity: 0.8, "line-style": "dashed", "line-dash-pattern": [10, 6],
         } },
         { selector: "edge.shared", style: {
-          "line-color": "#319795", "target-arrow-color": "#319795", "line-dash-pattern": [3, 6], width: 1.5, opacity: 0.8,
+          "line-color": "#38d9a9", "target-arrow-color": "#38d9a9", "line-dash-pattern": [3, 6], width: 1.5, opacity: 0.8,
         } },
         { selector: ".faded", style: { opacity: 0.1 } },
-        { selector: "node.hl", style: { "border-color": "#3b5bdb", "border-width": 4 } },
+        { selector: "node.hl", style: { "border-color": "#f5c84b", "border-width": 4 } },
         { selector: "edge.hl", style: {
-          "line-color": "#3b5bdb", "target-arrow-color": "#3b5bdb", opacity: 1, label: "data(amt)", color: "#1a202c",
-          "font-size": 12, "font-weight": "bold", "text-background-color": "#ffffff", "text-background-opacity": 0.9,
+          "line-color": "#f5c84b", "target-arrow-color": "#f5c84b", opacity: 1, label: "data(amt)", color: "#eef1f7",
+          "font-size": 12, "font-weight": "bold", "text-background-color": "#0a0d16", "text-background-opacity": 0.9,
           "text-background-padding": "3px", "z-index": 10,
         } },
       ],

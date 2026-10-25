@@ -163,7 +163,7 @@ const TrailLegend = () => (
       <div><span className="sym"><span className="lg-line" /></span> Transfer; the moving dashes show which way the money went</div>
       <div><span className="sym"><span className="lg-line thick" /></span> Thicker line = more money</div>
       <div><span className="sym"><span className="lg-line shared" /></span> Common counterparty: also deals with another investigated account</div>
-      <div><span className="sym"><span className="lg-line hl" /></span> Blue = the chain, dot or line you selected, with amounts on each hop</div>
+      <div><span className="sym"><span className="lg-line hl" /></span> Yellow = the chain, dot or line you selected, with amounts on each hop</div>
     </div>
   </section>
 );

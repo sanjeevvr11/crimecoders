@@ -66,11 +66,11 @@ export function Network() {
           <div><span className="sym">{RING_COLORS.slice(0, 3).map((c) => <span key={c} className="lg-dot" style={{ width: 16, height: 16, background: c }} />)}</span>
             Large dot: investigated account, coloured by its ring (see the table above)</div>
           <div><span className="sym"><span className="lg-dot" style={{ width: 16, height: 16, background: NO_RING_COLOR }} /></span> Slate large dot: account in no ring</div>
-          <div><span className="sym"><span className="lg-dot" style={{ width: 8, height: 8, background: "#a0aec0" }} /></span> Small grey dot: outside counterparty shared by 2 accounts (masked)</div>
-          <div><span className="sym"><span className="lg-dot" style={{ width: 10, height: 10, background: "#d69e2e" }} /></span> Small gold dot: counterparty shared by 3 or more accounts</div>
+          <div><span className="sym"><span className="lg-dot" style={{ width: 8, height: 8, background: "#7c859b" }} /></span> Small grey dot: outside counterparty shared by 2 accounts (masked)</div>
+          <div><span className="sym"><span className="lg-dot" style={{ width: 10, height: 10, background: "#f5c84b" }} /></span> Small gold dot: counterparty shared by 3 or more accounts</div>
           <div><span className="sym"><span className="lg-line plain" /></span> Line: the account sent money to or received money from that counterparty</div>
           <div><span className="sym"><span className="lg-line red" /></span> Red: the dot or line you clicked and its links; everything else fades</div>
-          <div><span className="sym"><span className="lg-dot" style={{ width: 8, height: 8, background: "#a0aec0" }} /><span className="lg-dot" style={{ width: 8, height: 8, background: "#a0aec0" }} /><span className="lg-dot" style={{ width: 8, height: 8, background: "#a0aec0" }} /></span>
+          <div><span className="sym"><span className="lg-dot" style={{ width: 8, height: 8, background: "#7c859b" }} /><span className="lg-dot" style={{ width: 8, height: 8, background: "#7c859b" }} /><span className="lg-dot" style={{ width: 8, height: 8, background: "#7c859b" }} /></span>
             A cluster of small dots between accounts = people or accounts they all deal with</div>
           {!ringId && <div><span className="sym"><span className="lg-dot" style={{ width: 16, height: 16, background: NO_RING_COLOR }} /><span className="lg-dot" style={{ width: 16, height: 16, background: NO_RING_COLOR }} /></span>
             Bottom row: accounts that share no counterparty with any other account</div>}
