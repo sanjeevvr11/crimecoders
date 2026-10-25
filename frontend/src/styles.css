@@ -241,7 +241,7 @@ details.verdict-card:not([open]) { gap: 0; }
 .dash-page { padding-bottom: 120px; }
 .flow-bar { position: fixed; right: 0; bottom: 0; z-index: 9; }
 .flow-bar { display: flex; align-items: center; gap: 22px; padding: 12px 18px; margin: 0 10px 10px; left: calc(var(--sidebar) + 0px); overflow-x: auto;
-  background: linear-gradient(90deg, #0b0f1a 0%, #0f1626 100%); color: #e8ecf4; border: 1.5px solid #c99a2e; border-radius: 14px; box-shadow: 0 6px 24px rgba(0,0,0,.35); }
+  background: linear-gradient(90deg, var(--navy) 0%, var(--navy2) 100%); color: #e8ecf4; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; box-shadow: 0 6px 24px rgba(15,27,51,.3); }
 .flow-head { display: flex; align-items: center; gap: 12px; flex: none; }
 .flow-head b { display: block; font-size: 15px; } .flow-head small { display: block; font-size: 11.5px; color: #9aa6bd; margin-top: 3px; }
 .flow-icon { flex: none; display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; background: rgba(255,255,255,.06); box-shadow: inset 0 0 0 1px rgba(255,255,255,.08), 0 0 14px rgba(246,196,83,.12); }
@@ -256,7 +256,9 @@ details.verdict-card:not([open]) { gap: 0; }
 .dash-page .findings { margin-top: 18px; }
 @media (max-width: 1600px) {
   .flow-bar { gap: 14px; padding: 10px 12px; }
-  .flow-head > span:last-child { display: none; }
-  .flow-icon { width: 34px; height: 34px; } .flow-icon svg { width: 18px; height: 18px; }
-  .flow-step { gap: 8px; padding: 8px 9px; } .flow-step + .flow-step { margin-left: 20px; } .flow-step + .flow-step::before { left: -15px; }
+  .flow-head { gap: 8px; } .flow-head b { font-size: 13.5px; width: 100px; line-height: 1.2; } .flow-head small { display: none; }
+  .flow-head .flow-icon { width: 32px; height: 32px; } .flow-head .flow-icon svg { width: 17px; height: 17px; }
+  .flow-step .flow-icon { display: none; }
+  .flow-step { padding: 8px 10px; } .flow-step b { font-size: 12px; } .flow-step small { font-size: 10.5px; }
+  .flow-step + .flow-step { margin-left: 20px; } .flow-step + .flow-step::before { left: -15px; }
 }
