@@ -61,7 +61,7 @@ export function Network() {
       <p className="muted graph-help">Use + and − (or Ctrl / ⌘ + scroll, or pinch) to zoom, drag the background to move around,
         Fit to see everything again, and Full screen for more room.</p>
       <section className="legend-box">
-        <h3>How to read the graph</h3>
+        <h3>Key</h3>
         <div className="legend-grid">
           <div><span className="sym">{RING_COLORS.slice(0, 3).map((c) => <span key={c} className="lg-dot" style={{ width: 16, height: 16, background: c }} />)}</span>
             Large dot: investigated account, coloured by its ring (see the table above)</div>

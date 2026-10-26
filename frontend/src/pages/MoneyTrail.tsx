@@ -147,7 +147,7 @@ function TrailBody({ t, chainIdx, setChainIdx, selection, setSelection, go }: {
 /** What every shape, colour and line on the money trail graph means. */
 const TrailLegend = () => (
   <section className="legend-box">
-    <h3>How to read the graph</h3>
+    <h3>Key</h3>
     <div className="legend-grid">
       <div><span className="sym"><span className="lg-col">SOURCE</span></span> Left columns: where the money came from, one or more hops back</div>
       <div><span className="sym"><span className="lg-col">DEST.</span></span> Right columns: where the money went, one or more hops on</div>
