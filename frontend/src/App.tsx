@@ -37,9 +37,6 @@ export default function App() {
             </NavLink>
           ))}
         </nav>
-        <div className="sidebar-foot">
-          <span className="lock" aria-hidden="true">🔒</span> Names, account numbers and UPI ids are masked on every screen.
-        </div>
       </aside>
       <div className="scrim" onClick={() => setOpen(false)} />
       <div className="content">
