@@ -39,7 +39,6 @@ export function Models() {
       <Async state={summary} what="model summary">
         {(s) => {
           const ev = s.evaluation as unknown as Evaluation | null;
-          const card = s.model_card as Record<string, any>;
           return (
             <>
               <h2>Evaluation</h2>
@@ -89,10 +88,6 @@ export function Models() {
               <p>{s.account_roles.map((r: Record<string, any>) => (
                 <span key={r.account_id} className="chip"><Link to={`/accounts/${r.account_id}`}>{r.account_id}</Link> <RoleBadge role={r.role} /></span>
               ))}</p>
-
-              <h2>Model card</h2>
-              <p className="muted">Trained {card.generated_at} on {card.training_data?.windows} account-weeks from {card.training_data?.accounts} accounts · scikit-learn {card.versions?.["scikit-learn"]} · SHAP {card.versions?.shap}</p>
-              <details><summary>Raw model card JSON</summary><pre>{JSON.stringify(card, null, 2)}</pre></details>
             </>
           );
         }}
