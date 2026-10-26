@@ -202,8 +202,8 @@ button.demo-chip.role-viewer { color: var(--accent-electric-blue); border-color:
 .landing-section { max-width: 1180px; margin: 0 auto; padding: 72px clamp(16px, 4vw, 56px) 24px; }
 .section-title { font-size: clamp(28px, 3.4vw, 40px); margin: 0 0 8px; letter-spacing: -.015em; }
 .section-sub { color: var(--text-secondary); margin: 0 0 34px; font-size: 16px; }
-.steps { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; position: relative; }
-.steps::before { content: ""; position: absolute; top: 49px; left: 6%; right: 6%; height: 2px; z-index: 0;
+.how-steps { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; position: relative; }
+.how-steps::before { content: ""; position: absolute; top: 49px; left: 6%; right: 6%; height: 2px; z-index: 0;
   background: linear-gradient(90deg, transparent, var(--accent-crimson), var(--accent-hot-pink), var(--accent-electric-blue), transparent);
   background-size: 200% 100%; animation: flow 4s linear infinite; opacity: .6; }
 @keyframes flow { to { background-position: -200% 0; } }
@@ -234,18 +234,18 @@ button.demo-chip.role-viewer { color: var(--accent-electric-blue); border-color:
 @media (max-width: 960px) {
   .landing-hero { grid-template-columns: 1fr; min-height: 0; }
   .hero-signin { justify-content: stretch; } .hero-signin .login-card { max-width: none; }
-  .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 32px; } .steps::before { display: none; }
+  .how-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 32px; } .how-steps::before { display: none; }
   .feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .hero-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 600px) {
   .landing-nav nav a { display: none; }
-  .steps, .feature-grid { grid-template-columns: 1fr; }
+  .how-steps, .feature-grid { grid-template-columns: 1fr; }
   .hero-copy h1 { margin-top: 16px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .rise, .reveal { opacity: 1; transform: none; animation: none; transition: none; }
-  .shimmer, .live-dot, .glow-border::before, .steps::before, .shake { animation: none; }
+  .shimmer, .live-dot, .glow-border::before, .how-steps::before, .shake { animation: none; }
 }
 .content { margin-left: var(--sidebar); min-height: 100vh; }
 main { padding: 24px 32px 56px; max-width: 1440px; margin: 0 auto; }
@@ -546,34 +546,7 @@ details.verdict-card:not([open]) { gap: 0; }
 .box-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 18px; }
 .box-row > .box { margin-top: 0; }
 @media (max-width: 1000px) { .box-row { grid-template-columns: 1fr; } }
-/* How Trace360 works: a step-by-step bar fixed to the bottom of the Dashboard */
-.dash-page { padding-bottom: 120px; }
 .dash-page .findings { margin-top: 18px; }
-.flow-bar { position: fixed; right: 0; bottom: 0; z-index: 9; }
-.flow-bar { display: flex; align-items: center; gap: 22px; padding: 12px 18px; margin: 0 10px 10px; left: var(--sidebar); overflow-x: auto;
-  background: rgba(7, 13, 25, .94); backdrop-filter: blur(8px); color: var(--text-primary); border: 1px solid var(--border-default); border-top-color: rgba(255, 48, 79, .35);
-  border-radius: 14px; box-shadow: 0 -6px 24px rgba(0, 0, 0, .4), 0 0 20px rgba(255, 48, 79, .08); }
-.flow-head { display: flex; align-items: center; gap: 12px; flex: none; }
-.flow-head b { display: block; font-size: 15px; } .flow-head small { display: block; font-size: 11.5px; color: var(--text-muted); margin-top: 3px; }
-.flow-icon { flex: none; display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; background: var(--bg-elevated); border: 1px solid var(--border-active); }
-.flow-head .flow-icon { color: var(--accent-crimson); border-color: rgba(255, 48, 79, .45); box-shadow: 0 0 14px rgba(255, 48, 79, .25); }
-.flow { list-style: none; margin: 0; padding: 0; display: flex; align-items: stretch; flex: 1; min-width: 0; }
-.flow-step { flex: 1 1 0; min-width: 0; display: flex; align-items: center; gap: 10px; padding: 9px 12px; cursor: help;
-  background: var(--bg-panel); border: 1px solid var(--border-default); border-radius: 10px; transition: border-color var(--ease); }
-.flow-step:hover { border-color: var(--border-active); }
-.flow-step b { display: block; font-size: 12.5px; font-weight: 600; color: var(--text-primary); }
-.flow-step small { display: block; font-size: 11px; line-height: 1.35; color: var(--text-muted); margin-top: 3px; }
-.flow-step + .flow-step { margin-left: 26px; position: relative; }
-.flow-step + .flow-step::before { content: "→"; position: absolute; left: -19px; top: 50%; transform: translateY(-50%); color: var(--accent-crimson); font-size: 14px; }
-@media (max-width: 900px) { .flow-bar { left: 0; } .flow-head small { display: none; } }
-@media (max-width: 1600px) {
-  .flow-bar { gap: 14px; padding: 10px 12px; }
-  .flow-head { gap: 8px; } .flow-head b { font-size: 13.5px; width: 100px; line-height: 1.2; } .flow-head small { display: none; }
-  .flow-head .flow-icon { width: 32px; height: 32px; } .flow-head .flow-icon svg { width: 17px; height: 17px; }
-  .flow-step .flow-icon { display: none; }
-  .flow-step { padding: 8px 10px; } .flow-step b { font-size: 12px; } .flow-step small { font-size: 10.5px; }
-  .flow-step + .flow-step { margin-left: 20px; } .flow-step + .flow-step::before { left: -15px; }
-}
 
 /* ---- Complaints: Matches fixed on top, the complaints list fills the rest of the screen and scrolls ---- */
 .complaints-stack { display: flex; flex-direction: column; gap: 12px; height: calc(100vh - 150px); min-height: 520px; }
@@ -615,16 +588,13 @@ details.verdict-card:not([open]) { gap: 0; }
   .verdict-hero { padding: 18px; }
   .verdict-hero h2 { font-size: 18px; } .verdict-hero h2 .hl-num { font-size: 26px; } .verdict-hero h2 .hl-strong { font-size: 24px; }
   .verdict-metric b { font-size: 24px; }
-  .flow-bar { gap: 10px; } .flow-head b { width: auto; }
-  .flow { flex: none; } .flow-step { flex: none; width: 150px; }
-  .dash-page { padding-bottom: 150px; }
 }
 
 /* ---- every box gets the conclusion box's glowing red border ---- */
 .grid2 > section, .panel, .box, .stage, .legend-box, .trail-steps, details.fold, .tile, .status, .graph-frame, .finding, .verdict-card,
-.complaints-stack > section, .flow-step, .mode label, .job, .dropzone, .warning, main > div > table, .models-page > table, .models-page table, main table:not(.box table):not(.grid2 table):not(.panel table):not(.fold-body table):not(.complaints-stack table) {
+.complaints-stack > section, .mode label, .job, .dropzone, .warning, main > div > table, .models-page > table, .models-page table, main table:not(.box table):not(.grid2 table):not(.panel table):not(.fold-body table):not(.complaints-stack table) {
   border-color: var(--box-border) !important; box-shadow: var(--box-glow) !important; }
-.tile:hover, .finding:hover, .verdict-card:hover, .flow-step:hover, .mode label:hover, .graph-frame:hover { box-shadow: var(--box-glow-hover) !important; }
+.tile:hover, .finding:hover, .verdict-card:hover, .mode label:hover, .graph-frame:hover { box-shadow: var(--box-glow-hover) !important; }
 /* keep the risk strip on account cards and the selected state on choices */
 .verdict-card.v-MEDIUM { box-shadow: inset 3px 0 0 var(--accent-amber), var(--box-glow) !important; }
 .verdict-card.v-HIGH { box-shadow: inset 3px 0 0 var(--accent-crimson), var(--box-glow) !important; }

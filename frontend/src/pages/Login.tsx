@@ -194,7 +194,7 @@ export function Login() {
       <section id="how" className="landing-section">
         <h2 className="section-title reveal">How it works</h2>
         <p className="section-sub reveal">From raw statements to a case file in four steps.</p>
-        <ol className="steps">
+        <ol className="how-steps">
           {STEPS.map((st, i) => (
             <li key={st.n} className="how-step reveal" style={{ transitionDelay: `${i * 120}ms` }}>
               <span className="step-n">{st.n}</span>
