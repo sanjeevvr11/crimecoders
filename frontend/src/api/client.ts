@@ -8,7 +8,7 @@
  * same origin, where the Vite dev proxy forwards /api to the backend.
  */
 import type {
-  AccountDetail, AccountFilters, AuditPage, Me, PublicSummary, User, UserCreate, UserUpdate, AccountListItem, Alert, ComplaintListItem, ComplaintMatches, Conclusion, DatasetState, Lead,
+  AccountDetail, AccountFilters, AuditPage, Me, User, UserCreate, UserUpdate, AccountListItem, Alert, ComplaintListItem, ComplaintMatches, Conclusion, DatasetState, Lead,
   ModelSummary, NetworkOverview, NodeConnections, PipelineJob, PipelineRunResult, Ring, RingDetail, RunMode, SortOrder, StagedFile, Stats, Tier, Timeline, Trail, TrailDirection, TrailGraph,
 } from "./types";
 
@@ -71,8 +71,6 @@ export const api = {
   audit: (opts: { limit?: number; offset?: number; username?: string; action?: string } = {}) => request<AuditPage>("/api/admin/audit", opts),
 
   health: () => request<{ status: string }>("/api/health"),
-  /** landing page counts; works before sign-in */
-  publicSummary: () => request<PublicSummary>("/api/public/summary"),
   stats: () => request<Stats>("/api/stats"),
   runPipeline: () => request<PipelineRunResult>("/api/pipeline/run", undefined, { method: "POST" }),
 

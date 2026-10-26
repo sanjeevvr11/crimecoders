@@ -1,0 +1,144 @@
+/* Landing page cum sign-in (pages/Login.tsx), from the "Trace360 Landing v3" design.
+   Everything is scoped under .lp so the app's own styles don't leak in or out. */
+.lp { position: relative; min-height: 100vh; background: radial-gradient(1200px 600px at 50% -10%, #2A0F1C 0%, #070B16 60%), #070B16;
+  color: #EEF1F7; font-family: "Plus Jakarta Sans", -apple-system, Helvetica, sans-serif; -webkit-font-smoothing: antialiased; }
+.lp *, .lp *::before, .lp *::after { box-sizing: border-box; }
+.lp a { color: #EEF1F7; text-decoration: none; transition: color .15s, background .15s, border-color .15s; }
+.lp a:hover { color: #F0344F; text-decoration: none; }
+.lp h1, .lp h2, .lp p { margin: 0; color: inherit; }
+.lp .red { color: #F0344F; }
+.lp button { font-family: inherit; filter: none; transform: none; }
+.lp button:hover { filter: none; }
+
+/* header */
+.lp-header { position: sticky; top: 0; z-index: 10; background: rgba(7, 11, 22, 0.85); backdrop-filter: blur(10px); border-bottom: 1px solid #1A2338; }
+.lp-header-in { max-width: 1240px; margin: 0 auto; padding: 16px 32px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+.lp a.lp-logo { display: flex; align-items: center; gap: 12px; opacity: 0; transition: opacity .4s; }
+.lp-logo img { width: 38px; height: 38px; border-radius: 10px; object-fit: cover; display: block; }
+.lp-logo-text { display: flex; flex-direction: column; line-height: 1.1; }
+.lp-logo-name { font-weight: 800; font-size: 20px; color: #EEF1F7; }
+.lp-logo-sub { font-size: 12px; color: #9AA3B5; }
+.lp-nav { margin-left: auto; display: flex; align-items: center; gap: 28px; font-size: 15px; font-weight: 600; }
+.lp a.lp-btn-red { background: #F0344F; color: #FFFFFF; border-radius: 10px; box-shadow: 0 6px 24px rgba(240, 52, 79, 0.35); }
+.lp a.lp-btn-red:hover { background: #FF4A63; color: #FFFFFF; }
+.lp a.lp-nav-signin { padding: 10px 20px; }
+
+/* radar behind the whole page */
+.lp-net { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+/* hero: 260vh with a sticky stage the scroll animation drives */
+.lp-hero { position: relative; z-index: 1; height: 260vh; margin-top: -71px; }
+.lp-hero-stage { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+.lp-hero-block { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 18px; will-change: transform; }
+.lp-hero-title { position: relative; display: grid; place-items: center; }
+.lp-ring { position: absolute; width: min(90vw, 88vh, 860px); height: min(90vw, 88vh, 860px); overflow: visible; transform: rotate(-90deg); }
+.lp-hero-title h1 { font-size: calc(min(90vw, 88vh, 860px) * 0.19); line-height: 0.9; letter-spacing: -0.055em; font-weight: 800; white-space: nowrap; color: #EEF1F7; }
+.lp-hero-title h1 span { color: #F0344F; text-shadow: 0 0 60px rgba(240, 52, 79, 0.45); }
+.lp-hero-sub { display: flex; gap: 14px; align-items: center; font-size: 13px; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase; color: #9AA3B5; }
+.lp-dot { width: 4px; height: 4px; border-radius: 50%; background: #F0344F; }
+.lp-deg { color: #EEF1F7; font-variant-numeric: tabular-nums; min-width: 4.2em; text-align: left; }
+.lp-hero-copy { position: absolute; left: 50%; top: 50%; width: min(92vw, 820px); transform: translate(-50%, 40px); opacity: 0; display: flex; flex-direction: column;
+  align-items: center; text-align: center; gap: 22px; pointer-events: none; }
+.lp-hero-copy h2 { font-size: clamp(34px, 4.6vw, 64px); line-height: 1; letter-spacing: -0.035em; font-weight: 800; text-wrap: balance; }
+.lp-hero-copy p { font-size: clamp(16px, 1.5vw, 19px); line-height: 1.6; color: #AEB6C7; max-width: 680px; text-wrap: pretty; }
+.lp-ctas { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.lp-ctas-left { justify-content: flex-start; margin-top: 8px; }
+.lp a.lp-btn-lg { padding: 16px 28px; border-radius: 12px; font-weight: 700; font-size: 16px; display: flex; gap: 10px; align-items: center; }
+.lp a.lp-btn-red.lp-btn-lg { box-shadow: 0 10px 32px rgba(240, 52, 79, 0.35); }
+.lp a.lp-btn-ghost { border: 1px solid #2A3550; background: #0D1324; color: #EEF1F7; }
+.lp a.lp-btn-ghost:hover { border-color: #F0344F; color: #EEF1F7; }
+.lp-hint { position: absolute; left: 50%; bottom: 36px; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 10px;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase; color: #7D879B; }
+.lp-hint-line { width: 1px; height: 36px; background: linear-gradient(#F0344F, transparent); }
+
+/* shared text */
+.lp-eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: #F0344F; }
+.lp .lp-h2-md { font-size: clamp(30px, 3.4vw, 44px); line-height: 1.1; letter-spacing: -0.03em; font-weight: 800; text-wrap: balance; }
+.lp .lp-h2-lg { font-size: clamp(34px, 4.2vw, 56px); line-height: 1.05; letter-spacing: -0.03em; font-weight: 800; max-width: 780px; text-wrap: balance; }
+.lp .lp-h2-cta { font-size: clamp(34px, 4vw, 54px); line-height: 1.02; letter-spacing: -0.035em; font-weight: 800; text-wrap: balance; }
+.lp .lp-lead { font-size: 16px; line-height: 1.6; color: #AEB6C7; max-width: 520px; }
+.lp-body { font-size: 15px; line-height: 1.6; color: #AEB6C7; text-wrap: pretty; }
+.lp-col8, .lp-col12, .lp-col14 { display: flex; flex-direction: column; }
+.lp-col8 { gap: 8px; } .lp-col12 { gap: 12px; } .lp-col14 { gap: 14px; }
+
+/* sign-in section */
+.lp-signin-sec { position: relative; z-index: 1; max-width: 1240px; margin: 0 auto; padding: 48px 32px 96px; display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); gap: 48px; align-items: center; }
+.lp-pitch { display: flex; flex-direction: column; gap: 28px; }
+.lp-tierbar { display: grid; grid-template-columns: 3fr 3fr 2fr 4fr; gap: 4px; height: 10px; }
+.lp-tierbar span { border-radius: 6px; transform-origin: left; }
+.lp-tier-legend { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 14px; color: #D7DCE6; }
+.lp-tier-legend > span { display: flex; align-items: center; gap: 8px; }
+.lp-swatch { width: 9px; height: 9px; border-radius: 50%; }
+.lp-points { display: flex; flex-direction: column; border-top: 1px solid #1A2338; }
+.lp-points > div { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid #1A2338; font-size: 15px; }
+.lp-points b { font-weight: 700; min-width: 150px; }
+.lp-points span { color: #AEB6C7; line-height: 1.5; }
+
+.lp-card { background: linear-gradient(180deg, #111A2E 0%, #0B1222 100%); border: 1px solid #5A1A2A; border-radius: 20px;
+  box-shadow: 0 0 0 1px rgba(240, 52, 79, 0.12), 0 0 60px rgba(240, 52, 79, 0.18); scroll-margin-top: 100px; }
+.lp-form { padding: 40px; display: flex; flex-direction: column; gap: 20px; }
+.lp .lp-card-title { font-size: 32px; font-weight: 800; letter-spacing: -0.02em; }
+.lp .lp-card-sub { font-size: 16px; color: #AEB6C7; line-height: 1.5; }
+.lp-label { display: flex; flex-direction: column; gap: 8px; font-size: 14px; font-weight: 600; color: #D7DCE6; }
+.lp .lp-input { font-family: inherit; font-size: 16px; padding: 15px 16px; margin: 0; width: 100%; border: 1px solid #2A3550; border-radius: 12px; background: #0A1020;
+  color: #EEF1F7; outline: none; transition: border-color .15s, box-shadow .15s; }
+.lp .lp-input::placeholder { color: #5D6880; }
+.lp .lp-input:hover { border-color: #2A3550; }
+.lp .lp-input:focus { border-color: #F0344F; box-shadow: 0 0 0 3px rgba(240, 52, 79, 0.2); }
+.lp-pw { position: relative; display: flex; }
+.lp .lp-input-pw { flex: 1; padding-right: 72px; }
+.lp button.lp-show { position: absolute; right: 6px; top: 6px; bottom: 6px; padding: 0 12px; border: none; background: transparent; font-size: 14px; font-weight: 700;
+  color: #9AA3B5; cursor: pointer; box-shadow: none; border-radius: 8px; }
+.lp button.lp-show:hover { color: #F0344F; box-shadow: none; }
+.lp-error { font-size: 14px; color: #FFC2CB; background: rgba(240, 52, 79, 0.12); border: 1px solid rgba(240, 52, 79, 0.45); border-radius: 12px; padding: 12px 14px; }
+.lp button.lp-submit { padding: 16px; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; background: #16203A; color: #5D6880; box-shadow: none; opacity: 1; }
+.lp button.lp-submit.on { background: #F0344F; color: #FFFFFF; box-shadow: 0 10px 32px rgba(240, 52, 79, 0.35); }
+.lp button.lp-submit.on:hover { background: #FF4A63; box-shadow: 0 10px 32px rgba(240, 52, 79, 0.35); }
+.lp button.lp-submit:disabled { cursor: not-allowed; opacity: 1; }
+.lp-demo { border-top: 1px dashed #2A3550; padding-top: 18px; display: flex; flex-direction: column; gap: 12px; }
+.lp-demo > span { font-size: 14px; color: #9AA3B5; }
+.lp-demo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.lp button.lp-role { padding: 11px 14px; border: 1px solid; border-radius: 999px; font-size: 15px; font-weight: 700; cursor: pointer; text-align: left; box-shadow: none; }
+.lp button.lp-role:hover { box-shadow: none; }
+.lp .lp-recorded { font-size: 13px; color: #9AA3B5; line-height: 1.5; text-align: center; }
+
+/* how it works and features */
+.lp-sec { position: relative; z-index: 1; border-top: 1px solid #1A2338; scroll-margin-top: 70px; }
+.lp-sec-in { max-width: 1240px; margin: 0 auto; padding: 96px 32px; display: flex; flex-direction: column; gap: 48px; }
+.lp-sec-head { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; }
+.lp-pairs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr)); gap: 18px; }
+.lp-pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 18px; }
+.lp-step { background: #0D1426; border: 1px solid #1E2A40; border-top: 2px solid; border-radius: 16px; padding: 28px; display: flex; flex-direction: column; gap: 14px; }
+.lp-step-n { font-size: 13px; font-weight: 700; letter-spacing: 0.18em; }
+.lp-step-title { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; }
+.lp-features { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 18px; }
+.lp-feature { background: #0D1426; border: 1px solid #1E2A40; border-radius: 16px; padding: 28px; display: flex; flex-direction: column; gap: 12px;
+  transition: border-color .2s, box-shadow .2s, translate .2s; }
+.lp-feature:hover { border-color: #5A1A2A; box-shadow: 0 0 40px rgba(240, 52, 79, 0.12); translate: 0 -4px; }
+.lp-tag { align-self: flex-start; font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 999px; border: 1px solid; }
+.lp-feature-name { font-size: 22px; font-weight: 800; }
+
+/* call to action with the gauge */
+.lp-cta-sec { position: relative; z-index: 1; max-width: 1240px; margin: 0 auto; padding: 0 32px 96px; }
+.lp-cta { position: relative; overflow: hidden; border: 1px solid #5A1A2A; border-radius: 24px; background: linear-gradient(120deg, #170C18 0%, #0D1222 60%);
+  box-shadow: 0 0 80px rgba(240, 52, 79, 0.12); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); align-items: center; min-height: 360px; }
+.lp-cta-copy { position: relative; z-index: 1; padding: 56px clamp(28px, 5vw, 64px); display: flex; flex-direction: column; gap: 20px; align-items: flex-start; }
+.lp-cta-copy p { font-size: 17px; color: #AEB6C7; max-width: 420px; line-height: 1.6; }
+.lp-cta-gauge { position: relative; height: 360px; min-width: 0; }
+.lp-cta-gauge > div { position: absolute; inset: 0; }
+
+.lp-footer { position: relative; z-index: 1; border-top: 1px solid #1A2338; }
+.lp-footer-in { max-width: 1240px; margin: 0 auto; padding: 28px 32px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 13px; color: #7D879B; }
+.lp-footer-name { color: #EEF1F7; font-weight: 700; }
+
+@media (max-width: 600px) {
+  .lp-header-in { padding: 12px 16px; gap: 12px; }
+  .lp-nav { gap: 16px; font-size: 14px; }
+  .lp-nav a:not(.lp-nav-signin) { display: none; }
+  .lp-signin-sec, .lp-sec-in, .lp-cta-sec, .lp-footer-in { padding-left: 16px; padding-right: 16px; }
+  .lp-form { padding: 28px 22px; }
+  .lp-points > div { flex-direction: column; gap: 4px; }
+  .lp-points b { min-width: 0; }
+  .lp-hero-sub { letter-spacing: 0.18em; font-size: 11px; }
+}

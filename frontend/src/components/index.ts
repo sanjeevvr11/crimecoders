@@ -15,4 +15,3 @@ export * from "./Status";
 export * from "./TrailExplorer";
 export * from "./TrailGraphView";
 export * from "./WeeklyAnomalyChart";
-export * from "./NetworkBackdrop";

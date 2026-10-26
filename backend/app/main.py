@@ -7,8 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app import config
 from app.api.routes import accounts, admin, alerts, auth, complaints, conclusion, data, graph, models, pipeline, reports
 from app.auth.deps import require_role
-from app.api.deps import get_store
-from app.schemas.api import Health, PublicSummary
+from app.schemas.api import Health
 
 app = FastAPI(title="Trace360", version="0.3.0", description="Mule account detection: rules, money-flow graph and unsupervised models")
 app.add_middleware(CORSMiddleware, allow_origins=config.CORS_ORIGINS, allow_methods=["*"], allow_headers=["*"], allow_credentials=True)
@@ -25,14 +24,3 @@ for module, role in ((pipeline, "viewer"), (alerts, "viewer"), (conclusion, "vie
 @app.get("/api/health", response_model=Health)
 def health() -> dict:
     return {"status": "ok"}
-
-
-@app.get("/api/public/summary", response_model=PublicSummary)
-def public_summary() -> dict:
-    """The landing page's headline numbers; public, so it returns counts and nothing else."""
-    try:
-        s = get_store().stats()
-    except Exception:  # analysis not run yet
-        return {"ready": False}
-    return {"ready": True, "n_statements": s["n_accounts"], "n_transactions": s["n_transactions"],
-            "n_counterparties": s["n_counterparties"], "n_leads": s["n_alerts"]}

@@ -545,15 +545,6 @@ class Health(BaseModel):
     status: str
 
 
-class PublicSummary(BaseModel):
-    """Counts only, shown on the landing page before sign-in: no names, accounts or scores."""
-    ready: bool = Field(description="false until the analysis has been run")
-    n_statements: int = 0
-    n_transactions: int = 0
-    n_counterparties: int = 0
-    n_leads: int = Field(0, description="accounts at or above the alert threshold")
-
-
 # ---------------------------------------------------------------- sign-in, users, audit
 Role = Literal["viewer", "investigator", "admin"]
 

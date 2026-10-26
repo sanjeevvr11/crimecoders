@@ -12,7 +12,6 @@ export { useApi } from "./useApi";
 export type { ApiState } from "./useApi";
 
 export const useStats = () => useApi(() => api.stats(), []);
-export const usePublicSummary = () => useApi(() => api.publicSummary(), []);
 export const useLeads = (tier?: Tier) => useApi(() => api.leads({ tier, limit: 1000 }), [tier]);
 export const useAlerts = () => useApi(() => api.alerts(), []);
 export const useConclusion = () => useApi(() => api.conclusion(), []);

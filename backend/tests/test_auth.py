@@ -57,9 +57,6 @@ def test_everything_needs_sign_in(api):
         assert c.get(path).status_code == 401, path
     assert c.get("/api/health").status_code == 200
     assert c.get("/api/auth/me").status_code == 401
-    summary = c.get("/api/public/summary")  # the landing page: counts only, no sign-in
-    assert summary.status_code == 200 and summary.json()["ready"] and summary.json()["n_transactions"] > 0
-    assert set(summary.json()) == {"ready", "n_statements", "n_transactions", "n_counterparties", "n_leads"}
 
 
 def test_login_sets_an_httponly_cookie_and_logout_ends_it(users):

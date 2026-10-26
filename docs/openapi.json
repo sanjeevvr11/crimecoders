@@ -2334,42 +2334,6 @@
         "title": "PipelineRunResult",
         "type": "object"
       },
-      "PublicSummary": {
-        "description": "Counts only, shown on the landing page before sign-in: no names, accounts or scores.",
-        "properties": {
-          "n_counterparties": {
-            "default": 0,
-            "title": "N Counterparties",
-            "type": "integer"
-          },
-          "n_leads": {
-            "default": 0,
-            "description": "accounts at or above the alert threshold",
-            "title": "N Leads",
-            "type": "integer"
-          },
-          "n_statements": {
-            "default": 0,
-            "title": "N Statements",
-            "type": "integer"
-          },
-          "n_transactions": {
-            "default": 0,
-            "title": "N Transactions",
-            "type": "integer"
-          },
-          "ready": {
-            "description": "false until the analysis has been run",
-            "title": "Ready",
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "ready"
-        ],
-        "title": "PublicSummary",
-        "type": "object"
-      },
       "Reason": {
         "properties": {
           "contribution": {
@@ -5087,25 +5051,6 @@
         "tags": [
           "pipeline"
         ]
-      }
-    },
-    "/api/public/summary": {
-      "get": {
-        "description": "The landing page's headline numbers; public, so it returns counts and nothing else.",
-        "operationId": "public_summary_api_public_summary_get",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PublicSummary"
-                }
-              }
-            },
-            "description": "Successful Response"
-          }
-        },
-        "summary": "Public Summary"
       }
     },
     "/api/reports/account/{account_id}.pdf": {
