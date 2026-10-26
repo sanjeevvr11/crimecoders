@@ -2,7 +2,7 @@
 #   make setup      create backend/.venv, install Python + npm dependencies
 #   make pipeline   ingest data/raw, train models, score, write the evaluation report
 #   make dev        start API (:8000) and web app (:5173) together; Ctrl-C stops both
-#                   (first run creates demo users; passwords in data/demo_users.txt)
+#                   (first run creates the demo users listed in the README)
 # Other targets: api, web, test, typecheck, build, contract, examples, clean
 
 PY      ?= $(shell command -v python3.11 || command -v python3.12 || command -v python3.13 || command -v python3)

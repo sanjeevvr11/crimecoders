@@ -57,6 +57,8 @@ make pipeline       # ingest, features, graph, models, scores, evaluation report
 make dev            # API + web app together; Ctrl-C stops both
 ```
 
+Sign in with `admin` / `Trace360-Admin` (see [Demo sign-ins](#demo-sign-ins) for the other roles).
+
 | What | URL |
 |---|---|
 | Web app | http://localhost:5173 |
@@ -135,9 +137,7 @@ response. Counterparty node ids are replaced by stable hashed refs (`CP-xxxxxxxx
 
 ## Sign-in and roles
 
-Sign-in is on. The first `make dev` creates three demo users (admin, investigator, viewer) and
-prints their passwords, which are also saved in `data/demo_users.txt` (gitignored). The app opens on
-a login page; the sidebar shows who is signed in, their role and a Sign out button. Screens a role
+Sign-in is on. The first `make dev` creates three demo users. The app opens on a login page; the sidebar shows who is signed in, their role and a Sign out button. Screens a role
 may not use are hidden (Ingestion for non-admins; transactions, connection details and the evidence
 PDF for viewers), and the API refuses them anyway. `TRACE360_AUTH=off make dev` switches sign-in off
 (no login, masked for everyone, every screen usable).
@@ -148,8 +148,21 @@ PDF for viewers), and the API refuses them anyway. `TRACE360_AUTH=off make dev` 
 | investigator | also transactions, connections and evidence PDFs, still masked |
 | admin | everything, identifiers **unmasked**, Ingestion, re-running the pipeline, users and the audit log |
 
-- Create users: `make demo-users` (one per role, random passwords printed and saved to
-  `data/demo_users.txt`, gitignored) or `make user USERNAME=asha ROLE=investigator` (prompts for the
+### Demo sign-ins
+
+| User name | Password | Role |
+|---|---|---|
+| `admin` | `Trace360-Admin` | admin (sees unmasked data, Ingestion, Users) |
+| `investigator` | `Trace360-Investigator` | investigator |
+| `viewer` | `Trace360-Viewer` | viewer |
+
+> **These passwords are public.** They are for running the app on your own computer only. Before
+> the app is deployed or shared on a network, change them in the Users tab (Reset password) or add
+> your own users and deactivate these.
+
+`make demo-users` creates these three users, or resets them to these passwords if they already exist.
+
+- Create users: in the Users tab (admins), or `make user USERNAME=asha ROLE=investigator` (prompts for the
   password). Or set `TRACE360_ADMIN_USER` / `TRACE360_ADMIN_PASSWORD` for a first admin.
 - Users, sessions and the audit log live in `data/auth.sqlite3` (gitignored). Passwords are scrypt
   hashed; sessions are an httpOnly cookie valid 12 hours; 5 wrong passwords in 5 minutes block that

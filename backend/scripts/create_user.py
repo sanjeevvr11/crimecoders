@@ -4,23 +4,25 @@ Usage (from backend/):
   python scripts/create_user.py --username priya --role investigator        # asks for the password
   python scripts/create_user.py --demo                                       # admin, investigator, viewer
 
---demo makes one user per role with random passwords, prints them once and
-saves them to data/demo_users.txt (git-ignored). Passwords never go in the repo.
+--demo makes one user per role with the fixed demo passwords listed in the
+README (or resets them to those if the users already exist), so anyone running
+the app locally can sign in. Change them in the Users tab before deploying.
 """
 from __future__ import annotations
 
 import argparse
 import getpass
-import secrets
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from app import config  # noqa: E402
 from app.auth.store import ROLES, AuthError, AuthStore  # noqa: E402
 
-DEMO = (("admin", "admin", "Demo Admin"), ("investigator", "investigator", "Demo Investigator"), ("viewer", "viewer", "Demo Viewer"))
+# public demo passwords (also in the README): for local use only, change them before deploying
+DEMO = (("admin", "admin", "Demo Admin", "Trace360-Admin"),
+        ("investigator", "investigator", "Demo Investigator", "Trace360-Investigator"),
+        ("viewer", "viewer", "Demo Viewer", "Trace360-Viewer"))
 
 
 def main() -> None:
@@ -32,21 +34,17 @@ def main() -> None:
     args = p.parse_args()
     store = AuthStore()
     if args.demo:
+        existing = {u["username"].lower(): u for u in store.users()}
         lines = []
-        for username, role, name in DEMO:
-            password = secrets.token_urlsafe(9)
-            try:
+        for username, role, name, password in DEMO:
+            if username in existing:  # same user name: put back the demo role and password, and allow sign-in
+                store.update_user(existing[username]["id"], role=role, active=True, password=password)
+                store.log("user_update", username="setup script", target=username, detail="reset to demo password")
+            else:
                 store.create_user(username, password, role, name)
-            except AuthError as e:
-                print(f"skipped {username}: {e}")
-                continue
-            store.log("user_create", username="setup script", target=username, detail=f"role {role}")
+                store.log("user_create", username="setup script", target=username, detail=f"role {role}")
             lines.append(f"{username:<13} {role:<13} {password}")
-        if lines:
-            out = config.DATA_DIR / "demo_users.txt"
-            with out.open("a") as f:
-                f.write("\n".join(lines) + "\n")
-            print("user          role          password\n" + "\n".join(lines) + f"\n\nSaved to {out} (not committed).")
+        print("user          role          password\n" + "\n".join(lines) + "\n\nDemo passwords are public (README): change them before deploying.")
         return
     if not (args.username and args.role):
         p.error("give --username and --role, or --demo")
