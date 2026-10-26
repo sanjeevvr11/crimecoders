@@ -557,6 +557,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/public/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Public Summary
+         * @description The landing page's headline numbers; public, so it returns counts and nothing else.
+         */
+        get: operations["public_summary_api_public_summary_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/reports/account/{account_id}.pdf": {
         parameters: {
             query?: never;
@@ -1424,6 +1444,38 @@ export interface components {
             stats: components["schemas"]["Stats"];
             /** Status */
             status: string;
+        };
+        /**
+         * PublicSummary
+         * @description Counts only, shown on the landing page before sign-in: no names, accounts or scores.
+         */
+        PublicSummary: {
+            /**
+             * N Counterparties
+             * @default 0
+             */
+            n_counterparties: number;
+            /**
+             * N Leads
+             * @description accounts at or above the alert threshold
+             * @default 0
+             */
+            n_leads: number;
+            /**
+             * N Statements
+             * @default 0
+             */
+            n_statements: number;
+            /**
+             * N Transactions
+             * @default 0
+             */
+            n_transactions: number;
+            /**
+             * Ready
+             * @description false until the analysis has been run
+             */
+            ready: boolean;
         };
         /** Reason */
         Reason: {
@@ -2796,6 +2848,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PipelineRunResult"];
+                };
+            };
+        };
+    };
+    public_summary_api_public_summary_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicSummary"];
                 };
             };
         };

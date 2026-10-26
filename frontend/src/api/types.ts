@@ -10,6 +10,7 @@ import type { components } from "./schema.gen";
 type S = components["schemas"];
 
 export type Me = S["Me"];
+export type PublicSummary = S["PublicSummary"];
 export type User = S["User"];
 export type UserRole = User["role"];
 export type UserCreate = S["UserCreate"];
