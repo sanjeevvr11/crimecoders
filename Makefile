@@ -2,6 +2,7 @@
 #   make setup      create backend/.venv, install Python + npm dependencies
 #   make pipeline   ingest data/raw, train models, score, write the evaluation report
 #   make dev        start API (:8000) and web app (:5173) together; Ctrl-C stops both
+#                   (first run creates demo users; passwords in data/demo_users.txt)
 # Other targets: api, web, test, typecheck, build, contract, examples, clean
 
 PY      ?= $(shell command -v python3.11 || command -v python3.12 || command -v python3.13 || command -v python3)
@@ -33,6 +34,7 @@ web:
 	cd frontend && npm run dev -- --port $(WEB_PORT)
 
 dev:
+	@test -f data/auth.sqlite3 || (echo "No users yet: creating the three demo users"; $(MAKE) --no-print-directory demo-users)
 	@echo "API  http://localhost:$(API_PORT)/docs"
 	@echo "Web  http://localhost:$(WEB_PORT)"
 	@trap 'kill 0' INT TERM EXIT; \

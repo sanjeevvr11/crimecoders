@@ -8,11 +8,14 @@
  * same origin, where the Vite dev proxy forwards /api to the backend.
  */
 import type {
-  AccountDetail, AccountFilters, AccountListItem, Alert, ComplaintListItem, ComplaintMatches, Conclusion, DatasetState, Lead,
+  AccountDetail, AccountFilters, Me, AccountListItem, Alert, ComplaintListItem, ComplaintMatches, Conclusion, DatasetState, Lead,
   ModelSummary, NetworkOverview, NodeConnections, PipelineJob, PipelineRunResult, Ring, RingDetail, RunMode, SortOrder, StagedFile, Stats, Tier, Timeline, Trail, TrailDirection, TrailGraph,
 } from "./types";
 
 const BASE = (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/$/, "");
+
+/** Fired on window when the API answers 401 (session expired or signed out elsewhere). */
+export const SIGNED_OUT_EVENT = "trace360:signed-out";
 
 export class ApiError extends Error {
   constructor(public status: number, message: string) {
@@ -32,7 +35,9 @@ export function apiUrl(path: string, params?: Params): string {
 }
 
 async function request<T>(path: string, params?: Params, init?: RequestInit): Promise<T> {
-  const res = await fetch(apiUrl(path, params), init);
+  // the session is an httpOnly cookie; "include" also sends it when VITE_API_BASE_URL is another origin
+  const res = await fetch(apiUrl(path, params), { credentials: "include", ...init });
+  if (res.status === 401 && !path.startsWith("/api/auth/")) window.dispatchEvent(new Event(SIGNED_OUT_EVENT));
   if (!res.ok) {
     let detail = res.statusText;
     try {
@@ -47,6 +52,14 @@ async function request<T>(path: string, params?: Params, init?: RequestInit): Pr
 }
 
 export const api = {
+  // sign-in: the session cookie is set and cleared by the server
+  me: () => request<Me>("/api/auth/me"),
+  login: (username: string, password: string) =>
+    request<Me>("/api/auth/login", undefined, {
+      method: "POST", body: JSON.stringify({ username, password }), headers: { "Content-Type": "application/json" },
+    }),
+  logout: () => request<{ status: string }>("/api/auth/logout", undefined, { method: "POST" }),
+
   health: () => request<{ status: string }>("/api/health"),
   stats: () => request<Stats>("/api/stats"),
   runPipeline: () => request<PipelineRunResult>("/api/pipeline/run", undefined, { method: "POST" }),

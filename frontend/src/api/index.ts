@@ -4,5 +4,5 @@
  *   types.ts       response types, aliases of the generated schema
  *   schema.gen.ts  GENERATED from docs/openapi.json by `npm run gen:api`; do not edit
  */
-export { api, apiUrl, ApiError } from "./client";
+export { api, apiUrl, ApiError, SIGNED_OUT_EVENT } from "./client";
 export type * from "./types";

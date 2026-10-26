@@ -9,6 +9,9 @@ import type { components } from "./schema.gen";
 
 type S = components["schemas"];
 
+export type Me = S["Me"];
+export type User = S["User"];
+export type UserRole = User["role"];
 export type Stats = S["Stats"];
 export type Lead = S["Lead"];
 export type Alert = S["Alert"];

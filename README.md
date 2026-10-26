@@ -135,8 +135,12 @@ response. Counterparty node ids are replaced by stable hashed refs (`CP-xxxxxxxx
 
 ## Sign-in and roles
 
-Sign-in is off by default for now (the screens do not have a login page yet), so the app behaves as
-before with masking on. Turn it on with `TRACE360_AUTH=1` before `make dev`.
+Sign-in is on. The first `make dev` creates three demo users (admin, investigator, viewer) and
+prints their passwords, which are also saved in `data/demo_users.txt` (gitignored). The app opens on
+a login page; the sidebar shows who is signed in, their role and a Sign out button. Screens a role
+may not use are hidden (Ingestion for non-admins; transactions, connection details and the evidence
+PDF for viewers), and the API refuses them anyway. `TRACE360_AUTH=off make dev` switches sign-in off
+(no login, masked for everyone, every screen usable).
 
 | Role | Can do |
 |---|---|

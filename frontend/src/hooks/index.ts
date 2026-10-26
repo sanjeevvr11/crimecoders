@@ -33,3 +33,5 @@ export const useComplaints = () => useApi(() => api.complaints(), []);
 export const useComplaintMatches = (id: string | undefined) => useApi(() => api.complaintMatches(id!), [id], !!id);
 export const useModelSummary = () => useApi(() => api.modelSummary(), []);
 export const useDataset = () => useApi(() => api.dataset(), []);
+export { AuthProvider, useAuth } from "./auth";
+export type { AuthState } from "./auth";

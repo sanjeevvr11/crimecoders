@@ -23,7 +23,7 @@ export function ConnectionDetails({ data, onAccount, onClearAccount, children }:
     <div className="panel">
       <h3>
         {subject ? <Link to={`/accounts/${data.node.ref}`}>{data.node.label}</Link> : <span className="cp">{data.node.label}</span>}{" "}
-        {subject ? <RingTag ringId={data.ring_id} /> : <span className="muted small">counterparty (masked)</span>}
+        {subject ? <RingTag ringId={data.ring_id} /> : <span className="muted small">counterparty</span>}
         {data.account && <> ↔ <Link to={`/accounts/${data.account}`}>{data.account}</Link>{" "}
           {onClearAccount && <button className="link" onClick={onClearAccount}>show all links</button>}</>}
       </h3>
@@ -65,7 +65,7 @@ export function ConnectionDetails({ data, onAccount, onClearAccount, children }:
             <p className="muted small">Rows marked (raw) come from statements with shuffled dates, so their place in this order is not the real order of events.</p>
           )}
           <table>
-            <thead><tr><th>Time</th><th>Account</th><th>Dir</th><th className="num">Amount</th><th>Channel</th><th>Counterparty</th><th>Narration (masked)</th></tr></thead>
+            <thead><tr><th>Time</th><th>Account</th><th>Dir</th><th className="num">Amount</th><th>Channel</th><th>Counterparty</th><th>Narration</th></tr></thead>
             <tbody>
               {data.transactions.map((x) => (
                 <tr key={x.txn_uid}>

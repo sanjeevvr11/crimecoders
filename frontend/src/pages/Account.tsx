@@ -5,7 +5,7 @@ import {
   Async, DailyFlowChart, ReasonList, RoleBadge, TierBadge, TrailExplorer, WeeklyAnomalyChart, inr, num, pct, score,
 } from "../components";
 import type { SortOrder } from "../api";
-import { useAccount, useTimeline } from "../hooks";
+import { useAccount, useAuth, useTimeline } from "../hooks";
 
 const PAGE = 50;
 
@@ -15,7 +15,8 @@ export function Account() {
   const [offset, setOffset] = useState(0);
   const [direction, setDirection] = useState<"" | "CR" | "DR">("");
   const [order, setOrder] = useState<SortOrder>("asc");
-  const timeline = useTimeline(id, PAGE, offset, direction || undefined, order);
+  const canSeeTransactions = useAuth().can("investigator"); // the API refuses transactions and PDFs to viewers
+  const timeline = useTimeline(canSeeTransactions ? id : undefined, PAGE, offset, direction || undefined, order);
 
   return (
     <div>
@@ -29,7 +30,7 @@ export function Account() {
               {num(a.n_rows)} transactions · timestamps {a.time_reliable ? "reliable" : "not reliable (dates shuffled)"}
               {a.score.ring_id && <> · ring <Link to={`/network/${a.score.ring_id}`}>{a.score.ring_id}</Link></>}
             </p>
-            <p><a className="button" href={api.reportUrl(a.account_id)} target="_blank" rel="noreferrer">Download evidence PDF</a></p>
+            {canSeeTransactions && <p><a className="button" href={api.reportUrl(a.account_id)} target="_blank" rel="noreferrer">Download evidence PDF</a></p>}
 
             <div className="grid2">
               <section>
@@ -89,7 +90,7 @@ export function Account() {
       </Async>
 
       <h2>Timeline</h2>
-      <Async state={timeline} what="timeline">
+      {!canSeeTransactions ? <p className="muted role-note">Transactions and the evidence PDF need the investigator or admin role.</p> : <Async state={timeline} what="timeline">
         {(t) => (
           <>
             {(t.weeks ?? []).length > 0 && (<><h3>Weekly anomaly score <span className="muted">(red = flagged)</span></h3><WeeklyAnomalyChart weeks={t.weeks ?? []} /></>)}
@@ -109,7 +110,7 @@ export function Account() {
             </div>
             {!t.time_reliable && <p className="muted small">Sorted by the raw dates, which are shuffled in this statement, so this is not the real order of events.</p>}
             <table>
-              <thead><tr><th>Time</th><th>Dir</th><th className="num">Amount</th><th>Channel</th><th>Counterparty</th><th>Narration (masked)</th></tr></thead>
+              <thead><tr><th>Time</th><th>Dir</th><th className="num">Amount</th><th>Channel</th><th>Counterparty</th><th>Narration</th></tr></thead>
               <tbody>
                 {t.transactions.map((x) => (
                   <tr key={x.txn_uid}>
@@ -125,7 +126,7 @@ export function Account() {
             </table>
           </>
         )}
-      </Async>
+      </Async>}
 
       <h2>Money trail</h2>
       {id && <p><Link className="button" to={`/trail/${id}`}>Open the Money Trail investigation view →</Link></p>}

@@ -139,3 +139,10 @@ def pipeline_dirs(tmp_path: Path, raw_dir: Path) -> dict:
         "synthetic_dir": tmp_path / "synthetic",
         "model_dir": tmp_path / "models",
     }
+
+
+@pytest.fixture(autouse=True)
+def _sign_in_off(monkeypatch):
+    """Sign-in is on by default; tests run with it off unless they switch it on (see test_auth.py)."""
+    from app import config
+    monkeypatch.setattr(config, "AUTH_ENABLED", False)

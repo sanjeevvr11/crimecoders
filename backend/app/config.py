@@ -129,7 +129,7 @@ CORS_ORIGINS = ["http://localhost:5173", "http://127.0.0.1:5173", "http://localh
 # ---------------------------------------------------------------- sign-in
 # Off: the API behaves as before (no sign-in, identifiers masked for everyone,
 # every screen usable). On: every route needs a signed-in user with the right role.
-AUTH_ENABLED = os.environ.get("TRACE360_AUTH", "off").lower() in ("1", "on", "true", "yes")
+AUTH_ENABLED = os.environ.get("TRACE360_AUTH", "on").lower() not in ("0", "off", "false", "no")
 AUTH_DB_PATH = Path(os.environ.get("TRACE360_AUTH_DB", DATA_DIR / "auth.sqlite3"))
 SESSION_COOKIE = "trace360_session"
 SESSION_HOURS = 12
