@@ -125,3 +125,18 @@ TOP_REASONS = 5
 
 # Vite dev server (5173) and `vite preview` (4173)
 CORS_ORIGINS = ["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:4173", "http://127.0.0.1:4173"]
+
+# ---------------------------------------------------------------- sign-in
+# Off: the API behaves as before (no sign-in, identifiers masked for everyone,
+# every screen usable). On: every route needs a signed-in user with the right role.
+AUTH_ENABLED = os.environ.get("TRACE360_AUTH", "off").lower() in ("1", "on", "true", "yes")
+AUTH_DB_PATH = Path(os.environ.get("TRACE360_AUTH_DB", DATA_DIR / "auth.sqlite3"))
+SESSION_COOKIE = "trace360_session"
+SESSION_HOURS = 12
+# set TRACE360_COOKIE_SECURE=1 when served over HTTPS
+COOKIE_SECURE = os.environ.get("TRACE360_COOKIE_SECURE", "0").lower() in ("1", "on", "true", "yes")
+LOGIN_MAX_FAILURES = 5  # per user name and address within LOGIN_WINDOW_MINUTES
+LOGIN_WINDOW_MINUTES = 5
+# first admin, created at start-up when there are no users yet (never commit these values)
+ADMIN_USER = os.environ.get("TRACE360_ADMIN_USER")
+ADMIN_PASSWORD = os.environ.get("TRACE360_ADMIN_PASSWORD")

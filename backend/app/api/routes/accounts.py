@@ -2,7 +2,7 @@ import re
 from typing import Literal
 
 import pandas as pd
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 
 from app import config
 from app.api.deps import get_store, records
@@ -13,6 +13,7 @@ from app.masking import mask, mask_digits, node_label, node_ref
 from app.models.summary import account_ml_summary
 from app.schemas.api import AccountDetail, AccountListItem, Timeline, Trail, TrailGraph
 from app.scoring.reasons import top_reasons
+from app.auth.deps import audited, require_role
 
 router = APIRouter(prefix="/api/accounts", tags=["accounts"])
 
@@ -45,7 +46,7 @@ def list_accounts(
     return records(acc.sort_values("rank"))
 
 
-@router.get("/{account_id}", response_model=AccountDetail)
+@router.get("/{account_id}", response_model=AccountDetail, dependencies=[audited("view_account", "account_id")])
 def account_detail(account_id: str) -> dict:
     s = get_store()
     s.require_account(account_id)
@@ -75,7 +76,8 @@ def account_detail(account_id: str) -> dict:
     }
 
 
-@router.get("/{account_id}/timeline", response_model=Timeline)
+@router.get("/{account_id}/timeline", response_model=Timeline,
+            dependencies=[Depends(require_role("investigator")), audited("view_transactions", "account_id")])
 def account_timeline(
     account_id: str,
     limit: int = Query(200, ge=1, le=2000),

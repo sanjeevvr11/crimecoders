@@ -534,6 +534,113 @@
         "title": "Alert",
         "type": "object"
       },
+      "AuditEntry": {
+        "properties": {
+          "action": {
+            "description": "login, login_failed, logout, view_account, view_transactions, view_connections, download_report, run_pipeline, data_upload, data_remove, data_run, data_restore, user_create, user_update",
+            "title": "Action",
+            "type": "string"
+          },
+          "detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detail"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "ip": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ip"
+          },
+          "role": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role"
+          },
+          "target": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "the account, user or file acted on",
+            "title": "Target"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "string"
+          },
+          "unmasked": {
+            "description": "the user saw identifiers in full",
+            "title": "Unmasked",
+            "type": "boolean"
+          },
+          "username": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Username"
+          }
+        },
+        "required": [
+          "id",
+          "ts",
+          "action",
+          "unmasked"
+        ],
+        "title": "AuditEntry",
+        "type": "object"
+      },
+      "AuditPage": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AuditEntry"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "total",
+          "items"
+        ],
+        "title": "AuditPage",
+        "type": "object"
+      },
       "Complaint": {
         "properties": {
           "amount": {
@@ -1901,6 +2008,48 @@
         "title": "Lead",
         "type": "object"
       },
+      "LoginRequest": {
+        "properties": {
+          "password": {
+            "title": "Password",
+            "type": "string"
+          },
+          "username": {
+            "title": "Username",
+            "type": "string"
+          }
+        },
+        "required": [
+          "username",
+          "password"
+        ],
+        "title": "LoginRequest",
+        "type": "object"
+      },
+      "Me": {
+        "properties": {
+          "auth_enabled": {
+            "description": "false when sign-in is switched off (TRACE360_AUTH=off)",
+            "title": "Auth Enabled",
+            "type": "boolean"
+          },
+          "unmasked": {
+            "description": "true when this user sees names, account numbers and UPI ids in full",
+            "title": "Unmasked",
+            "type": "boolean"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "required": [
+          "user",
+          "auth_enabled",
+          "unmasked"
+        ],
+        "title": "Me",
+        "type": "object"
+      },
       "ModelSummary": {
         "properties": {
           "account_roles": {
@@ -2368,6 +2517,20 @@
           "pct_counterparty"
         ],
         "title": "SheetCheck",
+        "type": "object"
+      },
+      "SignedOut": {
+        "properties": {
+          "status": {
+            "const": "signed out",
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "SignedOut",
         "type": "object"
       },
       "StagedFile": {
@@ -3224,6 +3387,170 @@
         "title": "TrailSummary",
         "type": "object"
       },
+      "User": {
+        "properties": {
+          "active": {
+            "title": "Active",
+            "type": "boolean"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "display_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Name"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "last_login_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Login At"
+          },
+          "role": {
+            "description": "viewer: read the screens; investigator: also transactions and evidence PDFs; admin: everything, identifiers unmasked, Ingestion and users",
+            "enum": [
+              "viewer",
+              "investigator",
+              "admin"
+            ],
+            "title": "Role",
+            "type": "string"
+          },
+          "username": {
+            "title": "Username",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "username",
+          "role",
+          "active"
+        ],
+        "title": "User",
+        "type": "object"
+      },
+      "UserCreate": {
+        "properties": {
+          "display_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Name"
+          },
+          "password": {
+            "description": "at least 8 characters",
+            "title": "Password",
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "viewer",
+              "investigator",
+              "admin"
+            ],
+            "title": "Role",
+            "type": "string"
+          },
+          "username": {
+            "title": "Username",
+            "type": "string"
+          }
+        },
+        "required": [
+          "username",
+          "password",
+          "role"
+        ],
+        "title": "UserCreate",
+        "type": "object"
+      },
+      "UserUpdate": {
+        "properties": {
+          "active": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "false blocks sign-in and ends the user's sessions",
+            "title": "Active"
+          },
+          "display_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Name"
+          },
+          "password": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "new password (reset); ends the user's sessions",
+            "title": "Password"
+          },
+          "role": {
+            "anyOf": [
+              {
+                "enum": [
+                  "viewer",
+                  "investigator",
+                  "admin"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role"
+          }
+        },
+        "title": "UserUpdate",
+        "type": "object"
+      },
       "ValidationError": {
         "properties": {
           "ctx": {
@@ -3751,6 +4078,210 @@
         ]
       }
     },
+    "/api/admin/audit": {
+      "get": {
+        "operationId": "audit_api_admin_audit_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 500,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "username",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Username"
+            }
+          },
+          {
+            "in": "query",
+            "name": "action",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Action"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditPage"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Audit",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/admin/users": {
+      "get": {
+        "operationId": "users_api_admin_users_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  },
+                  "title": "Response Users Api Admin Users Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Users",
+        "tags": [
+          "admin"
+        ]
+      },
+      "post": {
+        "operationId": "create_user_api_admin_users_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create User",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/admin/users/{user_id}": {
+      "patch": {
+        "operationId": "update_user_api_admin_users__user_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_id",
+            "required": true,
+            "schema": {
+              "title": "User Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Update User",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
     "/api/alerts": {
       "get": {
         "operationId": "list_alerts_api_alerts_get",
@@ -3773,6 +4304,89 @@
         "summary": "List Alerts",
         "tags": [
           "alerts"
+        ]
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "operationId": "login_api_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Me"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Login",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "operationId": "logout_api_auth_logout_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignedOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Logout",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "operationId": "me_api_auth_me_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Me"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Me",
+        "tags": [
+          "auth"
         ]
       }
     },

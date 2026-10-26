@@ -133,6 +133,28 @@ Names, account numbers, PAN, VPAs and long numbers are masked to their last 4 ch
 response. Counterparty node ids are replaced by stable hashed refs (`CP-xxxxxxxxxx`). CORS allows
 `http://localhost:5173`.
 
+## Sign-in and roles
+
+Sign-in is off by default for now (the screens do not have a login page yet), so the app behaves as
+before with masking on. Turn it on with `TRACE360_AUTH=1` before `make dev`.
+
+| Role | Can do |
+|---|---|
+| viewer | read every screen, identifiers masked |
+| investigator | also transactions, connections and evidence PDFs, still masked |
+| admin | everything, identifiers **unmasked**, Ingestion, re-running the pipeline, users and the audit log |
+
+- Create users: `make demo-users` (one per role, random passwords printed and saved to
+  `data/demo_users.txt`, gitignored) or `make user USERNAME=asha ROLE=investigator` (prompts for the
+  password). Or set `TRACE360_ADMIN_USER` / `TRACE360_ADMIN_PASSWORD` for a first admin.
+- Users, sessions and the audit log live in `data/auth.sqlite3` (gitignored). Passwords are scrypt
+  hashed; sessions are an httpOnly cookie valid 12 hours; 5 wrong passwords in 5 minutes block that
+  user name from that address for a while.
+- The audit log records sign-ins, account views, transaction and connection views, PDF downloads,
+  uploads, pipeline runs and user changes, with whether the data was shown unmasked.
+- Endpoints: `POST /api/auth/login`, `POST /api/auth/logout`, `GET /api/auth/me`,
+  `GET/POST /api/admin/users`, `PATCH /api/admin/users/{id}`, `GET /api/admin/audit`.
+
 ## How the data is handled
 
 - **Layouts:** CRN statement (files 2, 4, 5; person-name headers, so D/C and CRN columns are found

@@ -13,6 +13,7 @@ from app.ingestion import dataset
 from app.masking import mask_digits
 from app.pipeline.run_pipeline import STEPS, run
 from app.schemas.api import DatasetState, PipelineJob, RunRequest, StagedFile
+from app.auth.deps import audited
 
 router = APIRouter(prefix="/api/data", tags=["data"])
 
@@ -129,7 +130,7 @@ def get_job() -> dict:
     return job_state()
 
 
-@router.post("/staged", response_model=StagedFile)
+@router.post("/staged", response_model=StagedFile, dependencies=[audited("data_upload")])
 async def upload_statement(request: Request, filename: str = Query(..., description="the file's original name, e.g. 30_SOA.xlsx")) -> dict:
     """Upload one statement as the raw request body. It is checked like the pipeline would read it;
     a file that cannot be analysed comes back with ok=false and is not kept."""
@@ -148,7 +149,7 @@ def delete_staged(file_id: str) -> dict:
     return dataset_state()
 
 
-@router.post("/run", response_model=DatasetState)
+@router.post("/run", response_model=DatasetState, dependencies=[audited("data_run")])
 def run_analysis(body: RunRequest) -> dict:
     """Move the uploads into the dataset (add, or replace the current statements) and analyse in the background.
     With no uploads and mode=add it simply re-analyses the current statements."""
@@ -157,14 +158,14 @@ def run_analysis(body: RunRequest) -> dict:
     return dataset_state()
 
 
-@router.delete("/files/{name}", response_model=DatasetState)
+@router.delete("/files/{name}", response_model=DatasetState, dependencies=[audited("data_remove", "name")])
 def remove_statement(name: str) -> dict:
     """Set a statement aside (it goes to the archive and can be restored), then re-analyse."""
     _start("remove", lambda: dataset.remove_file(name))
     return dataset_state()
 
 
-@router.post("/archives/{name}/restore", response_model=DatasetState)
+@router.post("/archives/{name}/restore", response_model=DatasetState, dependencies=[audited("data_restore", "name")])
 def restore_archive(name: str) -> dict:
     """Bring an archived set back (a replaced dataset swaps places with the current one), then re-analyse."""
     _start("restore", lambda: dataset.restore(name))

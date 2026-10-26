@@ -8,6 +8,9 @@ data/archive/
 !data/processed/.gitkeep
 !data/synthetic/.gitkeep
 *.duckdb
+# users, sessions and the audit log; demo passwords
+*.sqlite3
+data/demo_users.txt
 *.duckdb.wal
 *.xls
 *.xlsx

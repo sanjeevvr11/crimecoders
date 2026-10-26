@@ -543,3 +543,66 @@ class ModelSummary(BaseModel):
 
 class Health(BaseModel):
     status: str
+
+
+# ---------------------------------------------------------------- sign-in, users, audit
+Role = Literal["viewer", "investigator", "admin"]
+
+
+class User(BaseModel):
+    id: int
+    username: str
+    display_name: str | None = None
+    role: Role = Field(description="viewer: read the screens; investigator: also transactions and evidence PDFs; "
+                                   "admin: everything, identifiers unmasked, Ingestion and users")
+    active: bool
+    created_at: str | None = None
+    last_login_at: str | None = None
+
+
+class Me(BaseModel):
+    user: User
+    auth_enabled: bool = Field(description="false when sign-in is switched off (TRACE360_AUTH=off)")
+    unmasked: bool = Field(description="true when this user sees names, account numbers and UPI ids in full")
+
+
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+
+class SignedOut(BaseModel):
+    status: Literal["signed out"]
+
+
+class UserCreate(BaseModel):
+    username: str
+    password: str = Field(description="at least 8 characters")
+    role: Role
+    display_name: str | None = None
+
+
+class UserUpdate(BaseModel):
+    role: Role | None = None
+    active: bool | None = Field(None, description="false blocks sign-in and ends the user's sessions")
+    password: str | None = Field(None, description="new password (reset); ends the user's sessions")
+    display_name: str | None = None
+
+
+class AuditEntry(BaseModel):
+    id: int
+    ts: str
+    username: str | None = None
+    role: str | None = None
+    action: str = Field(description="login, login_failed, logout, view_account, view_transactions, view_connections, "
+                                    "download_report, run_pipeline, data_upload, data_remove, data_run, data_restore, "
+                                    "user_create, user_update")
+    target: str | None = Field(None, description="the account, user or file acted on")
+    unmasked: bool = Field(description="the user saw identifiers in full")
+    ip: str | None = None
+    detail: str | None = None
+
+
+class AuditPage(BaseModel):
+    total: int
+    items: list[AuditEntry]

@@ -14,6 +14,7 @@ from app import config
 from app.api.deps import get_store
 from app.api.routes.accounts import account_trail_graph
 from app.schemas.api import Conclusion
+from app.masking import revealed
 
 router = APIRouter(prefix="/api", tags=["conclusion"])
 
@@ -243,4 +244,5 @@ def build_conclusion() -> dict:
 @router.get("/conclusion", response_model=Conclusion)
 def conclusion() -> dict:
     """The investigation's overall conclusion: findings per screen, accounts to act on, rings, top chains, next steps."""
-    return get_store().memo("conclusion", build_conclusion)
+    # admins get unmasked labels, so they get their own cached copy
+    return get_store().memo(f"conclusion:{'unmasked' if revealed() else 'masked'}", build_conclusion)

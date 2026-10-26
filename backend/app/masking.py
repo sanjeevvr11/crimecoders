@@ -2,11 +2,27 @@
 
 Rule: show only the last 4 characters of an identifier. Counterparty node ids
 (which embed VPAs/phone numbers) are replaced by stable hashed references.
+
+Admins see identifiers in full: the sign-in check sets `revealed` for the
+request (app.auth.deps), and every function here then returns values as they
+are. Node references stay hashed for everyone because they are ids, not text.
 """
 from __future__ import annotations
 
 import hashlib
 import re
+from contextvars import ContextVar
+
+# True only while serving a request from a signed-in admin
+_reveal: ContextVar[bool] = ContextVar("reveal_identifiers", default=False)
+
+
+def revealed() -> bool:
+    return _reveal.get()
+
+
+def set_revealed(on: bool) -> None:
+    _reveal.set(on)
 
 PAN_RE = re.compile(r"\b[A-Z]{5}\d{4}[A-Z]\b")
 LONG_DIGITS_RE = re.compile(r"\d{6,}")
@@ -27,6 +43,8 @@ def mask(value: object, keep: int = 4) -> str | None:
     s = str(value).strip()
     if s == "" or s.lower() == "nan":
         return None
+    if revealed():
+        return s
     if len(s) <= keep:
         return "*" * len(s)
     return "*" * (len(s) - keep) + s[-keep:]
@@ -50,8 +68,8 @@ def mask_text(text: object) -> str | None:
     s = str(text)
     if s.lower() in ("nan", "<na>"):
         return None
-    if re.fullmatch(r"TXN-[A-Z0-9]{10}", s):
-        return s  # opaque token, nothing personal
+    if re.fullmatch(r"TXN-[A-Z0-9]{10}", s) or revealed():
+        return s  # opaque token, nothing personal (or an admin is viewing)
     s = PAN_RE.sub(lambda m: mask(m.group(0)), s)
     return WORD_RE.sub(_mask_word, s)
 
@@ -64,6 +82,8 @@ def mask_digits(text: object) -> str | None:
     s = str(text)
     if s.lower() in ("nan", "<na>"):
         return None
+    if revealed():
+        return s
     return LONG_DIGITS_RE.sub(lambda m: mask(m.group(0)), s)
 
 
@@ -74,7 +94,7 @@ def node_ref(node_id: str, is_subject: bool) -> str:
 
 
 def node_label(node_id: str, is_subject: bool) -> str:
-    if is_subject:
+    if is_subject or revealed():
         return node_id
     kind, _, ident = node_id.partition(":")
     if kind == "ifsc":

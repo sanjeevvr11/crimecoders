@@ -10,7 +10,7 @@ VPY     := $(VENV)/bin/python
 API_PORT ?= 8000
 WEB_PORT ?= 5173
 
-.PHONY: setup pipeline api web dev test typecheck build contract examples check-data clean
+.PHONY: setup pipeline api web dev test typecheck build contract examples check-data clean demo-users user
 
 setup:
 	@$(PY) -c 'import sys; assert sys.version_info >= (3, 11), "Python 3.11+ required"' || (echo "Install Python 3.11+ first"; exit 1)
@@ -48,6 +48,14 @@ typecheck:
 
 build:
 	cd frontend && npm run build
+
+# sign-in users (stored in data/auth.sqlite3): three demo users, or one user of your choice
+#   make user USERNAME=priya ROLE=investigator
+demo-users:
+	cd backend && .venv/bin/python scripts/create_user.py --demo
+
+user:
+	cd backend && .venv/bin/python scripts/create_user.py --username $(USERNAME) --role $(ROLE)
 
 # regenerate the API contract and the frontend types after changing backend response models
 contract:

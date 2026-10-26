@@ -85,7 +85,7 @@
 
   <h2>Largest counterparties</h2>
   <table>
-    <tr><th>Counterparty (masked)</th><th>Direction</th><th class="num">Txns</th><th class="num">Amount (₹)</th></tr>
+    <tr><th>Counterparty{% if not unmasked %} (masked){% endif %}</th><th>Direction</th><th class="num">Txns</th><th class="num">Amount (₹)</th></tr>
     {% for c in counterparties %}
     <tr><td>{{ c.label }}</td><td>{{ c.direction }}</td><td class="num">{{ c.count }}</td><td class="num">{{ "{:,.2f}".format(c.amount) }}</td></tr>
     {% else %}
@@ -95,7 +95,7 @@
 
   <h2>Linked complaints (synthetic)</h2>
   <table>
-    <tr><th>Complaint</th><th>Reported ID (masked)</th><th class="num">Amount (₹)</th><th class="num">Confidence</th></tr>
+    <tr><th>Complaint</th><th>Reported ID{% if not unmasked %} (masked){% endif %}</th><th class="num">Amount (₹)</th><th class="num">Confidence</th></tr>
     {% for m in complaints %}
     <tr><td>{{ m.complaint_id }}</td><td>{{ m.reported }}</td><td class="num">{{ "{:,.2f}".format(m.amount) }}</td><td class="num">{{ "%.2f"|format(m.confidence) }}</td></tr>
     {% else %}
@@ -104,7 +104,7 @@
   </table>
 
   <div class="banner">Lead for investigation only, not a finding of wrongdoing. The models are unsupervised (no fraud labels exist);
-  an unusual week is a prompt to look, not proof. Names and identifiers are masked to the last 4 characters.
+  an unusual week is a prompt to look, not proof. {% if unmasked %}Names and identifiers are shown in full (admin copy): handle as confidential.{% else %}Names and identifiers are masked to the last 4 characters.{% endif %}
   Complaints shown are SYNTHETIC test records generated for demonstration. Balances in the source data are randomised and were not used.</div>
 </body>
 </html>

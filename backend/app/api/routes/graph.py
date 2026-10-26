@@ -1,12 +1,13 @@
 from typing import Literal
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 
 from app.api.deps import get_store, records
 from app.api.txns import sort_by_date, txn_rows
 from app.graph.communities import ring_cytoscape
 from app.masking import node_label, node_ref
 from app.schemas.api import NetworkOverview, NodeConnections, Ring, RingDetail
+from app.auth.deps import audited, require_role
 
 router = APIRouter(prefix="/api/graph", tags=["graph"])
 
@@ -56,7 +57,8 @@ def ring_detail(ring_id: str) -> dict:
     return {"ring": rings[0], "elements": _elements(ring_id=ring_id)}
 
 
-@router.get("/nodes/{ref}/transactions", response_model=NodeConnections)
+@router.get("/nodes/{ref}/transactions", response_model=NodeConnections,
+            dependencies=[Depends(require_role("investigator")), audited("view_connections", "ref")])
 def node_transactions(
     ref: str,
     account: str | None = Query(None, description="only transactions of this investigated account (a clicked link)"),

@@ -95,6 +95,58 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/audit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Audit */
+        get: operations["audit_api_admin_audit_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Users */
+        get: operations["users_api_admin_users_get"];
+        put?: never;
+        /** Create User */
+        post: operations["create_user_api_admin_users_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/users/{user_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update User */
+        patch: operations["update_user_api_admin_users__user_id__patch"];
+        trace?: never;
+    };
     "/api/alerts": {
         parameters: {
             query?: never;
@@ -104,6 +156,57 @@ export interface paths {
         };
         /** List Alerts */
         get: operations["list_alerts_api_alerts_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Login */
+        post: operations["login_api_auth_login_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Logout */
+        post: operations["logout_api_auth_logout_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Me */
+        get: operations["me_api_auth_me_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -652,6 +755,43 @@ export interface components {
             /** Top Reason */
             top_reason?: string | null;
         };
+        /** AuditEntry */
+        AuditEntry: {
+            /**
+             * Action
+             * @description login, login_failed, logout, view_account, view_transactions, view_connections, download_report, run_pipeline, data_upload, data_remove, data_run, data_restore, user_create, user_update
+             */
+            action: string;
+            /** Detail */
+            detail?: string | null;
+            /** Id */
+            id: number;
+            /** Ip */
+            ip?: string | null;
+            /** Role */
+            role?: string | null;
+            /**
+             * Target
+             * @description the account, user or file acted on
+             */
+            target?: string | null;
+            /** Ts */
+            ts: string;
+            /**
+             * Unmasked
+             * @description the user saw identifiers in full
+             */
+            unmasked: boolean;
+            /** Username */
+            username?: string | null;
+        };
+        /** AuditPage */
+        AuditPage: {
+            /** Items */
+            items: components["schemas"]["AuditEntry"][];
+            /** Total */
+            total: number;
+        };
         /** Complaint */
         Complaint: {
             /** Amount */
@@ -1159,6 +1299,27 @@ export interface components {
             /** Top Reason */
             top_reason?: string | null;
         };
+        /** LoginRequest */
+        LoginRequest: {
+            /** Password */
+            password: string;
+            /** Username */
+            username: string;
+        };
+        /** Me */
+        Me: {
+            /**
+             * Auth Enabled
+             * @description false when sign-in is switched off (TRACE360_AUTH=off)
+             */
+            auth_enabled: boolean;
+            /**
+             * Unmasked
+             * @description true when this user sees names, account numbers and UPI ids in full
+             */
+            unmasked: boolean;
+            user: components["schemas"]["User"];
+        };
         /** ModelSummary */
         ModelSummary: {
             /** Account Roles */
@@ -1348,6 +1509,14 @@ export interface components {
             sheet: string;
             /** Time Reliable */
             time_reliable: boolean;
+        };
+        /** SignedOut */
+        SignedOut: {
+            /**
+             * Status
+             * @constant
+             */
+            status: "signed out";
         };
         /** StagedFile */
         StagedFile: {
@@ -1680,6 +1849,61 @@ export interface components {
             /** Time Reliable */
             time_reliable: boolean;
         };
+        /** User */
+        User: {
+            /** Active */
+            active: boolean;
+            /** Created At */
+            created_at?: string | null;
+            /** Display Name */
+            display_name?: string | null;
+            /** Id */
+            id: number;
+            /** Last Login At */
+            last_login_at?: string | null;
+            /**
+             * Role
+             * @description viewer: read the screens; investigator: also transactions and evidence PDFs; admin: everything, identifiers unmasked, Ingestion and users
+             * @enum {string}
+             */
+            role: "viewer" | "investigator" | "admin";
+            /** Username */
+            username: string;
+        };
+        /** UserCreate */
+        UserCreate: {
+            /** Display Name */
+            display_name?: string | null;
+            /**
+             * Password
+             * @description at least 8 characters
+             */
+            password: string;
+            /**
+             * Role
+             * @enum {string}
+             */
+            role: "viewer" | "investigator" | "admin";
+            /** Username */
+            username: string;
+        };
+        /** UserUpdate */
+        UserUpdate: {
+            /**
+             * Active
+             * @description false blocks sign-in and ends the user's sessions
+             */
+            active?: boolean | null;
+            /** Display Name */
+            display_name?: string | null;
+            /**
+             * Password
+             * @description new password (reset); ends the user's sessions
+             */
+            password?: string | null;
+            /** Role */
+            role?: ("viewer" | "investigator" | "admin") | null;
+        };
         /** ValidationError */
         ValidationError: {
             /** Context */
@@ -1891,6 +2115,128 @@ export interface operations {
             };
         };
     };
+    audit_api_admin_audit_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+                username?: string | null;
+                action?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuditPage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    users_api_admin_users_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["User"][];
+                };
+            };
+        };
+    };
+    create_user_api_admin_users_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["User"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_user_api_admin_users__user_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["User"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_alerts_api_alerts_get: {
         parameters: {
             query?: never;
@@ -1907,6 +2253,79 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Alert"][];
+                };
+            };
+        };
+    };
+    login_api_auth_login_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LoginRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Me"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    logout_api_auth_logout_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SignedOut"];
+                };
+            };
+        };
+    };
+    me_api_auth_me_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Me"];
                 };
             };
         };

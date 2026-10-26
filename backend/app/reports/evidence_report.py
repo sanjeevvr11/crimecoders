@@ -10,7 +10,7 @@ import pandas as pd
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from app import config
-from app.masking import mask, mask_digits, node_label
+from app.masking import mask, mask_digits, node_label, revealed
 from app.models.summary import account_ml_summary
 from app.scoring.reasons import top_reasons
 
@@ -41,6 +41,7 @@ def build_context(store, account_id: str) -> dict:
         "confidence": float(r.confidence),
     } for r in m.itertuples(index=False)]
     return {
+        "unmasked": revealed(),
         "a": {
             "account_id": account_id, "holder_name": mask(acc["holder_name"]), "account_number": mask(acc["account_number"]),
             "source_file": acc["source_file"], "source_sheet": mask_digits(acc["source_sheet"]), "layout": acc["layout"],
@@ -78,7 +79,7 @@ def _reportlab_pdf(ctx: dict) -> bytes:
         Spacer(1, 8), Paragraph("Why this account was flagged", styles["Heading3"]),
     ]
     story += [Paragraph(f"{i}. {r['text']} ({r['source']}, {r['contribution']:.1f} pts)", styles["Normal"]) for i, r in enumerate(ctx["reasons"], 1)]
-    story += [Spacer(1, 8), Paragraph("Lead for investigation only. Identifiers masked. Complaints are synthetic.", styles["Italic"])]
+    story += [Spacer(1, 8), Paragraph("Lead for investigation only. " + ("Identifiers shown in full (admin copy): handle as confidential." if revealed() else "Identifiers masked.") + " Complaints are synthetic.", styles["Italic"])]
     SimpleDocTemplate(buf, pagesize=A4).build(story)
     return buf.getvalue()
 
