@@ -164,6 +164,7 @@ PDF for viewers), and the API refuses them anyway. `TRACE360_AUTH=off make dev` 
 
 - Create users: in the Users tab (admins), or `make user USERNAME=asha ROLE=investigator` (prompts for the
   password). Or set `TRACE360_ADMIN_USER` / `TRACE360_ADMIN_PASSWORD` for a first admin.
+- Reloading the page signs the user out and opens the landing page again.
 - Users, sessions and the audit log live in `data/auth.sqlite3` (gitignored). Passwords are scrypt
   hashed; sessions are an httpOnly cookie valid 12 hours; 5 wrong passwords in 5 minutes block that
   user name from that address for a while.

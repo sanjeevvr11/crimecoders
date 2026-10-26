@@ -1,8 +1,9 @@
 /**
  * Sign-in state: KEEP when replacing the UI.
  *
- * <AuthProvider> asks the API who is signed in (GET /api/auth/me) and listens
- * for 401s from any call, so an expired session drops back to the login page.
+ * <AuthProvider> ends any session left from before a reload, so every load opens
+ * on the landing page, and listens for 401s from any call, so an expired session
+ * drops back to it too.
  * useAuth() gives the user, their role checks and signIn / signOut.
  * Hiding a screen is only a convenience: the API enforces every role itself.
  */
@@ -31,10 +32,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<Error>();
   const [tick, setTick] = useState(0);
 
+  // Every page load starts on the landing page: a session left over from before
+  // the reload is ended, so the user signs in again. With sign-in switched off
+  // (TRACE360_AUTH=off) there is nothing to sign into, so the app opens directly.
   useEffect(() => {
     setError(undefined);
     api.me()
-      .then(setMe)
+      .then(async (m) => {
+        if (!m.auth_enabled) return setMe(m);
+        await api.logout().catch(() => undefined);
+        setMe(null);
+      })
       .catch((e: Error) => (e instanceof ApiError && e.status === 401 ? setMe(null) : setError(e)));
   }, [tick]);
 
