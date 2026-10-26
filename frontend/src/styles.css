@@ -87,6 +87,37 @@ button.signout { background: transparent; border: 1px solid var(--border-default
 button.signout:hover { border-color: var(--box-border); color: var(--text-primary); box-shadow: none; }
 .role-note { border-left: 3px solid var(--accent-amber); padding: 8px 12px; background: rgba(255, 157, 53, .06); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
 
+/* Users tab */
+.role-legend { display: grid; gap: 6px; margin: 12px 0 18px; font-size: 13px; color: var(--text-secondary); }
+.role-chip { display: inline-block; min-width: 92px; padding: 2px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 700; text-align: center; margin-right: 6px; border: 1px solid; }
+.role-chip.role-admin { color: var(--accent-crimson); border-color: rgba(255, 48, 79, .5); background: rgba(255, 48, 79, .1); }
+.role-chip.role-investigator { color: var(--accent-amber); border-color: rgba(255, 157, 53, .5); background: rgba(255, 157, 53, .1); }
+.role-chip.role-viewer { color: var(--accent-electric-blue); border-color: rgba(77, 131, 255, .5); background: rgba(77, 131, 255, .1); }
+.users-note { padding: 9px 13px; border-radius: var(--radius-sm); margin: 0 0 16px; font-size: 13px; }
+.users-note.ok { background: rgba(77, 131, 255, .1); border: 1px solid rgba(77, 131, 255, .45); color: var(--text-primary); }
+.users-note.bad { background: rgba(255, 48, 79, .12); border: 1px solid rgba(255, 48, 79, .45); color: #ffd0d7; }
+.add-user { padding: 18px 20px; background: var(--bg-panel); border: 1px solid var(--box-border); border-radius: var(--radius); box-shadow: var(--box-glow); margin-bottom: 8px; }
+.add-user h2 { margin-top: 0; }
+.add-user-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; align-items: end; }
+.add-user-form .pw-label { grid-column: span 2; }
+.add-user-form .pw-row { flex-wrap: nowrap; }
+.add-user-form label { display: flex; flex-direction: column; gap: 6px; font-size: 12.5px; font-weight: 600; color: var(--text-secondary); }
+.add-user-form label input, .add-user-form label select { margin: 0; width: 100%; box-sizing: border-box; }
+.pw-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.pw-row input[type="text"] { flex: 1; min-width: 140px; margin: 0; font-family: var(--font-mono, monospace); }
+button.ghost { background: transparent; border: 1px solid var(--border-default); color: var(--text-secondary); font-weight: 600; padding: 6px 11px; }
+button.ghost:hover { border-color: var(--box-border); color: var(--text-primary); box-shadow: none; }
+button.ghost.danger:hover { color: var(--accent-crimson); }
+button:disabled { opacity: .5; cursor: not-allowed; }
+.users-table td select { margin: 0; }
+.users-table tr.inactive td { opacity: .55; }
+.row-actions { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; }
+.reset-row td { background: rgba(255, 48, 79, .05); }
+.you { margin-left: 8px; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--accent-violet); }
+.status-on { color: #5fd4a0; font-weight: 600; } .status-off { color: var(--text-muted); font-weight: 600; }
+.unmasked-tag { color: var(--accent-crimson); font-weight: 700; font-size: 12px; }
+tr.audit-fail td { color: #ffb3bf; }
+
 /* login page */
 .login-page { min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; background: radial-gradient(600px 400px at 50% 30%, rgba(255, 48, 79, .12), transparent 70%), var(--bg-primary); }
 .login-card { width: 100%; max-width: 380px; display: flex; flex-direction: column; gap: 14px; padding: 28px; background: var(--bg-panel); border: 1px solid var(--box-border); border-radius: var(--radius); box-shadow: var(--box-glow); }
@@ -94,7 +125,7 @@ button.signout:hover { border-color: var(--box-border); color: var(--text-primar
 .login-card h1 { margin: 0; font-size: 22px; }
 .login-card p { margin: 0; }
 .login-card label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--text-secondary); font-weight: 600; }
-.login-card input { width: 100%; margin: 0; box-sizing: border-box; padding: 10px 12px; font-size: 14px; }
+.login-card label input { width: 100%; margin: 0; box-sizing: border-box; padding: 10px 12px; font-size: 14px; }
 .login-card button[type="submit"] { padding: 11px; font-size: 14px; margin-top: 4px; }
 .login-card button:disabled { opacity: .55; cursor: not-allowed; filter: none; box-shadow: none; }
 .login-error { color: #ffd0d7; background: rgba(255, 48, 79, .12); border: 1px solid rgba(255, 48, 79, .45); border-radius: var(--radius-sm); padding: 8px 12px; font-size: 13px; }

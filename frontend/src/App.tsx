@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { NavLink, Navigate, Route, Routes, useLocation } from "react-router-dom";
-import { Account, Complaints, Data, Leads, Login, Models, MoneyTrail, Network, NotFound, Overview } from "./pages";
+import { Account, Complaints, Data, Leads, Login, Models, MoneyTrail, Network, NotFound, Overview, Users } from "./pages";
 import { ErrorBox, ICONS, Loading } from "./components";
 import { useAuth } from "./hooks";
 import type { UserRole as Role } from "./api";
@@ -13,6 +13,7 @@ const NAV: { to: string; label: string; hint: string; icon: JSX.Element; role?: 
   { to: "/network", label: "Network", hint: "Rings and shared counterparties", icon: ICONS.network },
   { to: "/complaints", label: "Complaints", hint: "Victim reports matched to accounts", icon: ICONS.complaints },
   { to: "/models", label: "Models", hint: "How the scores are made", icon: ICONS.models },
+  { to: "/users", label: "Users", hint: "Who can sign in, audit log", icon: ICONS.users, role: "admin" },
 ];
 
 const ROLE_LABEL: Record<Role, string> = { viewer: "Viewer", investigator: "Investigator", admin: "Admin" };
@@ -83,6 +84,7 @@ function Shell() {
             <Route path="/complaints" element={<Complaints />} />
             <Route path="/models" element={<Models />} />
             <Route path="/ingestion" element={can("admin") ? <Data /> : <NeedsRole role="admin" />} />
+            <Route path="/users" element={can("admin") ? <Users /> : <NeedsRole role="admin" />} />
             <Route path="/data" element={<Navigate to="/ingestion" replace />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

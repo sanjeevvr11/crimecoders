@@ -156,6 +156,8 @@ PDF for viewers), and the API refuses them anyway. `TRACE360_AUTH=off make dev` 
   user name from that address for a while.
 - The audit log records sign-ins, account views, transaction and connection views, PDF downloads,
   uploads, pipeline runs and user changes, with whether the data was shown unmasked.
+- Admins manage users in the **Users** tab: add a user (with a generated password), change role,
+  deactivate / reactivate, reset a password, and read the audit log with user and action filters.
 - Endpoints: `POST /api/auth/login`, `POST /api/auth/logout`, `GET /api/auth/me`,
   `GET/POST /api/admin/users`, `PATCH /api/admin/users/{id}`, `GET /api/admin/audit`.
 

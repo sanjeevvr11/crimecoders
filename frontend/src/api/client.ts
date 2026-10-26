@@ -8,7 +8,7 @@
  * same origin, where the Vite dev proxy forwards /api to the backend.
  */
 import type {
-  AccountDetail, AccountFilters, Me, AccountListItem, Alert, ComplaintListItem, ComplaintMatches, Conclusion, DatasetState, Lead,
+  AccountDetail, AccountFilters, AuditPage, Me, User, UserCreate, UserUpdate, AccountListItem, Alert, ComplaintListItem, ComplaintMatches, Conclusion, DatasetState, Lead,
   ModelSummary, NetworkOverview, NodeConnections, PipelineJob, PipelineRunResult, Ring, RingDetail, RunMode, SortOrder, StagedFile, Stats, Tier, Timeline, Trail, TrailDirection, TrailGraph,
 } from "./types";
 
@@ -59,6 +59,16 @@ export const api = {
       method: "POST", body: JSON.stringify({ username, password }), headers: { "Content-Type": "application/json" },
     }),
   logout: () => request<{ status: string }>("/api/auth/logout", undefined, { method: "POST" }),
+
+  // admin only: who can sign in, and the audit log
+  users: () => request<User[]>("/api/admin/users"),
+  createUser: (body: UserCreate) =>
+    request<User>("/api/admin/users", undefined, { method: "POST", body: JSON.stringify(body), headers: { "Content-Type": "application/json" } }),
+  /** change role, deactivate / reactivate (active), reset password or rename; any change but a rename signs the user out */
+  updateUser: (id: number, body: UserUpdate) =>
+    request<User>(`/api/admin/users/${id}`, undefined, { method: "PATCH", body: JSON.stringify(body), headers: { "Content-Type": "application/json" } }),
+  /** newest first */
+  audit: (opts: { limit?: number; offset?: number; username?: string; action?: string } = {}) => request<AuditPage>("/api/admin/audit", opts),
 
   health: () => request<{ status: string }>("/api/health"),
   stats: () => request<Stats>("/api/stats"),
