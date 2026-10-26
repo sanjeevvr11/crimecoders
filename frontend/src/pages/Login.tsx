@@ -52,6 +52,14 @@ export function Login() {
   const [signing, setSigning] = useState(false);
   const [error, setError] = useState<string>();
   const can = !!(user.trim() && pass);
+  // the opening sequence starts once the font is in, so the title doesn't jump mid-animation
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    let on = true;
+    const go = () => on && setReady(true);
+    Promise.race([document.fonts?.ready ?? Promise.resolve(), new Promise((r) => setTimeout(r, 900))]).then(go, go);
+    return () => { on = false; };
+  }, []);
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
@@ -86,8 +94,8 @@ export function Login() {
   }, []);
 
   return (
-    <div className="lp" ref={root}>
-      <header className="lp-header">
+    <div className={`lp${ready ? " lp-ready" : ""}`} ref={root}>
+      <header className="lp-header lp-intro-down">
         <div className="lp-header-in">
           <a href="#top" data-h="hdrlogo" className="lp-logo" onClick={jump("top")}>
             <img src="/trace360-icon.png" alt="" aria-hidden="true" />
@@ -110,14 +118,18 @@ export function Login() {
           <div data-h="block" className="lp-hero-block">
             <div className="lp-hero-title">
               <svg data-h="ringsvg" viewBox="0 0 100 100" className="lp-ring" aria-hidden="true">
-                <circle cx="50" cy="50" r="49" fill="none" stroke="#1E2A40" strokeWidth="0.2" />
+                <circle className="lp-ring-track" cx="50" cy="50" r="49" fill="none" stroke="#1E2A40" strokeWidth="0.2" pathLength={360} strokeDasharray="360" />
+                <circle className="lp-ring-ping" cx="50" cy="50" r="49" fill="none" stroke="#F0344F" strokeWidth="0.3" />
                 <circle data-h="ring" cx="50" cy="50" r="49" fill="none" stroke="#F0344F" strokeWidth="0.45" strokeLinecap="round" pathLength={360}
                   strokeDasharray="360" strokeDashoffset="360" style={{ filter: "drop-shadow(0 0 1.2px #F0344F)" }} />
                 <circle data-h="dot" cx="99" cy="50" r="1.1" fill="#FFD2D8" style={{ transformOrigin: "50px 50px", filter: "drop-shadow(0 0 1.5px #F0344F)" }} />
               </svg>
-              <h1>Trace<span>360</span></h1>
+              <h1 aria-label="Trace360">
+                {[..."Trace"].map((ch, i) => <span key={i} className="lp-l" style={{ animationDelay: `${450 + i * 70}ms` }} aria-hidden="true">{ch}</span>)}
+                <span className="lp-360" aria-hidden="true">360</span>
+              </h1>
             </div>
-            <div className="lp-hero-sub">
+            <div className="lp-hero-sub lp-intro" style={{ animationDelay: "1250ms" }}>
               <span>Mule account detection</span><span className="lp-dot" /><span data-h="deg" className="lp-deg">000°</span>
             </div>
           </div>
@@ -130,7 +142,7 @@ export function Login() {
             </div>
           </div>
           <div data-h="hint" className="lp-hint" aria-hidden="true">
-            <span>Scroll to trace</span><span className="lp-hint-line" />
+            <span className="lp-intro" style={{ animationDelay: "1700ms" }}>Scroll to trace</span><span className="lp-hint-line lp-intro" style={{ animationDelay: "1800ms" }} />
           </div>
         </div>
       </section>
